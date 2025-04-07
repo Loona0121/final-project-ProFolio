@@ -1,5 +1,3 @@
-
-
 <div align="center">
   <img src="./frontend/487764172_634340622907082_4369907521291400765_n.png" width="300"/>
   <h2>FINAL PROJECT</h2>
@@ -41,7 +39,6 @@
     <li><strong>Tester & Debugger/Documentation Officer:</strong> Noelissa S. Noble</li>
   </ul>
 
-  
 ## 📚 Class Section
   <p>BSIT 2A</p>
   
@@ -54,4 +51,5 @@
   <li><strong>Phase 5(Week 15)</strong> - ⚪ 0%</li>
   <li><strong>Phase 6(Week 16)</strong> - ⚪ 0%</li>
 </ul>
+
 <p><em>This will continue to be updated until everything reaches 100%.</em></p>
