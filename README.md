@@ -1,16 +1,13 @@
 
 
-<div align="center" style="line-height: 0.8">
-  <img src="https://github.com/millicentrae/test/blob/main/487764172_634340622907082_4369907521291400765_n.png?raw=true" width="200" style="display: block; margin: 0 auto"/>
-  <h2 style="margin: 5px 0 0 0; padding: 0">FINAL PROJECT</h2>
+<div align="center">
+  <img src="./frontend/487764172_634340622907082_4369907521291400765_n.png" width="300"/>
+  <h2>FINAL PROJECT</h2>
 </div>
 
 <div align="center">
    <h1>📂ProFolio</h1>
   <p style="max-width: 600px; margin: 10px auto">A professional portfolio site that lets your work speak for itself, turning your skills and experience into new opportunities.</p>
-</div>
-
-<div align="center">
   
  ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
  ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) 
@@ -55,6 +52,6 @@
   <li><strong>Phase 3(Week 13)</strong> - 🟡 10%</li>
   <li><strong>Phase 4(Week 14)</strong> - ⚪ 0%</li>
   <li><strong>Phase 5(Week 15)</strong> - ⚪ 0%</li>
-  <li><strong>Phase 6(Week 16)</strong> - 🟡 0%</li>
+  <li><strong>Phase 6(Week 16)</strong> - ⚪ 0%</li>
 </ul>
 <p><em>This will continue to be updated until everything reaches 100%.</em></p>
