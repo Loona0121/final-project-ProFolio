@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./frontend/487764172_634340622907082_4369907521291400765_n.png" width="300"/>
+  <img src="./frontend/487764172_634340622907082_4369907521291400765_n.png" width="400"/>
   <h2>FINAL PROJECT</h2>
 </div>
 
