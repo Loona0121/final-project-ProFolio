@@ -14,10 +14,10 @@
  ![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)
 </div>
   
-## 📌 About the Project
+## 🚀 About the Project
   <p><strong>ProFolio</strong> is a portfolio platform that allows users to showcase their skills, work experience, and professional background. It supports freelancers, job seekers, and businesses by helping them create structured profiles that clients and recruiters can easily browse, filter, and connect with.</p>
   
-## 🔑 Features
+## 📌 Features
   <ul>
     <li><strong>Portfolio Showcase</strong> - Upload designs, case studies, coding projects, etc.</li>
     <li><strong>Skills and Certifications</strong> - Add and verify expertise.</li>
