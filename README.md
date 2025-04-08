@@ -44,12 +44,12 @@
   
 ## 📈 Project Progress
 <ul>
-  <li><strong>Phase 1 (Week 11) </strong> - ✅ 100%</li>
-  <li><strong>Phase 2 (Week 12</strong> - 🟡 30%</li>
-  <li><strong>Phase 3(Week 13)</strong> - 🟡 10%</li>
-  <li><strong>Phase 4(Week 14)</strong> - ⚪ 0%</li>
-  <li><strong>Phase 5(Week 15)</strong> - ⚪ 0%</li>
-  <li><strong>Phase 6(Week 16)</strong> - ⚪ 0%</li>
+  <li><strong>Phase 1 (Week 11)</strong> - ✅100%</li>
+  <li><strong>Phase 2 (Week 12)</strong> -🟡30%</li>
+  <li><strong>Phase 3 (Week 13)</strong> -🟡10%</li>
+  <li><strong>Phase 4 (Week 14)</strong> -⚪0%</li>
+  <li><strong>Phase 5 (Week 15)</strong> -⚪0%</li>
+  <li><strong>Phase 6 (Week 16)</strong> -⚪0%</li>
 </ul>
 
 <p><em>This will continue to be updated until everything reaches 100%.</em></p>
