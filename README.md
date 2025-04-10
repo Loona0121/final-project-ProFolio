@@ -3,6 +3,8 @@
   <h2>FINAL PROJECT</h2>
 </div>
 
+---
+
 <div align="center">
    <h1>📂 ProFolio</h1>
   <p>A professional portfolio site that lets your work speak for itself, turning your skills and experience into new opportunities.</p>
@@ -14,8 +16,12 @@
  ![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)
 </div>
 
+---
+
 ## 🚀 About the Project
 ProFolio is a portfolio platform that allows users to showcase their skills, work experience, and professional background. It supports freelancers, job seekers, and businesses by helping them create structured profiles that clients and recruiters can easily browse, filter, and connect with.
+
+---
 
 ## 📌 Features
 - **Portfolio Showcase** - Upload designs, case studies, coding projects, etc.
@@ -27,6 +33,8 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 - **Advanced Job Filters** - Filter talents or job listings smartly.
 - **Team and Company Pages** - Profile pages for businesses and teams.
 
+---
+
 ## 👥 Group Members and Roles
 - **Project Manager:** Aran Joshua P. Ofracio
 - **Frontend Developer:** Ella Mae R. Dolon
@@ -35,8 +43,12 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 - **GitHub Manager:** Alona P. Odoño
 - **Tester & Debugger/Documentation Officer:** Noelissa S. Noble
 
+---
+
 ## 📚 Class Section
 BSIT 2A
+
+---
 
 ## 📈 Project Progress
 | Phase       | Progress      |
