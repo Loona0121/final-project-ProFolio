@@ -1,5 +1,4 @@
-
-/*<?php
+<?php
 
 function connection(){ 
 
@@ -16,4 +15,4 @@ if($con->connect_error){
 else{
     return $con;
 }
-}*/
+}

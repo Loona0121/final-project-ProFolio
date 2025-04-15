@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProFolio - Registration</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header-logo {
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: #1a4b84;
+          margin-left: 20px;
+        }
+        .header-logo span {
+          color: #3aafa9;;
+        }
+        .registration-container {
+            max-width: 800px;
+            margin: 1rem auto;
+            padding: 2rem;
+            background-color: whitesmoke;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            flex: 1;
+
+        }
+        .registration-container p {
+            font-size: 16px;
+            margin-top: 0rem;
+            text-align: center;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+        .page-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .btn-social {
+            width: 100%;
+            text-align: center;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .btn-google {
+            background-color: #1a4b84;
+            color: white;
+            border: none;
+        }
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #ddd;
+            z-index: 0;
+        }
+        .divider span {
+            background-color: whitesmoke;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        .form-check {
+            margin-top: 1.5rem;
+        }
+        .create-btn {
+            background-color: #1a4b84;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .password-toggle {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .password-field {
+            position: relative;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e7e7e7;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-right: 20px;
+}
+
+.footer-links a {
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  color: #1a4b84;
+  text-decoration: underline;
+}
+
+.copyright {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-links {
+    margin-bottom: 15px;
+    justify-content: center;
+  }
+}
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px; /* Give space for the icon */
+}
+
+.password-toggle {
+  position: absolute;
+  top: 75%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 1.2rem;
+}
+    </style>
+</head>
+ <!-- Header -->
+ <header class="header">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="header-logo">
+          Pro<span>Folio</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+    <div class="container registration-container">
+      <h1 class="text-center mb-1">Sign up as a Client</h1>
+        <p class="text-muted"> Find top clients</p>
+
+        
+        <!-- Social Login Buttons -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <button class="btn btn-social btn-google">
+                    <i class="fab fa-google me-2"></i>Continue with Google
+                </button>
+            </div>
+        </div>
+        
+        <!-- Divider -->
+        <div class="divider">
+            <span>or</span>
+        </div>
+        
+        <!-- Registration Form -->
+        <form>
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label for="firstName" class="form-label">First name<span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="firstName" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="lastName" class="form-label">Last name<span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="lastName" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Email<span style="color: red">*</span></label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            
+            <div class="mb-3 password-field">
+                <label for="password" class="form-label">Password<span style="color: red">*</span></label>
+                <input type="password" class="form-control" id="password" placeholder="Password (8 or more characters)" required>
+                <span class="password-toggle" onclick="togglePassword()">
+                  <i class="far fa-eye-slash"></i>
+                </span>
+            </div>
+            
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <select class="form-select" id="country" required>
+                    <option value="Philippines" selected>Philippines</option>
+                    <option value="USA">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                </select>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="marketingEmails" required>
+                <label class="form-check-label" for="marketingEmails">
+                    Send me helpful emails to find dedicated freelancer that fit my needs.
+                </label>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="termsAgree" required>
+                <label class="form-check-label" for="termsAgree">
+                    Yes, I understand and agree to the ProFolio <a href="#" class="text-success">Terms of Service</a>, including the <a href="#" class="text-success">User Agreement</a> and <a href="#" class="text-success">Privacy Policy</a>.
+                </label>
+            </div>
+            
+           <!-- Update this button -->
+<button type="submit" class="btn create-btn">Create my account</button>
+        
+        <div class="login-link">
+            Already have an account? <a href="login.html" class="text-success">Log In</a>
+        </div>
+    </div>
+     <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <ul class="footer-links">
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+        <div class="copyright">
+          © 2025 ProFolio - Where you let your work shine and watch opportunities follow
+        </div>
+      </div>
+    </div>
+  </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const icon = document.querySelector('.password-toggle i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Stop default form submission
+
+    // Check if form is valid using built-in HTML5 validation
+    if (this.checkValidity()) {
+      // If all required fields are filled, go to dashboard
+      window.location.href = 'dashboardClient.html';
+    } else {
+      // If something is missing, trigger browser's validation
+      this.reportValidity();
+    }
+  });
+    </script>
+</body>
+</html>
