@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./frontend/487764172_634340622907082_4369907521291400765_n.png" width="400"/>
+  <img src="./frontend/admin/images/logo.png" width="400"/>
   <h2>FINAL PROJECT</h2>
 </div>
 
@@ -54,7 +54,7 @@ BSIT 2A
 | Phase       | Progress      |
 |-------------|--------------|
 | Phase 1 (Week 11) | ✅ 100% |
-| Phase 2 (Week 12) | 🟡 30%  |
+| Phase 2 (Week 12) | 🟡 40%  |
 | Phase 3 (Week 13) | 🟡 10%  |
 | Phase 4 (Week 14) | ⚪ 0%   |
 | Phase 5 (Week 15) | ⚪ 0%   |
