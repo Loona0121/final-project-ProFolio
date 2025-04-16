@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Analytics</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="adminDashboard.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script>
+  // Initialize sidebar functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Previous sidebar code remains...
+    
+    // Initialize Leaflet Map
+    const map = L.map('world-map-container').setView([30, 10], 2);
+    
+    // Add tile layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 18
+    }).addTo(map);
+    
+    // Country data with user counts and revenue
+    const countryData = [
+      {name: "United States", lat: 37.09, lng: -95.71, users: 4285, revenue: 32400, growth: 12},
+      {name: "Philippines", lat: 12.87, lng: 121.77, users: 2741, revenue: 18700, growth: 24},
+      {name: "United Kingdom", lat: 55.37, lng: -3.43, users: 1532, revenue: 14200, growth: 8},
+      {name: "Germany", lat: 51.16, lng: 10.45, users: 1204, revenue: 11800, growth: 6},
+      {name: "Canada", lat: 56.13, lng: -106.34, users: 978, revenue: 8500, growth: 9},
+      {name: "Australia", lat: -25.27, lng: 133.77, users: 842, revenue: 7300, growth: 11},
+      {name: "France", lat: 46.22, lng: 2.21, users: 756, revenue: 6200, growth: 5},
+      {name: "Brazil", lat: -14.23, lng: -51.92, users: 685, revenue: 5100, growth: 15},
+      {name: "Japan", lat: 36.20, lng: 138.25, users: 623, revenue: 4800, growth: 7},
+      {name: "Singapore", lat: 1.35, lng: 103.82, users: 487, revenue: 3900, growth: 18}
+    ];
+    
+    // User markers (default view)
+    let userMarkers = [];
+    let revenueMarkers = [];
+    
+    // Function to add user markers
+    function addUserMarkers() {
+      // Clear existing markers first
+      revenueMarkers.forEach(marker => map.removeLayer(marker));
+      
+      countryData.forEach(country => {
+        // Calculate radius based on user count (square root for better visual scaling)
+        const radius = Math.sqrt(country.users) / 10;
+        
+        // Create marker with popup
+        const marker = L.circleMarker([country.lat, country.lng], {
+          radius: radius,
+          fillColor: "#2c6ecb",
+          color: "#ffffff",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.7
+        }).bindPopup(`
+          <strong>${country.name}</strong><br>
+          Users: ${country.users.toLocaleString()}<br>
+          Growth: ${country.growth}%
+        `);
+        
+        marker.addTo(map);
+        userMarkers.push(marker);
+      });
+    }
+    
+    // Function to add revenue markers
+    function addRevenueMarkers() {
+      // Clear existing markers first
+      userMarkers.forEach(marker => map.removeLayer(marker));
+      
+      countryData.forEach(country => {
+        // Calculate radius based on revenue (square root for better visual scaling)
+        const radius = Math.sqrt(country.revenue) / 15;
+        
+        // Create marker with popup
+        const marker = L.circleMarker([country.lat, country.lng], {
+          radius: radius,
+          fillColor: "#23a69a",
+          color: "#ffffff",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.7
+        }).bindPopup(`
+          <strong>${country.name}</strong><br>
+          Revenue: $${country.revenue.toLocaleString()}<br>
+          Growth: ${country.growth}%
+        `);
+        
+        marker.addTo(map);
+        revenueMarkers.push(marker);
+      });
+    }
+    
+    // Initialize with user markers
+    addUserMarkers();
+    
+    // Add event listeners for buttons
+    document.getElementById('map-users-btn').addEventListener('click', function() {
+      this.classList.add('active');
+      document.getElementById('map-revenue-btn').classList.remove('active');
+      
+      // Switch to user markers
+      revenueMarkers.forEach(marker => map.removeLayer(marker));
+      revenueMarkers = [];
+      addUserMarkers();
+    });
+    
+    document.getElementById('map-revenue-btn').addEventListener('click', function() {
+      this.classList.add('active');
+      document.getElementById('map-users-btn').classList.remove('active');
+      
+      // Switch to revenue markers
+      userMarkers.forEach(marker => map.removeLayer(marker));
+      userMarkers = [];
+      addRevenueMarkers();
+    });
+    
+    // Make sure map renders properly
+    setTimeout(function() {
+      map.invalidateSize();
+    }, 100);
+    
+    // Previous chart code remains...
+  });
+</script>
+</head>
+<body>
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <i class="fas fa-briefcase logo-icon"></i>
+        <span class="logo-text">Pro<span class="accent">Folio</span></span>
+      </div>
+      <button class="sidebar-close d-lg-none" aria-label="Close sidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <div class="user-info">
+        <h6 class="user-name">Admin Panel</h6>
+        <span class="user-role">System Administrator</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="adminDashboard.html" class="nav-link">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="adminUsers.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>User Management</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="adminVerification.html" class="nav-link">
+            <i class="fas fa-check-circle"></i>
+            <span>Verification Requests</span>
+            <span class="badge bg-warning rounded-pill ms-auto">24</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="adminReports.html" class="nav-link">
+            <i class="fas fa-flag"></i>
+            <span>Reported Users</span>
+            <span class="badge bg-danger rounded-pill ms-auto">7</span>
+          </a>
+        </li>
+        <li class="nav-divider"></li>
+        <li class="nav-item">
+          <a href="adminPolicies.html" class="nav-link">
+            <i class="fas fa-book"></i>
+            <span>Platform Policies</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="adminAnalytics.html" class="nav-link active">
+            <i class="fas fa-chart-bar"></i>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="adminSettings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="adminLogout.html" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content" id="main-content">
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+      <div class="container-fluid">
+        <div class="navbar-search">
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="search" class="search-input" placeholder="Search analytics data...">
+          </div>
+        </div>
+        
+        <div class="navbar-actions">
+          <div class="dropdown">
+            <button class="action-btn" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
+              <li class="dropdown-header">Notifications (3)</li>
+              <li><a class="dropdown-item" href="#">New verification request</a></li>
+              <li><a class="dropdown-item" href="#">System alert: Storage at 82%</a></li>
+              <li><a class="dropdown-item" href="#">New user report submitted</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
+            </ul>
+          </div>
+          
+          <div class="dropdown">
+            <button class="action-btn profile-btn" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-shield"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Analytics</h1>
+            <p class="page-subtitle">Platform performance and user activity metrics</p>
+          </div>
+          <div class="page-header-actions">
+            <div class="date-range">
+              <button class="btn btn-outline-primary">
+                <i class="far fa-calendar-alt me-2"></i>
+                <span>Last 30 Days</span>
+                <i class="fas fa-chevron-down ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Overview Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-lg-3">
+            <div class="stats-card">
+              <div class="stats-card-body">
+                <div class="stats-icon users-icon">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stats-info">
+                  <h3 class="stats-number">1,486</h3>
+                  <p class="stats-label">New Users</p>
+                </div>
+              </div>
+              <div class="stats-footer">
+                <span class="stats-trend positive">
+                  <i class="fas fa-arrow-up"></i> 14% from last month
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-lg-3">
+            <div class="stats-card">
+              <div class="stats-card-body">
+                <div class="stats-icon projects-icon">
+                  <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="stats-info">
+                  <h3 class="stats-number">124</h3>
+                  <p class="stats-label">New Projects</p>
+                </div>
+              </div>
+              <div class="stats-footer">
+                <span class="stats-trend positive">
+                  <i class="fas fa-arrow-up"></i> 8% from last month
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-lg-3">
+            <div class="stats-card">
+              <div class="stats-card-body">
+                <div class="stats-icon" style="background-color: rgba(112, 72, 232, 0.1); color: #7048e8;">
+                  <i class="fas fa-handshake"></i>
+                </div>
+                <div class="stats-info">
+                  <h3 class="stats-number">87</h3>
+                  <p class="stats-label">Completed Deals</p>
+                </div>
+              </div>
+              <div class="stats-footer">
+                <span class="stats-trend positive">
+                  <i class="fas fa-arrow-up"></i> 12% from last month
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-lg-3">
+            <div class="stats-card">
+              <div class="stats-card-body">
+                <div class="stats-icon" style="background-color: rgba(35, 166, 154, 0.1); color: #23a69a;">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stats-info">
+                  <h3 class="stats-number">$57.8K</h3>
+                  <p class="stats-label">Platform Revenue</p>
+                </div>
+              </div>
+              <div class="stats-footer">
+                <span class="stats-trend positive">
+                  <i class="fas fa-arrow-up"></i> 18% from last month
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth & User Engagement Charts -->
+        <div class="row g-3 mb-4">
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <i class="fas fa-chart-line"></i> Growth Trends
+                </h2>
+                <div class="chart-actions">
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-primary active">Users</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">Projects</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">Revenue</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 300px;">
+                  <canvas id="growthChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <i class="fas fa-users"></i> User Demographics
+                </h2>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 300px;">
+                  <canvas id="userTypeChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traffic Sources & Activity Metrics -->
+        <div class="row g-3 mb-4">
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <i class="fas fa-globe"></i> Traffic Sources
+                </h2>
+              </div>
+              <div class="card-body pb-0">
+                <div class="chart-container" style="position: relative; height: 220px;">
+                  <canvas id="trafficSourcesChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer p-0">
+                <div class="table-responsive">
+                  <table class="table table-sm mb-0">
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Users</th>
+                        <th>Conversion</th>
+                        <th>Growth</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><i class="fas fa-search text-primary me-2"></i>Organic Search</td>
+                        <td>4,825</td>
+                        <td>3.2%</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 12%</span></td>
+                      </tr>
+                      <tr>
+                        <td><i class="fas fa-link text-secondary me-2"></i>Direct</td>
+                        <td>3,748</td>
+                        <td>2.8%</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 7%</span></td>
+                      </tr>
+                      <tr>
+                        <td><i class="fab fa-facebook text-primary me-2"></i>Social Media</td>
+                        <td>2,105</td>
+                        <td>4.1%</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 18%</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <i class="fas fa-chart-bar"></i> Platform Activity
+                </h2>
+              </div>
+              <div class="card-body pb-0">
+                <div class="chart-container" style="position: relative; height: 220px;">
+                  <canvas id="activityChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer p-0">
+                <div class="row g-0 text-center">
+                  <div class="col-4 p-3 border-end">
+                    <h4 class="mb-1">82%</h4>
+                    <p class="text-muted mb-0 small">Avg. Completion</p>
+                  </div>
+                  <div class="col-4 p-3 border-end">
+                    <h4 class="mb-1">4.2</h4>
+                    <p class="text-muted mb-0 small">Avg. Rating</p>
+                  </div>
+                  <div class="col-4 p-3">
+                    <h4 class="mb-1">28 days</h4>
+                    <p class="text-muted mb-0 small">Avg. Project</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- User Segment Analysis -->
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <i class="fas fa-user-tag"></i> User Segment Analysis
+                </h2>
+                <a href="#" class="card-action-link">
+                  <i class="fas fa-download me-1"></i> Export
+                </a>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>Segment</th>
+                        <th>Users</th>
+                        <th>Growth</th>
+                        <th>Activity</th>
+                        <th>Retention</th>
+                        <th>Revenue</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="stats-icon" style="width: 36px; height: 36px; font-size: 14px; background-color: rgba(44, 110, 203, 0.1); color: #2c6ecb;">
+                              <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <div class="ms-3">
+                              <h6 class="mb-0">Freelance Developers</h6>
+                            </div>
+                          </div>
+                        </td>
+                        <td>5,842</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 18%</span></td>
+                        <td>
+                          <div class="progress" style="height: 6px; width: 80px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <span class="small text-muted">85%</span>
+                        </td>
+                        <td>78%</td>
+                        <td>$24.5K</td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-primary">Details</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="stats-icon" style="width: 36px; height: 36px; font-size: 14px; background-color: rgba(92, 187, 186, 0.1); color: #5cbbba;">
+                              <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <div class="ms-3">
+                              <h6 class="mb-0">Designers</h6>
+                            </div>
+                          </div>
+                        </td>
+                        <td>3,217</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 12%</span></td>
+                        <td>
+                          <div class="progress" style="height: 6px; width: 80px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <span class="small text-muted">72%</span>
+                        </td>
+                        <td>65%</td>
+                        <td>$18.7K</td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-primary">Details</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="stats-icon" style="width: 36px; height: 36px; font-size: 14px; background-color: rgba(247, 185, 36, 0.1); color: #f7b924;">
+                              <i class="fas fa-building"></i>
+                            </div>
+                            <div class="ms-3">
+                              <h6 class="mb-0">Agency Clients</h6>
+                            </div>
+                          </div>
+                        </td>
+                        <td>2,105</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 8%</span></td>
+                        <td>
+                          <div class="progress" style="height: 6px; width: 80px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <span class="small text-muted">92%</span>
+                        </td>
+                        <td>91%</td>
+                        <td>$43.2K</td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-primary">Details</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="stats-icon" style="width: 36px; height: 36px; font-size: 14px; background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                              <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="ms-3">
+                              <h6 class="mb-0">E-commerce</h6>
+                            </div>
+                          </div>
+                        </td>
+                        <td>1,322</td>
+                        <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 5%</span></td>
+                        <td>
+                          <div class="progress" style="height: 6px; width: 80px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 68%" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <span class="small text-muted">68%</span>
+                        </td>
+                        <td>58%</td>
+                        <td>$12.9K</td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-primary">Details</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Geographic Distribution with Leaflet Map -->
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-globe-americas"></i> Geographic Distribution
+        </h2>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-outline-primary active" id="map-users-btn">Users</button>
+          <button type="button" class="btn btn-outline-primary" id="map-revenue-btn">Revenue</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-7">
+            <!-- Leaflet Map Container -->
+            <div id="world-map-container" style="height: 350px; position: relative;"></div>
+          </div>
+          <div class="col-lg-5">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Country</th>
+                    <th>Users</th>
+                    <th>Growth</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><i class="fas fa-flag me-2"></i>United States</td>
+                    <td>4,285</td>
+                    <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 12%</span></td>
+                    <td>$32.4K</td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-flag me-2"></i>Philippines</td>
+                    <td>2,741</td>
+                    <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 24%</span></td>
+                    <td>$18.7K</td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-flag me-2"></i>United Kingdom</td>
+                    <td>1,532</td>
+                    <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 8%</span></td>
+                    <td>$14.2K</td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-flag me-2"></i>Germany</td>
+                    <td>1,204</td>
+                    <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 6%</span></td>
+                    <td>$11.8K</td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-flag me-2"></i>Canada</td>
+                    <td>978</td>
+                    <td><span class="stats-trend positive"><i class="fas fa-arrow-up"></i> 9%</span></td>
+                    <td>$8.5K</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center mt-3">
+              <button class="btn btn-outline-primary btn-sm">View All Countries</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </main>
+
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <script>
+    // Initialize sidebar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarClose = document.querySelector('.sidebar-close');
+      
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+          sidebar.classList.add('show');
+        });
+      }
+      
+      if (sidebarClose) {
+        sidebarClose.addEventListener('click', function() {
+          sidebar.classList.remove('show');
+        });
+      }
+    });
+    
+    // Growth Chart
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+    const growthChart = new Chart(growthCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        datasets: [{
+          label: 'New Users',
+          data: [420, 542, 489, 627, 734, 678, 893, 1042, 1486],
+          borderColor: '#2c6ecb',
+          backgroundColor: 'rgba(44, 110, 203, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#2c6ecb',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 4
+          }
+        }
+      }
+    });
+    
+    // User Demographics Chart - Updated to remove Enterprise
+    const userTypeCtx = document.getElementById('userTypeChart').getContext('2d');
+    const userTypeChart = new Chart(userTypeCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Freelancers', 'Agencies', 'Clients'],
+        datasets: [{
+          data: [45, 30, 25],
+          backgroundColor: [
+            '#2c6ecb',
+            '#23a69a',
+            '#f7b924'
+          ],
+          borderColor: '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 4
+          }
+        }
+      }
+    });
+    
+    // Traffic Sources Chart
+    const trafficCtx = document.getElementById('trafficSourcesChart').getContext('2d');
+    const trafficChart = new Chart(trafficCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Organic Search', 'Direct', 'Social Media', 'Referrals', 'Email'],
+        datasets: [{
+          data: [45, 25, 15, 10, 5],
+          backgroundColor: [
+            '#2c6ecb',
+            '#23a69a',
+            '#f7b924',
+            '#7048e8',
+            '#e74c3c'
+          ],
+          borderColor: '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              padding: 15,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 4
+          }
+        }
+      }
+    });
+    
+    // Platform Activity Chart
+    const activityCtx = document.getElementById('activityChart').getContext('2d');
+    const activityChart = new Chart(activityCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Project Creation',
+          data: [12, 19, 15, 17, 14, 8, 5],
+          backgroundColor: 'rgba(44, 110, 203, 0.7)',
+        }, {
+          label: 'User Registration',
+          data: [8, 12, 9, 11, 13, 7, 4],
+          backgroundColor: 'rgba(35, 166, 154, 0.7)',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: 10,
+            cornerRadius: 4
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

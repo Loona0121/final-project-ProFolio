@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Admin Logout</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Core colors */
+      --primary: #2c6ecb;
+      --primary-light: rgba(44, 110, 203, 0.1);
+      --secondary: #5cbbba;
+      --secondary-light: rgba(92, 187, 186, 0.1);
+      
+      /* Status colors */
+      --success: #3aad57;
+      --success-light: rgba(58, 173, 87, 0.1);
+      --warning: #f7b924;
+      --warning-light: rgba(247, 185, 36, 0.1);
+      --danger: #e74c3c;
+      --danger-light: rgba(231, 76, 60, 0.1);
+      
+      /* UI colors */
+      --bg-light: #f8f9fb;
+      --bg-white: #ffffff;
+      --text-dark: #2d3748;
+      --text-muted: #718096;
+      --text-light: #a0aec0;
+      --border: #e9ecef;
+      --accent: #f0f7ff;
+      
+      /* Effects */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition: all 0.2s ease;
+      
+      /* Radius */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-circle: 50%;
+    }
+    
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--bg-light);
+      line-height: 1.5;
+      font-size: 14px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+      background-image: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+    }
+    
+    .logout-modal {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      transform: translateY(0);
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+    
+    .logout-modal.animate {
+      transform: translateY(-20px);
+    }
+    
+    .logout-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logout-title {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .logout-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-circle);
+      transition: var(--transition);
+    }
+    
+    .logout-close:hover {
+      background-color: var(--bg-light);
+      color: var(--danger);
+    }
+    
+    .logout-body {
+      padding: 24px;
+      text-align: center;
+    }
+    
+    .logout-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-circle);
+      background-color: var(--danger-light);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+    }
+    
+    .logout-message {
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: var(--text-dark);
+    }
+    
+    .logout-footer {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px 24px;
+    }
+    
+    .btn {
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      padding: 10px 16px;
+      flex: 1;
+      transition: var(--transition);
+    }
+    
+    .btn-outline-secondary {
+      color: var(--text-dark);
+      border-color: var(--border);
+    }
+    
+    .btn-outline-secondary:hover {
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      border-color: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background-color: #d44333;
+      border-color: #d44333;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    
+    .logo-icon {
+      color: var(--primary);
+      font-size: 22px;
+      margin-right: 8px;
+    }
+    
+    .logo-text {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text-dark);
+    }
+    
+    .accent {
+      color: var(--secondary);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-circle);
+      background-color: var(--primary-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 12px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    
+    .user-details {
+      text-align: left;
+    }
+    
+    .user-name {
+      margin: 0;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    /* Loading indicator */
+    .loading-spinner {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-lg);
+    }
+    
+    .loading-spinner.active {
+      display: flex;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--primary-light);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .logout-modal {
+        max-width: 100%;
+        margin: 0 16px;
+      }
+      
+      .logout-footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay fade-in">
+    <div class="logout-modal animate" id="logoutModal">
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+      </div>
+      
+      <div class="logout-header">
+        <h5 class="logout-title">Logout Confirmation</h5>
+        <button type="button" class="logout-close" id="closeBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="logout-body">
+        <div class="logo">
+          <i class="fas fa-briefcase logo-icon"></i>
+          <span class="logo-text">Pro<span class="accent">Folio</span></span>
+        </div>
+        
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="user-details">
+            <h6 class="user-name">Admin Panel</h6>
+            <span class="user-role">System Administrator</span>
+          </div>
+        </div>
+        
+        <div class="logout-icon">
+          <i class="fas fa-sign-out-alt"></i>
+        </div>
+        
+        <div class="logout-message">
+          Are you sure you want to log out of your admin account?
+          <br>
+          Your session will be terminated.
+        </div>
+      </div>
+      
+      <div class="logout-footer">
+        <button type="button" class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmLogoutBtn">
+          <i class="fas fa-sign-out-alt me-2"></i>Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get elements
+      const logoutModal = document.getElementById('logoutModal');
+      const closeBtn = document.getElementById('closeBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      const overlay = document.querySelector('.overlay');
+      
+      // Close modal function
+      function closeModal() {
+        logoutModal.style.transform = 'translateY(20px)';
+        logoutModal.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.opacity = '0';
+          setTimeout(() => {
+            // Redirect back to the dashboard
+            window.location.href = "adminDashboard.html";
+          }, 300);
+        }, 200);
+      }
+      
+      // Attach close event listeners
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      
+      // Logout function
+      confirmLogoutBtn.addEventListener('click', function() {
+        // Show loading spinner
+        loadingSpinner.classList.add('active');
+        
+        // Simulate logout process (replace with actual logout API call)
+        setTimeout(() => {
+          // Hide spinner before redirect
+          loadingSpinner.classList.remove('active');
+          
+          // Add fade-out animation
+          logoutModal.style.transform = 'translateY(20px)';
+          logoutModal.style.opacity = '0';
+          
+          setTimeout(() => {
+            overlay.style.opacity = '0';
+            
+            // Redirect to admin login page after successful logout
+            setTimeout(() => {
+              window.location.href = "adminLogin.html";
+            }, 300);
+          }, 200);
+        }, 1500);
+      });
+      
+      // Add escape key listener
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      });
+      
+      // Add click outside to cancel
+      overlay.addEventListener('click', function(event) {
+        if (event.target === overlay) {
+          closeModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
