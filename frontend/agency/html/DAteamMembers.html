@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Agency Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Admin Dashboard CSS -->
+  <link href="adminDashboard.css" rel="stylesheet">
+  <link href="freelancerDashboard.css" rel="stylesheet">
+  <link href="AgencyDashboard.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebar-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+        <span class="logo-text">Pro<span class="accent">Folio</span></span>
+      </div>
+    </div>
+    
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-info">
+        <h6 class="user-name">Code & Canvas</h6>
+        <div class="user-role">Custom Website Developer</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="AgencyDashboard.html" class="nav-link">
+            <i class="fas fa-th-large"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="DAteamMembers.html" class="nav-link active">
+            <i class="fas fa-users"></i> Team Members
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link">
+            <i class="fas fa-comment"></i> Messages
+            <span class="badge" style="background-color: var(--danger);">3</span>
+          </a>
+        </li>
+        <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="fas fa-folder"></i> Project
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="DAJobOffers.html" class="nav-link">
+              <i class="fas fa-briefcase"></i> Job Offers
+            </a>
+          </li>
+        <li class="nav-item">
+          <a href="" class="nav-link">
+            <i class="fas fa-star"></i> Reviews
+          </a>
+        </li>
+        
+        <div class="nav-divider"></div>
+        
+        <li class="nav-item">
+          <a href="" class="nav-link">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <a href="" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content" id="main-content">
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+      <div class="container-fluid">
+        <div >
+          <div>
+           
+            
+          </div>
+        </div>
+        
+        <div class="navbar-actions">
+          <button class="action-btn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">5</span>
+          </button>
+          <button class="action-btn">
+            <i class="fas fa-envelope"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn profile-btn">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+
+        <!--Team Management-->
+        <div class="section">
+          <div class="section-header">
+            <h3 class="section-title">
+              <i class="fas fa-users"></i> Team Members
+            </h3>
+            <button class="add-member-btn" id="addMemberBtn">
+              <i class="fas fa-plus"></i> Add Member
+            </button>
+          </div>
+          <div class="section-content">
+            <table class="team-members-table" id="teamMembersTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Projects</th>
+                  <th>Skills</th>
+                  <th>Status</th>
+                  <th style="text-align: center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-id="1">
+                  <td>
+                    <div class="member-name">
+                      <div class="member-avatar">AJ</div>
+                      <div class="member-info">
+                        <h6>Aran Joshua P. Ofracio</h6>
+                        <small>aran.ofracio@profolio.com</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Project Manager</td>
+                  <td>3</td>
+                  <td>
+                    <span class="skill-badge">Leadership</span>
+                    <span class="skill-badge secondary">Planning</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-active">Active</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <button class="action-btn view-btn" title="View Profile">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="1" title="Edit Member">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr data-id="2">
+                  <td>
+                    <div class="member-name">
+                      <div class="member-avatar">EM</div>
+                      <div class="member-info">
+                        <h6>Ella Mae R. Dolon</h6>
+                        <small>ella.dolon@profolio.com</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Frontend Developer</td>
+                  <td>2</td>
+                  <td>
+                    <span class="skill-badge">HTML/CSS</span>
+                    <span class="skill-badge secondary">JavaScript</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-active">Active</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <button class="action-btn view-btn" title="View Profile">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="2" title="Edit Member">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr data-id="3">
+                  <td>
+                    <div class="member-name">
+                      <div class="member-avatar">VR</div>
+                      <div class="member-info">
+                        <h6>Victor Ronel P. Lumayad</h6>
+                        <small>victor.lumayad@profolio.com</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Backend Developer</td>
+                  <td>2</td>
+                  <td>
+                    <span class="skill-badge">PHP</span>
+                    <span class="skill-badge secondary">MySQL</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-active">Active</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <button class="action-btn view-btn" title="View Profile">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="3" title="Edit Member">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr data-id="4">
+                  <td>
+                    <div class="member-name">
+                      <div class="member-avatar">PC</div>
+                      <div class="member-info">
+                        <h6>Paulina C. Dela Cruz</h6>
+                        <small>paulina.delacruz@profolio.com</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Database Manager</td>
+                  <td>1</td>
+                  <td>
+                    <span class="skill-badge">MySQL</span>
+                    <span class="skill-badge secondary">Data Design</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-active">Active</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <button class="action-btn view-btn" title="View Profile">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn" data-id="4" title="Edit Member">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      
+<!-- Add/Edit Member Modal -->
+<div id="memberModal" class="modal">
+  <div class="modal-content fade-in">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modalTitle">Add Team Member</h4>
+      <button class="close-modal" id="closeModal">&times;</button>
+    </div>
+    <form id="memberForm">
+      <input type="hidden" id="memberId" value="">
+      <div class="form-group">
+        <label for="memberName" class="form-label">Full Name</label>
+        <input type="text" id="memberName" class="form-control" placeholder="Enter full name" required>
+      </div>
+      <div class="form-group">
+        <label for="memberEmail" class="form-label">Email</label>
+        <input type="email" id="memberEmail" class="form-control" placeholder="Enter email address" required>
+      </div>
+      <div class="form-group">
+        <label for="memberRole" class="form-label">Role</label>
+        <select id="memberRole" class="form-select" required>
+          <option value="">Select role</option>
+          <option value="Project Manager">Project Manager</option>
+          <option value="Frontend Developer">Frontend Developer</option>
+          <option value="Backend Developer">Backend Developer</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Database Manager">Database Manager</option>
+          <option value="Quality Assurance">Quality Assurance</option>
+          <option value="DevOps Engineer">DevOps Engineer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="memberProjects" class="form-label">Projects Assigned</label>
+        <input type="number" id="memberProjects" class="form-control" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Skills</label>
+        <div class="skill-options">
+          <div class="skill-option">
+            <input type="checkbox" id="skillHTML" name="skills" value="HTML/CSS">
+            <label for="skillHTML">HTML/CSS</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillJS" name="skills" value="JavaScript">
+            <label for="skillJS">JavaScript</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillPHP" name="skills" value="PHP">
+            <label for="skillPHP">PHP</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillMySQL" name="skills" value="MySQL">
+            <label for="skillMySQL">MySQL</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillUX" name="skills" value="UI/UX">
+            <label for="skillUX">UI/UX</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillLeadership" name="skills" value="Leadership">
+            <label for="skillLeadership">Leadership</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillPlanning" name="skills" value="Planning">
+            <label for="skillPlanning">Planning</label>
+          </div>
+          <div class="skill-option">
+            <input type="checkbox" id="skillDataDesign" name="skills" value="Data Design">
+            <label for="skillDataDesign">Data Design</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="memberStatus" class="form-label">Status</label>
+        <select id="memberStatus" class="form-select" required>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Member Modal -->
+<div id="viewMemberModal" class="modal">
+  <div class="modal-content fade-in">
+    <div class="modal-header">
+      <h4 class="modal-title">Team Member Profile</h4>
+      <button class="close-modal" id="closeViewModal">&times;</button>
+    </div>
+    <div id="memberProfileContent">
+      <div class="text-center mb-4">
+        <div class="member-avatar mx-auto" style="width: 80px; height: 80px; font-size: 32px;" id="profileAvatar">AJ</div>
+        <h3 class="mt-3" id="profileName">Aran Joshua P. Ofracio</h3>
+        <p class="text-muted" id="profileEmail">aran.ofracio@profolio.com</p>
+      </div>
+      <div class="mb-3">
+        <h5>Role</h5>
+        <p id="profileRole">Project Manager</p>
+      </div>
+      <div class="mb-3">
+        <h5>Projects Assigned</h5>
+        <p id="profileProjects">3</p>
+      </div>
+      <div class="mb-3">
+        <h5>Skills</h5>
+        <div id="profileSkills">
+          <span class="skill-badge">Leadership</span>
+          <span class="skill-badge secondary">Planning</span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <h5>Status</h5>
+        <p id="profileStatus"><span class="status-badge status-active">Active</span></p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="closeProfileBtn">Close</button>
+      <button type="button" class="btn btn-primary" id="editFromViewBtn">Edit Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal confirmation-modal">
+  <div class="modal-content fade-in">
+    <div class="modal-header">
+      <h4 class="modal-title">Confirm Delete</h4>
+      <button class="close-modal" id="closeConfirmationModal">&times;</button>
+    </div>
+    <div class="confirmation-text">
+      Are you sure you want to delete this team member? This action cannot be undone.
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+      <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <!-- Main JavaScript -->
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const addMemberBtn = document.getElementById('addMemberBtn');
+      const memberModal = document.getElementById('memberModal');
+      const viewMemberModal = document.getElementById('viewMemberModal');
+      const confirmationModal = document.getElementById('confirmationModal');
+      const memberForm = document.getElementById('memberForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const saveBtn = document.getElementById('saveBtn');
+      const teamMembersTable = document.getElementById('teamMembersTable');
+      const editBtns = document.querySelectorAll('.edit-btn');
+      const viewBtns = document.querySelectorAll('.view-btn');
+      const editFromViewBtn = document.getElementById('editFromViewBtn');
+      const closeModal = document.getElementById('closeModal');
+const cancelBtn = document.getElementById('cancelBtn');
+const closeViewModal = document.getElementById('closeViewModal');
+const closeProfileBtn = document.getElementById('closeProfileBtn');
+const closeConfirmationModal = document.getElementById('closeConfirmationModal');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+const modalBackdrop = document.getElementById('modalBackdrop');
+
+      let currentMemberId = null;
+      
+      // Open Add Member Modal
+      addMemberBtn.addEventListener('click', function() {
+        modalTitle.textContent = 'Add Team Member';
+        saveBtn.textContent = 'Save Member';
+        resetForm();
+        openModal(memberModal);
+      });
+      
+      // Close modals
+      [closeModal, cancelBtn].forEach(btn => {
+        btn.addEventListener('click', function() {
+          closeModal(memberModal);
+        });
+      });
+      
+      [closeViewModal, closeProfileBtn].forEach(btn => {
+        btn.addEventListener('click', function() {
+          closeModal(viewMemberModal);
+        });
+      });
+      
+      [closeConfirmationModal, cancelDeleteBtn].forEach(btn => {
+        btn.addEventListener('click', function() {
+          closeModal(confirmationModal);
+        });
+      });
+      
+      // Close modal when clicking on backdrop
+      modalBackdrop.addEventListener('click', function() {
+        closeModal(memberModal);
+        closeModal(viewMemberModal);
+        closeModal(confirmationModal);
+      });
+      
+      // Handle Edit buttons
+      editBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const memberId = this.getAttribute('data-id');
+          openEditModal(memberId);
+        });
+      });
+      
+      // Edit from view modal
+      editFromViewBtn.addEventListener('click', function() {
+        closeModal(viewMemberModal);
+        openEditModal(currentMemberId);
+      });
+      
+      // Handle View buttons
+      viewBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const row = this.closest('tr');
+          const memberId = row.getAttribute('data-id');
+          currentMemberId = memberId;
+          
+          // Get member data from row
+          const name = row.querySelector('.member-info h6').textContent;
+          const email = row.querySelector('.member-info small').textContent;
+          const role = row.querySelector('td:nth-child(2)').textContent;
+          const projects = row.querySelector('td:nth-child(3)').textContent;
+          const skillsElements = row.querySelectorAll('td:nth-child(4) .skill-badge');
+          const status = row.querySelector('.status-badge').textContent;
+          const avatarText = row.querySelector('.member-avatar').textContent;
+          
+          // Populate view modal
+          document.getElementById('profileName').textContent = name;
+          document.getElementById('profileEmail').textContent = email;
+          document.getElementById('profileRole').textContent = role;
+          document.getElementById('profileProjects').textContent = projects;
+          document.getElementById('profileAvatar').textContent = avatarText;
+          
+          // Handle skills
+          const profileSkills = document.getElementById('profileSkills');
+          profileSkills.innerHTML = '';
+          
+          skillsElements.forEach((skillEl, index) => {
+            const newSkill = document.createElement('span');
+            newSkill.className = index % 2 === 0 ? 'skill-badge' : 'skill-badge secondary';
+            newSkill.textContent = skillEl.textContent;
+            profileSkills.appendChild(newSkill);
+          });
+          
+          // Handle status
+          const profileStatus = document.getElementById('profileStatus');
+          profileStatus.innerHTML = '';
+          
+          const statusBadge = document.createElement('span');
+          statusBadge.textContent = status;
+          
+          if (status.toLowerCase() === 'active') {
+            statusBadge.className = 'status-badge status-active';
+          } else if (status.toLowerCase() === 'inactive') {
+            statusBadge.className = 'status-badge status-inactive';
+          } else {
+            statusBadge.className = 'status-badge status-pending';
+          }
+          
+          profileStatus.appendChild(statusBadge);
+          
+          // Open the view modal
+          openModal(viewMemberModal);
+        });
+      });
+    });
+// Submit form handler
+memberForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Get form values
+  const name = document.getElementById('memberName').value;
+  const email = document.getElementById('memberEmail').value;
+  const role = document.getElementById('memberRole').value;
+  const projects = document.getElementById('memberProjects').value;
+  
+  // Get selected skills
+  const skillCheckboxes = document.querySelectorAll('input[name="skills"]:checked');
+  const skills = Array.from(skillCheckboxes).map(checkbox => checkbox.value);
+  
+  const status = document.getElementById('memberStatus').value;
+  const memberId = document.getElementById('memberId').value;
+  
+  // Create initials for avatar
+  const nameParts = name.split(' ');
+  let initials = '';
+  if (nameParts.length >= 2) {
+    initials = nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0);
+  } else if (nameParts.length === 1) {
+    initials = nameParts[0].substring(0, 2);
+  }
+  
+  // Create skill badges HTML
+  let skillsHTML = '';
+  skills.forEach((skill, index) => {
+    const badgeClass = index % 2 === 0 ? 'skill-badge' : 'skill-badge secondary';
+    skillsHTML += `<span class="${badgeClass}">${skill}</span>`;
+  });
+  
+  // Create status badge HTML
+  let statusClass = '';
+  if (status === 'active') {
+    statusClass = 'status-badge status-active';
+  } else if (status === 'inactive') {
+    statusClass = 'status-badge status-inactive';
+  } else {
+    statusClass = 'status-badge status-pending';
+  }
+  const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+  const statusHTML = `<span class="${statusClass}">${statusText}</span>`;
+  
+  if (memberId) {
+    // Edit existing member
+    const row = document.querySelector(`tr[data-id="${memberId}"]`);
+    
+    // Update row content
+    row.querySelector('.member-avatar').textContent = initials;
+    row.querySelector('.member-info h6').textContent = name;
+    row.querySelector('.member-info small').textContent = email;
+    row.querySelector('td:nth-child(2)').textContent = role;
+    row.querySelector('td:nth-child(3)').textContent = projects;
+    row.querySelector('td:nth-child(4)').innerHTML = skillsHTML;
+    row.querySelector('td:nth-child(5)').innerHTML = statusHTML;
+    
+    // Remove edit-mode class if present
+    row.classList.remove('edit-mode');
+  } else {
+    // Generate new ID (simple increment for demo purposes)
+    const tableRows = teamMembersTable.querySelectorAll('tbody tr');
+    const newId = tableRows.length + 1;
+    
+    // Create new table row
+    const newRow = `
+      <tr data-id="${newId}">
+        <td>
+          <div class="member-name">
+            <div class="member-avatar">${initials}</div>
+            <div class="member-info">
+              <h6>${name}</h6>
+              <small>${email}</small>
+            </div>
+          </div>
+        </td>
+        <td>${role}</td>
+        <td>${projects}</td>
+        <td>${skillsHTML}</td>
+        <td>${statusHTML}</td>
+        <td style="text-align: center;">
+          <button class="action-btn view-btn" title="View Profile">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="action-btn edit-btn" data-id="${newId}" title="Edit Member">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+          <button class="action-btn delete-btn" data-id="${newId}" title="Delete Member">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+    
+    // Add to table
+    teamMembersTable.querySelector('tbody').insertAdjacentHTML('beforeend', newRow);
+    
+    // Add event listeners to new buttons
+    const newViewBtn = teamMembersTable.querySelector(`tr[data-id="${newId}"] .view-btn`);
+    const newEditBtn = teamMembersTable.querySelector(`tr[data-id="${newId}"] .edit-btn`);
+    const newDeleteBtn = teamMembersTable.querySelector(`tr[data-id="${newId}"] .delete-btn`);
+    
+    newViewBtn.addEventListener('click', handleViewMember);
+    newEditBtn.addEventListener('click', handleEditMember);
+    newDeleteBtn.addEventListener('click', handleDeleteMember);
+  }
+  
+  // Close modal and reset form
+  closeModal(memberModal);
+  resetForm();
+});
+
+// Function to handle view member button click
+function handleViewMember() {
+  const row = this.closest('tr');
+  const memberId = row.getAttribute('data-id');
+  currentMemberId = memberId;
+  
+  // Get member data from row
+  const name = row.querySelector('.member-info h6').textContent;
+  const email = row.querySelector('.member-info small').textContent;
+  const role = row.querySelector('td:nth-child(2)').textContent;
+  const projects = row.querySelector('td:nth-child(3)').textContent;
+  const skillsElements = row.querySelectorAll('td:nth-child(4) .skill-badge');
+  const status = row.querySelector('.status-badge').textContent;
+  const avatarText = row.querySelector('.member-avatar').textContent;
+  
+  // Populate view modal
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = email;
+  document.getElementById('profileRole').textContent = role;
+  document.getElementById('profileProjects').textContent = projects;
+  document.getElementById('profileAvatar').textContent = avatarText;
+  
+  // Handle skills
+  const profileSkills = document.getElementById('profileSkills');
+  profileSkills.innerHTML = '';
+  
+  skillsElements.forEach((skillEl, index) => {
+    const newSkill = document.createElement('span');
+    newSkill.className = index % 2 === 0 ? 'skill-badge' : 'skill-badge secondary';
+    newSkill.textContent = skillEl.textContent;
+    profileSkills.appendChild(newSkill);
+  });
+  
+  // Handle status
+  const profileStatus = document.getElementById('profileStatus');
+  profileStatus.innerHTML = '';
+  
+  const statusBadge = document.createElement('span');
+  statusBadge.textContent = status;
+  
+  if (status.toLowerCase() === 'active') {
+    statusBadge.className = 'status-badge status-active';
+  } else if (status.toLowerCase() === 'inactive') {
+    statusBadge.className = 'status-badge status-inactive';
+  } else {
+    statusBadge.className = 'status-badge status-pending';
+  }
+  
+  profileStatus.appendChild(statusBadge);
+  
+  // Open the view modal
+  openModal(viewMemberModal);
+}
+
+// Function to handle edit member button click
+function handleEditMember() {
+  const memberId = this.getAttribute('data-id');
+  openEditModal(memberId);
+}
+
+// Function to handle delete member button click
+function handleDeleteMember() {
+  const memberId = this.getAttribute('data-id');
+  currentMemberId = memberId;
+  openModal(confirmationModal);
+}
+
+// Confirm delete
+confirmDeleteBtn.addEventListener('click', function() {
+  if (currentMemberId) {
+    const row = document.querySelector(`tr[data-id="${currentMemberId}"]`);
+    if (row) {
+      row.remove();
+    }
+    closeModal(confirmationModal);
+    currentMemberId = null;
+  }
+});
+
+// Function to open edit modal
+function openEditModal(memberId) {
+  currentMemberId = memberId;
+  const row = document.querySelector(`tr[data-id="${memberId}"]`);
+  
+  if (row) {
+    // Add edit-mode class to highlight row
+    row.classList.add('edit-mode');
+    
+    // Get member data from row
+    const name = row.querySelector('.member-info h6').textContent;
+    const email = row.querySelector('.member-info small').textContent;
+    const role = row.querySelector('td:nth-child(2)').textContent;
+    const projects = row.querySelector('td:nth-child(3)').textContent;
+    const skillsElements = row.querySelectorAll('td:nth-child(4) .skill-badge');
+    const status = row.querySelector('.status-badge').textContent.toLowerCase();
+    
+    // Populate form fields
+    document.getElementById('memberId').value = memberId;
+    document.getElementById('memberName').value = name;
+    document.getElementById('memberEmail').value = email;
+    document.getElementById('memberRole').value = role;
+    document.getElementById('memberProjects').value = projects;
+    document.getElementById('memberStatus').value = status;
+    
+    // Reset all skill checkboxes
+    document.querySelectorAll('input[name="skills"]').forEach(checkbox => {
+      checkbox.checked = false;
+    });
+    
+    // Check the relevant skill checkboxes
+    skillsElements.forEach(skillEl => {
+      const skillValue = skillEl.textContent;
+      const checkbox = document.querySelector(`input[name="skills"][value="${skillValue}"]`);
+      if (checkbox) {
+        checkbox.checked = true;
+      }
+    });
+    
+    // Update modal title and button text
+    modalTitle.textContent = 'Edit Team Member';
+    saveBtn.textContent = 'Update Member';
+    
+    // Show modal
+    openModal(memberModal);
+  }
+}
+
+// Function to reset form
+function resetForm() {
+  document.getElementById('memberId').value = '';
+  memberForm.reset();
+  document.querySelectorAll('input[name="skills"]').forEach(checkbox => {
+    checkbox.checked = false;
+  });
+}
+
+// Function to open modal
+function openModal(modal) {
+  modal.style.display = 'block';
+  modalBackdrop.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+// Function to close modal
+function closeModal(modal) {
+  modal.style.display = 'none';
+  modalBackdrop.style.display = 'none';
+  document.body.style.overflow = '';
+  
+  // Remove edit-mode class from any row when closing modals
+  const editModeRow = document.querySelector('tr.edit-mode');
+  if (editModeRow) {
+    editModeRow.classList.remove('edit-mode');
+  }
+}
+
+// Add search functionality (optional enhancement)
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.placeholder = 'Search team members...';
+searchInput.className = 'form-control mb-3';
+searchInput.style.maxWidth = '300px';
+searchInput.style.margin = '16px';
+
+// Insert search box before the table
+teamMembersTable.parentNode.insertBefore(searchInput, teamMembersTable);
+
+// Add search functionality
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const rows = teamMembersTable.querySelectorAll('tbody tr');
+  
+  rows.forEach(row => {
+    const name = row.querySelector('.member-info h6').textContent.toLowerCase();
+    const email = row.querySelector('.member-info small').textContent.toLowerCase();
+    const role = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+    
+    // Check if any of the fields contain the search term
+    if (name.includes(searchTerm) || email.includes(searchTerm) || role.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+});
+
+// Add delete buttons to existing rows
+const rows = teamMembersTable.querySelectorAll('tbody tr');
+rows.forEach(row => {
+  const actionsCell = row.querySelector('td:last-child');
+  const rowId = row.getAttribute('data-id');
+  
+  // Check if delete button already exists
+  if (!actionsCell.querySelector('.delete-btn')) {
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'action-btn delete-btn';
+    deleteBtn.setAttribute('data-id', rowId);
+    deleteBtn.setAttribute('title', 'Delete Member');
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    
+    // Add event listener
+    deleteBtn.addEventListener('click', handleDeleteMember);
+    
+    // Append to actions cell
+    actionsCell.appendChild(deleteBtn);
+  }
+});
+
+// Reattach event listeners for existing buttons (in case they were lost)
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.removeEventListener('click', handleViewMember);
+  btn.addEventListener('click', handleViewMember);
+});
+
+document.querySelectorAll('.edit-btn').forEach(btn => {
+  btn.removeEventListener('click', handleEditMember);
+  btn.addEventListener('click', handleEditMember);
+});
+
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.removeEventListener('click', handleDeleteMember);
+  btn.addEventListener('click', handleDeleteMember);
+});
+
+// Close modals on ESC key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal(memberModal);
+    closeModal(viewMemberModal);
+    closeModal(confirmationModal);
+  }
+});
+
+// Enhanced close modal function with proper cleanup
+function closeModalAndReset(modal) {
+  modal.style.display = 'none';
+  modalBackdrop.style.display = 'none';
+  document.body.style.overflow = '';
+  
+  // Remove edit-mode class from any row when closing modals
+  const editModeRow = document.querySelector('tr.edit-mode');
+  if (editModeRow) {
+    editModeRow.classList.remove('edit-mode');
+  }
+  
+  // Reset form when closing add/edit modal
+  if (modal === memberModal) {
+    resetForm();
+  }
+}
+
+// Close add/edit member modal
+[closeModal, cancelBtn].forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default action
+    e.stopPropagation(); // Stop event bubbling
+    closeModalAndReset(memberModal);
+  });
+});
+
+// Close view member modal
+[closeViewModal, closeProfileBtn].forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeModalAndReset(viewMemberModal);
+  });
+});
+
+// Close confirmation modal
+[closeConfirmationModal, cancelDeleteBtn].forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeModalAndReset(confirmationModal);
+  });
+});
+
+// Close modal when clicking on backdrop
+modalBackdrop.addEventListener('click', function() {
+  closeModalAndReset(memberModal);
+  closeModalAndReset(viewMemberModal);
+  closeModalAndReset(confirmationModal);
+});
+
+// Close modals on ESC key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModalAndReset(memberModal);
+    closeModalAndReset(viewMemberModal);
+    closeModalAndReset(confirmationModal);
+  }
+});
+
+// Reset form function
+function resetForm() {
+  document.getElementById('memberId').value = '';
+  memberForm.reset();
+  document.querySelectorAll('input[name="skills"]').forEach(checkbox => {
+    checkbox.checked = false;
+  });
+}
+
+// Replace the original openModal function with this improved version
+function openModal(modal) {
+  modal.style.display = 'block';
+  modalBackdrop.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+</script>
+<!-- Add this HTML code right before the closing </body> tag -->
+
+
+
+</body>
+</html>

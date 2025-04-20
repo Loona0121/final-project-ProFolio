@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Portfolio Management</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Admin Dashboard CSS -->
+  <link href="adminDashboard.css" rel="stylesheet">
+  <link href="freelancerDashboard.css" rel="stylesheet">
+  <link href="freelancerPortfolio.css" rel="stylesheet">
+
+</head>
+<body>
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebar-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+        <span class="logo-text">Pro<span class="accent">Folio</span></span>
+      </div>
+      <button class="sidebar-close" id="sidebar-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-info">
+        <h6 class="user-name">Aran Johnson</h6>
+        <div class="user-role">Senior Web Developer</div>
+      </div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="freelancerDashboard.html" class="nav-link">
+            <i class="fas fa-th-large"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="freelancerPortfolio.html" class="nav-link active">
+            <i class="fas fa-palette"></i> Portfolio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="DFmessages.html" class="nav-link">
+            <i class="fas fa-comment"></i> Messages
+            <span class="badge" style="background-color: var(--danger);">3</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="DFreviews.html" class="nav-link">
+            <i class="fas fa-star"></i> Reviews
+          </a>
+        </li>
+        
+        <div class="nav-divider"></div>
+        
+        <li class="nav-item">
+          <a href="DFsettings.html" class="nav-link">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <a href="DFlogout.html" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content" id="main-content">
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+      <div class="container-fluid">
+        <div class="navbar-search">
+          <div class="search-wrapper">
+            <span class="search-icon">
+              <i class="fas fa-search"></i>
+            </span>
+            <input type="text" class="search-input" placeholder="Search projects, clients, or skills...">
+          </div>
+        </div>
+        
+        <div class="navbar-actions">
+          <button class="action-btn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">5</span>
+          </button>
+          <button class="action-btn">
+            <i class="fas fa-envelope"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn profile-btn">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header slide-up">
+          <div>
+            <h2 class="page-title">Portfolio Management</h2>
+            <p class="page-subtitle">Showcase your work and attract potential clients</p>
+          </div>
+        </div>
+        
+        <!-- Portfolio Grid -->
+        <div class="portfolio-grid" id="portfolioGrid">
+          <!-- Portfolio Card 1: Web Development -->
+          <div class="portfolio-card slide-up" style="--delay: 0.2s">
+            <div class="portfolio-preview">
+              <div class="portfolio-preview-browser">
+                <div class="browser-dots">
+                  <div class="browser-dot red-dot"></div>
+                  <div class="browser-dot yellow-dot"></div>
+                  <div class="browser-dot green-dot"></div>
+                </div>
+                <div class="browser-address">myportfolio.dev</div>
+              </div>
+              <div class="portfolio-preview-code">
+<span style="color: #88c0d0;">const</span> <span style="color: #81a1c1;">app</span> = <span style="color: #88c0d0;">document</span>.<span style="color: #81a1c1;">querySelector</span>(<span style="color: #a3be8c;">'#app'</span>);
+<span style="color: #88c0d0;">const</span> <span style="color: #81a1c1;">projects</span> = [
+  {
+    <span style="color: #81a1c1;">title</span>: <span style="color: #a3be8c;">'E-commerce Platform'</span>,
+    <span style="color: #81a1c1;">tech</span>: [<span style="color: #a3be8c;">'React'</span>, <span style="color: #a3be8c;">'Node.js'</span>, <span style="color: #a3be8c;">'MongoDB'</span>]
+  },
+  {
+    <span style="color: #81a1c1;">title</span>: <span style="color: #a3be8c;">'Travel App'</span>,
+    <span style="color: #81a1c1;">tech</span>: [<span style="color: #a3be8c;">'Vue'</span>, <span style="color: #a3be8c;">'Express'</span>]
+  }
+];
+
+<span style="color: #81a1c1;">renderProjects</span>(<span style="color: #81a1c1;">projects</span>);
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <h3 class="portfolio-title">
+                <div class="portfolio-type-icon">
+                  <i class="fas fa-code"></i>
+                </div>
+                Web Development Portfolio
+              </h3>
+              <div class="tag-list">
+                <span class="tag">React</span>
+                <span class="tag">Node.js</span>
+                <span class="tag">Full-Stack</span>
+                <span class="tag">JavaScript</span>
+              </div>
+              <p class="portfolio-desc">Showcase of my web development projects, including responsive websites, progressive web apps, and interactive UI components.</p>
+              <div class="portfolio-stats">
+                <div class="portfolio-stat">
+                  <i class="fas fa-eye"></i> 245 views
+                </div>
+                <div class="portfolio-stat">
+                  <i class="fas fa-file"></i> 8 projects
+                </div>
+                <div class="portfolio-stat">
+                  <i class="fas fa-calendar-alt"></i> Updated 5 days ago
+                </div>
+              </div>
+              <div class="portfolio-actions">
+                <a href="#" class="btn btn-primary">
+                  <i class="fas fa-eye"></i> View Portfolio
+                </a>
+                <a href="#" class="btn btn-outline-secondary">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Portfolio Card 2: UI/UX Design -->
+          <div class="portfolio-card slide-up" style="--delay: 0.3s">
+            <div class="portfolio-preview">
+              <div class="portfolio-preview-browser">
+                <div class="browser-dots">
+                  <div class="browser-dot red-dot"></div>
+                  <div class="browser-dot yellow-dot"></div>
+                  <div class="browser-dot green-dot"></div>
+                </div>
+                <div class="browser-address">design.portfolio.io</div>
+              </div>
+              <div class="portfolio-preview-code" style="background-color: #2d3748; padding-top: 30px; text-align: center;">
+<span style="color: #f7fafc; font-size: 11px;">Figma Component Structure</span>
+<svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top: 10px;">
+  <rect x="40" y="20" width="220" height="30" rx="4" fill="#4c566a" />
+  <text x="60" y="40" fill="#eceff4" font-size="12">Header Component</text>
+  
+  <rect x="80" y="60" width="140" height="20" rx="4" fill="#5e81ac" />
+  <text x="100" y="75" fill="#eceff4" font-size="10">Navigation Menu</text>
+  
+  <rect x="50" y="90" width="80" height="30" rx="4" fill="#81a1c1" />
+  <text x="60" y="110" fill="#eceff4" font-size="10">Hero Section</text>
+  
+  <rect x="170" y="90" width="80" height="30" rx="4" fill="#81a1c1" />
+  <text x="180" y="110" fill="#eceff4" font-size="10">Gallery Grid</text>
+  
+  <line x1="150" y1="50" x2="150" y2="60" stroke="#eceff4" stroke-width="1" />
+  <line x1="150" y1="80" x2="150" y2="90" stroke="#eceff4" stroke-width="1" />
+  <line x1="90" y1="80" x2="90" y2="90" stroke="#eceff4" stroke-width="1" />
+  <line x1="210" y1="80" x2="210" y2="90" stroke="#eceff4" stroke-width="1" />
+  <line x1="90" y1="80" x2="210" y2="80" stroke="#eceff4" stroke-width="1" />
+</svg>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <h3 class="portfolio-title">
+                <div class="portfolio-type-icon">
+                  <i class="fas fa-paint-brush"></i>
+                </div>
+                UI/UX Design Portfolio
+              </h3>
+              <div class="tag-list">
+                <span class="tag">Figma</span>
+                <span class="tag">Wireframing</span>
+                <span class="tag">Prototyping</span>
+                <span class="tag">User Research</span>
+              </div>
+              <p class="portfolio-desc">Collection of my design work including user interfaces, wireframes, prototypes, and case studies on design thinking.</p>
+              <div class="portfolio-stats">
+                <div class="portfolio-stat">
+                  <i class="fas fa-eye"></i> 183 views
+                </div>
+                <div class="portfolio-stat">
+                  <i class="fas fa-file"></i> 6 projects
+                </div>
+                <div class="portfolio-stat">
+                  <i class="fas fa-calendar-alt"></i> Updated 2 weeks ago
+                </div>
+              </div>
+              <div class="portfolio-actions">
+                <a href="#" class="btn btn-primary">
+                  <i class="fas fa-eye"></i> View Portfolio
+                </a>
+                <a href="#" class="btn btn-outline-secondary">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Create New Portfolio Card -->
+          <div class="create-portfolio-card slide-up" style="--delay: 0.4s" id="createPortfolioCard">
+            <div class="create-icon">
+              <i class="fas fa-plus"></i>
+            </div>
+            <h3>Create New Portfolio</h3>
+            <p>Showcase your work in a new professional portfolio tailored to specific skills or industries.</p>
+            <button class="btn btn-primary mt-3" id="createPortfolioBtn">
+              <i class="fas fa-plus"></i> Create Portfolio
+            </button>
+          </div>
+        </div>
+        
+        <!-- Portfolio Tips Section -->
+        <div class="section slide-up" style="--delay: 0.5s; margin-top: 40px;">
+          <div class="section-header">
+            <h3 class="section-title">
+              <i class="fas fa-lightbulb"></i> Portfolio Tips
+            </h3>
+          </div>
+          <div class="section-content">
+            <div class="row">
+              <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                  <div class="stats-icon">
+                    <i class="fas fa-bullseye"></i>
+                  </div>
+                  <h4 class="mb-3">Target Your Audience</h4>
+                  <p>Customize your portfolio for different client types. Create industry-specific showcases that highlight relevant experience.</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                  <div class="stats-icon">
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <h4 class="mb-3">Showcase Your Best Work</h4>
+                  <p>Quality over quantity. Include your strongest projects and explain your role, approach, and results achieved.</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                  <div class="stats-icon">
+                    <i class="fas fa-sync-alt"></i>
+                  </div>
+                  <h4 class="mb-3">Keep It Updated</h4>
+                  <p>Regularly refresh your portfolio with new projects. Remove older work that no longer represents your skills.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="dashboard-footer">
+          <div class="row">
+            <div class="col-md-6">
+              <p>&copy; 2025 ProFolio. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <a href="#">Privacy Policy</a> • 
+              <a href="#">Terms of Service</a> • 
+              <a href="#">Help Center</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Portfolio Creation Modal -->
+  <div class="modal fade" id="createPortfolioModal" tabindex="-1" aria-labelledby="createPortfolioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createPortfolioModalLabel">Create New Portfolio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="nav-wrapper">
+            <ul class="nav nav-pills nav-fill" id="portfolioFormSteps" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="step1-tab" data-bs-toggle="pill" data-bs-target="#step1" type="button" role="tab" aria-controls="step1" aria-selected="true">
+                  <span class="step-text">Basic Info</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab" aria-controls="step2" aria-selected="false">
+                  <span class="step-text">Skills</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="step3-tab" data-bs-toggle="pill" data-bs-target="#step3" type="button" role="tab" aria-controls="step3" aria-selected="false">
+                  <span class="step-text">Work Samples</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="step4-tab" data-bs-toggle="pill" data-bs-target="#step4" type="button" role="tab" aria-controls="step4" aria-selected="false">
+                  <span class="step-text">Experience</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="step5-tab" data-bs-toggle="pill" data-bs-target="#step5" type="button" role="tab" aria-controls="step5" aria-selected="false">
+                  <span class="step-text">Certifications</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <form id="portfolioForm">
+            <div class="tab-content" id="portfolioFormStepsContent">
+              <!-- Step 1: Basic Info -->
+              <div class="tab-pane fade show active" id="step1" role="tabpanel" aria-labelledby="step1-tab">
+                <div class="section-heading">
+                  <h4>Basic Information</h4>
+                  <p>Add essential details about your portfolio</p>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="portfolioTitle" class="form-label">Portfolio Title</label>
+                    <input type="text" class="form-control" id="portfolioTitle" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="portfolioType" class="form-label">Portfolio Type</label>
+                    <select class="form-select" id="portfolioType" required>
+                      <option value="" selected disabled>Select a type</option>
+                      <option value="web-dev">Web Development</option>
+                      <option value="ui-ux">UI/UX Design</option>
+                      <option value="mobile-dev">Mobile Development</option>
+                      <option value="data-science">Data Science</option>
+                      <option value="graphic-design">Graphic Design</option>
+                      <option value="content-writing">Content Writing</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="portfolioDescription" class="form-label">Description</label>
+                  <textarea class="form-control" id="portfolioDescription" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-navigation">
+                  <button type="button" class="btn btn-primary float-end next-step" id="step1Next">
+                    Next <i class="fas fa-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 2: Skills -->
+              <div class="tab-pane fade" id="step2" role="tabpanel" aria-labelledby="step2-tab">
+                <div class="section-heading">
+                  <h4>Skills & Expertise</h4>
+                  <p>Add the skills you want to showcase in this portfolio</p>
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <label for="skillInput" class="form-label">Add Skill</label>
+                    <input type="text" class="form-control" id="skillInput" placeholder="e.g., JavaScript, UI Design, SEO">
+                  </div>
+                  <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary w-100" id="addSkillBtn">
+                      <i class="fas fa-plus me-1"></i> Add Skill
+                    </button>
+                  </div>
+                </div>
+                
+                <label class="form-label">Current Skills</label>
+                <div class="skills-container mb-3">
+                  <div class="skills-list" id="skillsList">
+                    <!-- Skills will be added here -->
+                    <div class="no-items-message" id="noSkillsMessage">
+                      <i class="fas fa-lightbulb"></i>
+                      <span>Add skills to showcase your expertise</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-navigation">
+                  <button type="button" class="btn btn-outline-secondary float-start prev-step">
+                    <i class="fas fa-arrow-left me-1"></i> Previous
+                  </button>
+                  <button type="button" class="btn btn-primary float-end next-step">
+                    Next <i class="fas fa-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 3: Work Samples -->
+              <div class="tab-pane fade" id="step3" role="tabpanel" aria-labelledby="step3-tab">
+                <div class="section-heading">
+                  <h4>Work Samples</h4>
+                  <p>Add examples of your best work</p>
+                </div>
+                
+                <div id="workSamplesForm">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="workTitle" class="form-label">Project Title</label>
+                          <input type="text" class="form-control" id="workTitle">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="workClient" class="form-label">Client/Company</label>
+                          <input type="text" class="form-control" id="workClient">
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label for="workDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="workDescription" rows="3"></textarea>
+                      </div>
+                      
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="workURL" class="form-label">Project URL (optional)</label>
+                          <input type="url" class="form-control" id="workURL" placeholder="https://">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="workImageURL" class="form-label">Image URL (optional)</label>
+                          <input type="url" class="form-control" id="workImageURL" placeholder="https://">
+                        </div>
+                      </div>
+                      
+                      <button type="button" class="btn btn-primary" id="addWorkSampleBtn">
+                        <i class="fas fa-plus me-1"></i> Add Work Sample
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="work-samples-wrapper">
+                  <h5 class="mb-3">Added Work Samples</h5>
+                  <div id="workSamplesList">
+                    <!-- Work samples will be added here -->
+                    <div class="no-items-message" id="noWorkSamplesMessage">
+                      <i class="fas fa-briefcase"></i>
+                      <span>Add your work samples to showcase your projects</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-navigation">
+                  <button type="button" class="btn btn-outline-secondary float-start prev-step">
+                    <i class="fas fa-arrow-left me-1"></i> Previous
+                  </button>
+                  <button type="button" class="btn btn-primary float-end next-step">
+                    Next <i class="fas fa-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 4: Experience -->
+              <div class="tab-pane fade" id="step4" role="tabpanel" aria-labelledby="step4-tab">
+                <div class="section-heading">
+                  <h4>Professional Experience</h4>
+                  <p>Add relevant work experience to highlight your expertise</p>
+                </div>
+                
+                <div id="experienceForm">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="expTitle" class="form-label">Job Title</label>
+                          <input type="text" class="form-control" id="expTitle">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="expCompany" class="form-label">Company</label>
+                          <input type="text" class="form-control" id="expCompany">
+                        </div>
+                      </div>
+                      
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="expStartDate" class="form-label">Start Date</label>
+                          <input type="month" class="form-control" id="expStartDate">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="expEndDate" class="form-label">End Date</label>
+                          <input type="month" class="form-control" id="expEndDate">
+                          <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="currentJobCheck">
+                            <label class="form-check-label" for="currentJobCheck">
+                              I currently work here
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label for="expDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="expDescription" rows="3"></textarea>
+                      </div>
+                      
+                      <button type="button" class="btn btn-primary" id="addExperienceBtn">
+                        <i class="fas fa-plus me-1"></i> Add Experience
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="experience-wrapper">
+                  <h5 class="mb-3">Added Experience</h5>
+                  <div id="experienceList">
+                    <!-- Experience items will be added here -->
+                    <div class="no-items-message" id="noExperienceMessage">
+                      <i class="fas fa-briefcase"></i>
+                      <span>Add your work experience to showcase your career history</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-navigation">
+                  <button type="button" class="btn btn-outline-secondary float-start prev-step">
+                    <i class="fas fa-arrow-left me-1"></i> Previous
+                  </button>
+                  <button type="button" class="btn btn-primary float-end next-step">
+                    Next <i class="fas fa-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 5: Certifications -->
+              <div class="tab-pane fade" id="step5" role="tabpanel" aria-labelledby="step5-tab">
+                <div class="section-heading">
+                  <h4>Certifications & Education</h4>
+                  <p>Add your certifications, courses, and educational background</p>
+                </div>
+                
+                <div id="certificationForm">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="certTitle" class="form-label">Certification Name</label>
+                          <input type="text" class="form-control" id="certTitle">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="certIssuer" class="form-label">Issuing Organization</label>
+                          <input type="text" class="form-control" id="certIssuer">
+                        </div>
+                      </div>
+                      
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="certDate" class="form-label">Date Issued</label>
+                          <input type="month" class="form-control" id="certDate">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="certURL" class="form-label">Certificate URL (optional)</label>
+                          <input type="url" class="form-control" id="certURL" placeholder="https://">
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label for="certDescription" class="form-label">Description (optional)</label>
+                        <textarea class="form-control" id="certDescription" rows="2"></textarea>
+                      </div>
+                      
+                      <button type="button" class="btn btn-primary" id="addCertificationBtn">
+                        <i class="fas fa-plus me-1"></i> Add Certification
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="certifications-wrapper">
+                  <h5 class="mb-3">Added Certifications</h5>
+                  <div id="certificationsList">
+                    <!-- Certifications will be added here -->
+                    <div class="no-items-message" id="noCertificationsMessage">
+                      <i class="fas fa-certificate"></i>
+                      <span>Add your certifications to showcase your credentials</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-navigation">
+                  <button type="button" class="btn btn-outline-secondary float-start prev-step">
+                    <i class="fas fa-arrow-left me-1"></i> Previous
+                  </button>
+                  <button type="submit" class="btn btn-success float-end" id="savePortfolioBtn">
+                    <i class="fas fa-save me-1"></i> Save Portfolio
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript -->
+  <script src="freelancerPortfolio.js"></script>
+  <script>
+  // Toggle sidebar functionality
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('main-content');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarClose = document.getElementById('sidebar-close');
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('sidebar-open');
+  mainContent.classList.toggle('content-shifted');
+});
+
+sidebarClose.addEventListener('click', () => {
+  sidebar.classList.remove('sidebar-open');
+  mainContent.classList.remove('content-shifted');
+});
+
+// Portfolio creation modal
+const createPortfolioBtn = document.getElementById('createPortfolioBtn');
+const createPortfolioModal = new bootstrap.Modal(document.getElementById('createPortfolioModal'));
+
+createPortfolioBtn.addEventListener('click', () => {
+  createPortfolioModal.show();
+});
+
+// Multi-step form navigation - FIXED
+document.querySelectorAll('.next-step').forEach(button => {
+  button.addEventListener('click', function() {
+    // Form validation for the current step
+    const currentTab = this.closest('.tab-pane');
+    const inputs = currentTab.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+    
+    inputs.forEach(input => {
+      if (!input.value.trim()) {
+        isValid = false;
+        input.classList.add('is-invalid');
+      } else {
+        input.classList.remove('is-invalid');
+      }
+    });
+    
+    if (!isValid) {
+      return;
+    }
+    
+    // Get all tab panes
+    const tabPanes = Array.from(document.querySelectorAll('.tab-pane'));
+    // Find the index of the current tab
+    const currentIndex = tabPanes.indexOf(currentTab);
+    
+    // If there's a next tab
+    if (currentIndex < tabPanes.length - 1) {
+      const nextTab = tabPanes[currentIndex + 1];
+      const nextTabId = nextTab.getAttribute('id');
+      
+      // Find the tab button that controls the next tab
+      const nextTabButton = document.querySelector(`[data-bs-target="#${nextTabId}"], [href="#${nextTabId}"]`);
+      
+      // Activate the next tab
+      if (nextTabButton) {
+        const bsTab = new bootstrap.Tab(nextTabButton);
+        bsTab.show();
+      }
+    }
+  });
+});
+
+document.querySelectorAll('.prev-step').forEach(button => {
+  button.addEventListener('click', function() {
+    // Get the current tab pane
+    const currentTab = this.closest('.tab-pane');
+    
+    // Get all tab panes
+    const tabPanes = Array.from(document.querySelectorAll('.tab-pane'));
+    // Find the index of the current tab
+    const currentIndex = tabPanes.indexOf(currentTab);
+    
+    // If there's a previous tab
+    if (currentIndex > 0) {
+      const prevTab = tabPanes[currentIndex - 1];
+      const prevTabId = prevTab.getAttribute('id');
+      
+      // Find the tab button that controls the previous tab
+      const prevTabButton = document.querySelector(`[data-bs-target="#${prevTabId}"], [href="#${prevTabId}"]`);
+      
+      // Activate the previous tab
+      if (prevTabButton) {
+        const bsTab = new bootstrap.Tab(prevTabButton);
+        bsTab.show();
+      }
+    }
+  });
+});
+
+// Current job checkbox functionality
+document.getElementById('currentJobCheck').addEventListener('change', function() {
+  const endDateInput = document.getElementById('expEndDate');
+  endDateInput.disabled = this.checked;
+  if (this.checked) {
+    endDateInput.value = '';
+  }
+});
+
+// Toast notifications
+function showToast(title, message = '', type = 'success') {
+  const toastContainer = document.getElementById('toastContainer');
+  const toastId = `toast-${Date.now()}`;
+  
+  // If only one parameter is provided, use it as message and set generic title
+  if (!message) {
+    message = title;
+    title = type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Information';
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
+  toast.id = toastId;
+  
+  toast.innerHTML = `
+    <div class="toast-header">
+      <strong class="toast-title">${title}</strong>
+      <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Close">&times;</button>
+    </div>
+    <div class="toast-body">
+      ${message}
+    </div>
+  `;
+  
+  toastContainer.appendChild(toast);
+  
+  // Initialize Bootstrap toast and show it
+  const toastInstance = new bootstrap.Toast(toast, { autohide: true, delay: 5000 });
+  toastInstance.show();
+  
+  // Remove toast from DOM after it's hidden
+  toast.addEventListener('hidden.bs.toast', () => {
+    toast.remove();
+  });
+  
+  // Close button functionality
+  toast.querySelector('.toast-close').addEventListener('click', () => {
+    toastInstance.hide();
+  });
+}
+
+// Skills Management
+const skillInput = document.getElementById('skillInput');
+const addSkillBtn = document.getElementById('addSkillBtn');
+const skillsList = document.getElementById('skillsList');
+const noSkillsMessage = document.getElementById('noSkillsMessage');
+let skillsCounter = 0;
+
+addSkillBtn.addEventListener('click', addSkill);
+skillInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addSkill();
+  }
+});
+
+function addSkill() {
+  const skill = skillInput.value.trim();
+  if (!skill) {
+    
+    return;
+  }
+  
+  // Check for duplicates
+  const existingSkills = Array.from(skillsList.querySelectorAll('.skill-tag')).map(tag => 
+    tag.textContent.replace('×', '').trim()
+  );
+  
+  if (existingSkills.includes(skill)) {
+    showToast('This skill already exists', 'error');
+    return;
+  }
+  
+  // Hide the "no skills" message
+  noSkillsMessage.style.display = 'none';
+  
+  // Create and add the skill tag
+  const skillTag = document.createElement('div');
+  skillTag.className = 'skill-tag';
+  skillTag.dataset.id = skillsCounter++;
+  skillTag.innerHTML = `
+    ${skill}
+    <button type="button" class="remove-skill-btn">×</button>
+  `;
+  
+  skillsList.appendChild(skillTag);
+  skillInput.value = '';
+  skillInput.focus();
+  
+  // Add remove functionality
+  skillTag.querySelector('.remove-skill-btn').addEventListener('click', function() {
+    skillTag.remove();
+    if (skillsList.querySelectorAll('.skill-tag').length === 0) {
+      noSkillsMessage.style.display = 'flex';
+    }
+  });
+}
+
+// Work Samples Management - UPDATED WITH FILE UPLOAD
+const workSamplesForm = document.getElementById('workSamplesForm');
+const addWorkSampleBtn = document.getElementById('addWorkSampleBtn');
+const workSamplesList = document.getElementById('workSamplesList');
+const noWorkSamplesMessage = document.getElementById('noWorkSamplesMessage');
+let workSamplesCounter = 0;
+
+addWorkSampleBtn.addEventListener('click', addWorkSample);
+
+function addWorkSample() {
+  const title = document.getElementById('workTitle').value.trim();
+  const client = document.getElementById('workClient').value.trim();
+  const description = document.getElementById('workDescription').value.trim();
+  const url = document.getElementById('workURL').value.trim();
+  const imageUrl = document.getElementById('workImageURL').value.trim();
+  
+  // Get file information (new addition)
+  const fileInput = document.getElementById('workFileUpload');
+  const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : '';
+  const fileSize = fileInput.files.length > 0 ? formatFileSize(fileInput.files[0].size) : '';
+  
+  if (!title || !client || !description) {
+    return;
+  }
+  
+  // Hide the "no work samples" message
+  noWorkSamplesMessage.style.display = 'none';
+  
+  // Create and add the work sample item
+  const workSampleItem = document.createElement('div');
+  workSampleItem.className = 'card mb-3 work-sample-item';
+  workSampleItem.dataset.id = workSamplesCounter++;
+  workSampleItem.innerHTML = `
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h5 class="card-title">${title}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">${client}</h6>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-work-btn">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <p class="card-text">${description}</p>
+      ${url ? `<p class="card-text"><small><i class="fas fa-link"></i> <a href="${url}" target="_blank">${url}</a></small></p>` : ''}
+      ${fileName ? `
+        <p class="card-text">
+          <small>
+            <i class="fas fa-file-alt"></i> Attached file: <strong>${fileName}</strong> (${fileSize})
+          </small>
+        </p>
+      ` : ''}
+    </div>
+  `;
+  
+  workSamplesList.appendChild(workSampleItem);
+  
+  // Reset form fields
+  document.getElementById('workTitle').value = '';
+  document.getElementById('workClient').value = '';
+  document.getElementById('workDescription').value = '';
+  document.getElementById('workURL').value = '';
+  document.getElementById('workImageURL').value = '';
+  document.getElementById('workFileUpload').value = ''; // Clear the file input
+  
+  // Add remove functionality
+  workSampleItem.querySelector('.remove-work-btn').addEventListener('click', function() {
+    workSampleItem.remove();
+    if (workSamplesList.querySelectorAll('.work-sample-item').length === 0) {
+      noWorkSamplesMessage.style.display = 'flex';
+    }
+  });
+}
+
+// Helper function to format file size
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Experience Management
+const addExperienceBtn = document.getElementById('addExperienceBtn');
+const experienceList = document.getElementById('experienceList');
+const noExperienceMessage = document.getElementById('noExperienceMessage');
+let experienceCounter = 0;
+
+addExperienceBtn.addEventListener('click', addExperience);
+
+function addExperience() {
+  const title = document.getElementById('expTitle').value.trim();
+  const company = document.getElementById('expCompany').value.trim();
+  const startDate = document.getElementById('expStartDate').value;
+  const endDate = document.getElementById('currentJobCheck').checked ? 'Present' : document.getElementById('expEndDate').value;
+  const description = document.getElementById('expDescription').value.trim();
+  
+  if (!title || !company || !startDate || (!document.getElementById('currentJobCheck').checked && !endDate) || !description) {
+    showToast('Please fill in all required experience fields', 'error');
+    return;
+  }
+  
+  // Hide the "no experience" message
+  noExperienceMessage.style.display = 'none';
+  
+  // Format dates for display
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = endDate === 'Present' ? 'Present' : formatDate(endDate);
+  
+  // Create and add the experience item
+  const experienceItem = document.createElement('div');
+  experienceItem.className = 'card mb-3 experience-item';
+  experienceItem.dataset.id = experienceCounter++;
+  experienceItem.innerHTML = `
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h5 class="card-title">${title}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">${company} | ${formattedStartDate} - ${formattedEndDate}</h6>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-exp-btn">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <p class="card-text">${description}</p>
+    </div>
+  `;
+  
+  experienceList.appendChild(experienceItem);
+  
+  // Reset form fields
+  document.getElementById('expTitle').value = '';
+  document.getElementById('expCompany').value = '';
+  document.getElementById('expStartDate').value = '';
+  document.getElementById('expEndDate').value = '';
+  document.getElementById('currentJobCheck').checked = false;
+  document.getElementById('expEndDate').disabled = false;
+  document.getElementById('expDescription').value = '';
+  
+  // Add remove functionality
+  experienceItem.querySelector('.remove-exp-btn').addEventListener('click', function() {
+    experienceItem.remove();
+    if (experienceList.querySelectorAll('.experience-item').length === 0) {
+      noExperienceMessage.style.display = 'flex';
+    }
+  });
+}
+
+// Certifications Management
+const addCertificationBtn = document.getElementById('addCertificationBtn');
+const certificationsList = document.getElementById('certificationsList');
+const noCertificationsMessage = document.getElementById('noCertificationsMessage');
+let certificationsCounter = 0;
+
+addCertificationBtn.addEventListener('click', addCertification);
+
+function addCertification() {
+  const title = document.getElementById('certTitle').value.trim();
+  const issuer = document.getElementById('certIssuer').value.trim();
+  const date = document.getElementById('certDate').value;
+  const url = document.getElementById('certURL').value.trim();
+  const description = document.getElementById('certDescription').value.trim();
+  
+  if (!title || !issuer || !date) {
+    showToast('Please fill in all required certification fields', 'error');
+    return;
+  }
+  
+  // Hide the "no certifications" message
+  noCertificationsMessage.style.display = 'none';
+  
+  // Format date for display
+  const formattedDate = formatDate(date);
+  
+  // Create and add the certification item
+  const certificationItem = document.createElement('div');
+  certificationItem.className = 'card mb-3 certification-item';
+  certificationItem.dataset.id = certificationsCounter++;
+  certificationItem.innerHTML = `
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h5 class="card-title">${title}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">${issuer} | ${formattedDate}</h6>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-cert-btn">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      ${description ? `<p class="card-text">${description}</p>` : ''}
+      ${url ? `<p class="card-text"><small><i class="fas fa-link"></i> <a href="${url}" target="_blank">View Certificate</a></small></p>` : ''}
+    </div>
+  `;
+  
+  certificationsList.appendChild(certificationItem);
+  
+  // Reset form fields
+  document.getElementById('certTitle').value = '';
+  document.getElementById('certIssuer').value = '';
+  document.getElementById('certDate').value = '';
+  document.getElementById('certURL').value = '';
+  document.getElementById('certDescription').value = '';
+  
+  // Add remove functionality
+  certificationItem.querySelector('.remove-cert-btn').addEventListener('click', function() {
+    certificationItem.remove();
+    if (certificationsList.querySelectorAll('.certification-item').length === 0) {
+      noCertificationsMessage.style.display = 'flex';
+    }
+  });
+}
+
+// Helper function to format date from YYYY-MM to readable format
+function formatDate(dateString) {
+  if (!dateString) return '';
+  
+  const [year, month] = dateString.split('-');
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${monthNames[parseInt(month) - 1]} ${year}`;
+}
+
+// Form submission handler with generic portfolio preview
+document.getElementById('portfolioForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Get form values
+  const title = document.getElementById('portfolioTitle').value.trim();
+  const type = document.getElementById('portfolioType').value;
+  const description = document.getElementById('portfolioDescription').value.trim();
+  
+  // Simple validation for required fields
+  if (!title || !type || !description) {
+    showToast('Please fill in all required basic information fields', 'error');
+    return;
+  }
+  
+  // Create new portfolio card with generic icon
+  createGenericPortfolioCard(title, type, description);
+  
+  // Close the modal and show success message
+  createPortfolioModal.hide();
+  showToast('Portfolio Created', 'Your portfolio has been successfully created!', 'success');
+  
+  // Reset the form
+  this.reset();
+  resetFormSections();
+});
+
+// Function to create a new portfolio card with generic icon
+function createGenericPortfolioCard(title, type, description) {
+  // Create portfolio card element
+  const portfolioCard = document.createElement('div');
+  portfolioCard.className = 'portfolio-card slide-up';
+  
+  // Determine icon based on portfolio type
+  let typeIcon = 'fa-briefcase'; // Default icon
+  if (type === 'web-dev') typeIcon = 'fa-code';
+  else if (type === 'ui-ux') typeIcon = 'fa-paint-brush';
+  else if (type === 'mobile-dev') typeIcon = 'fa-mobile-alt';
+  else if (type === 'data-science') typeIcon = 'fa-chart-bar';
+  else if (type === 'graphic-design') typeIcon = 'fa-palette';
+  else if (type === 'content-writing') typeIcon = 'fa-pen-fancy';
+  
+  // Create generic preview with icon instead of code
+  portfolioCard.innerHTML = `
+    <div class="portfolio-preview">
+      <div class="portfolio-preview-browser">
+        <div class="browser-dots">
+          <div class="browser-dot red-dot"></div>
+          <div class="browser-dot yellow-dot"></div>
+          <div class="browser-dot green-dot"></div>
+        </div>
+        <div class="browser-address">my${type}.portfolio.com</div>
+      </div>
+      <div class="portfolio-preview-code" style="display: flex; align-items: center; justify-content: center; background-color: #2d3748;">
+        <i class="fas ${typeIcon}" style="font-size: 64px; color: #81a1c1; opacity: 0.6;"></i>
+      </div>
+    </div>
+    <div class="portfolio-body">
+      <h3 class="portfolio-title">
+        <div class="portfolio-type-icon">
+          <i class="fas ${typeIcon}"></i>
+        </div>
+        ${title}
+      </h3>
+      <div class="tag-list">
+        <!-- Tags will be added here from skills -->
+        <span class="tag">New</span>
+      </div>
+      <p class="portfolio-desc">${description}</p>
+      <div class="portfolio-stats">
+        <div class="portfolio-stat">
+          <i class="fas fa-eye"></i> 0 views
+        </div>
+        <div class="portfolio-stat">
+          <i class="fas fa-file"></i> 0 projects
+        </div>
+        <div class="portfolio-stat">
+          <i class="fas fa-calendar-alt"></i> Just created
+        </div>
+      </div>
+      <div class="portfolio-actions">
+        <a href="#" class="btn btn-primary">
+          <i class="fas fa-eye"></i> View Portfolio
+        </a>
+        <a href="#" class="btn btn-outline-secondary">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+      </div>
+    </div>
+  `;
+  
+  // Add the new portfolio card to the grid before the "Create New Portfolio" card
+  const createCard = document.getElementById('createPortfolioCard');
+  document.getElementById('portfolioGrid').insertBefore(portfolioCard, createCard);
+  
+  // Add skills as tags if available
+  const skillTags = document.querySelectorAll('.skill-tag');
+  const tagList = portfolioCard.querySelector('.tag-list');
+  
+  if (skillTags.length > 0) {
+    // Clear the "New" tag
+    tagList.innerHTML = '';
+    
+    // Add up to 4 skills as tags
+    let count = 0;
+    skillTags.forEach(skill => {
+      if (count < 4) {
+        const skillText = skill.textContent.replace('×', '').trim();
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = skillText;
+        tagList.appendChild(tag);
+        count++;
+      }
+    });
+  }
+}
+
+// Function to reset all form sections
+function resetFormSections() {
+  // Reset skills
+  skillsList.innerHTML = '';
+  noSkillsMessage.style.display = 'flex';
+  
+  // Reset work samples
+  workSamplesList.innerHTML = '';
+  noWorkSamplesMessage.style.display = 'flex';
+  
+  // Reset experience
+  experienceList.innerHTML = '';
+  noExperienceMessage.style.display = 'flex';
+  
+  // Reset certifications
+  certificationsList.innerHTML = '';
+  noCertificationsMessage.style.display = 'flex';
+  
+  // Reset counters
+  skillsCounter = 0;
+  workSamplesCounter = 0;
+  experienceCounter = 0;
+  certificationsCounter = 0;
+  
+  // Reset to first tab
+  const firstTab = document.querySelector('#step1-tab button');
+  const bsTab = new bootstrap.Tab(firstTab);
+  bsTab.show();
+}
+
+// Add event listeners for input validation
+document.querySelectorAll('input[required], select[required], textarea[required]').forEach(input => {
+  input.addEventListener('input', function() {
+    if (this.value.trim()) {
+      this.classList.remove('is-invalid');
+    }
+  });
+});
+
+// Portfolio Viewer Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Add event listeners to all "View Portfolio" buttons
+  const viewButtons = document.querySelectorAll('.portfolio-actions .btn-primary');
+  viewButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Get portfolio data from the parent card
+      const portfolioCard = this.closest('.portfolio-card');
+      const portfolioTitle = portfolioCard.querySelector('.portfolio-title').textContent.trim();
+      const portfolioDesc = portfolioCard.querySelector('.portfolio-desc').textContent;
+      const portfolioTags = Array.from(portfolioCard.querySelectorAll('.tag-list .tag')).map(tag => tag.textContent);
+      const portfolioType = portfolioCard.querySelector('.portfolio-type-icon i').className;
+      
+      // Create and show the portfolio viewer modal
+      showPortfolioViewer(portfolioCard, portfolioTitle, portfolioDesc, portfolioTags, portfolioType);
+    });
+  });
+  
+  // Create portfolio viewer modal if it doesn't exist
+  if (!document.getElementById('portfolioViewerModal')) {
+    createPortfolioViewerModal();
+  }
+});
+
+// Function to create the portfolio viewer modal
+function createPortfolioViewerModal() {
+  // Create modal HTML structure
+  const modalHTML = `
+    <div class="modal fade" id="portfolioViewerModal" tabindex="-1" aria-labelledby="portfolioViewerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="d-flex align-items-center">
+              <div class="portfolio-view-icon me-2">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <h5 class="modal-title" id="portfolioViewerModalLabel">Portfolio</h5>
+            </div>
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-primary me-2" id="portfolioShareBtn">
+                <i class="fas fa-share-alt"></i> Share
+              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div class="portfolio-viewer-container">
+              <div class="portfolio-viewer-header">
+                <div class="portfolio-viewer-overview">
+                  <h2 class="portfolio-viewer-title"></h2>
+                  <div class="portfolio-viewer-tags"></div>
+                  <p class="portfolio-viewer-description"></p>
+                </div>
+              </div>
+              
+              <div class="portfolio-viewer-tabs">
+                <ul class="nav nav-tabs" id="portfolioViewerTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-content" type="button" role="tab">
+                      <i class="fas fa-folder"></i> Projects
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills-content" type="button" role="tab">
+                      <i class="fas fa-code"></i> Skills
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience-content" type="button" role="tab">
+                      <i class="fas fa-briefcase"></i> Experience
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="certifications-tab" data-bs-toggle="tab" data-bs-target="#certifications-content" type="button" role="tab">
+                      <i class="fas fa-certificate"></i> Certifications
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-content" type="button" role="tab">
+                      <i class="fas fa-envelope"></i> Contact
+                    </button>
+                  </li>
+                </ul>
+                
+                <div class="tab-content" id="portfolioViewerTabContent">
+                  <!-- Projects Tab -->
+                  <div class="tab-pane fade show active" id="projects-content" role="tabpanel">
+                    <div class="projects-gallery" id="portfolioProjectsGallery">
+                      <!-- Projects will be added here dynamically -->
+                    </div>
+                  </div>
+                  
+                  <!-- Skills Tab -->
+                  <div class="tab-pane fade" id="skills-content" role="tabpanel">
+                    <div class="skills-categories" id="portfolioSkillsCategories">
+                      <!-- Skills will be added here dynamically -->
+                    </div>
+                  </div>
+                  
+                  <!-- Experience Tab -->
+                  <div class="tab-pane fade" id="experience-content" role="tabpanel">
+                    <div class="experience-timeline" id="portfolioExperienceTimeline">
+                      <!-- Experience will be added here dynamically -->
+                    </div>
+                  </div>
+                  
+                  <!-- Certifications Tab -->
+                  <div class="tab-pane fade" id="certifications-content" role="tabpanel">
+                    <div class="certifications-grid" id="portfolioCertificationsGrid">
+                      <!-- Certifications will be added here dynamically -->
+                    </div>
+                  </div>
+                  
+                  <!-- Contact Tab -->
+                  <div class="tab-pane fade" id="contact-content" role="tabpanel">
+                    <div class="contact-info-container">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="contact-info">
+                            <h4>Get in Touch</h4>
+                            <p>Interested in working together? Feel free to reach out using the contact form or through any of the provided channels.</p>
+                            
+                            <div class="contact-details">
+                              <div class="contact-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span id="contactEmail">contact@example.com</span>
+                              </div>
+                              <div class="contact-detail">
+                                <i class="fas fa-phone"></i>
+                                <span id="contactPhone">(123) 456-7890</span>
+                              </div>
+                              <div class="contact-detail">
+                                <i class="fas fa-globe"></i>
+                                <span id="contactWebsite">www.yourwebsite.com</span>
+                              </div>
+                            </div>
+                            
+                            <div class="social-links">
+                              <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                              <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                              <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+                              <a href="#" class="social-link" title="Dribbble"><i class="fab fa-dribbble"></i></a>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <div class="contact-form">
+                            <h4>Send a Message</h4>
+                            <form id="portfolioContactForm">
+                              <div class="mb-3">
+                                <label for="contactName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="contactName" required>
+                              </div>
+                              <div class="mb-3">
+                                <label for="contactEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="contactEmailInput" required>
+                              </div>
+                              <div class="mb-3">
+                                <label for="contactSubject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="contactSubject" required>
+                              </div>
+                              <div class="mb-3">
+                                <label for="contactMessage" class="form-label">Message</label>
+                                <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
+                              </div>
+                              <button type="submit" class="btn btn-primary">Send Message</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Share Portfolio Modal -->
+    <div class="modal fade" id="sharePortfolioModal" tabindex="-1" aria-labelledby="sharePortfolioModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="sharePortfolioModalLabel">Share Portfolio</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="shareLink" class="form-label">Portfolio Link</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="shareLink" value="https://profolio.com/portfolio/user123" readonly>
+                <button class="btn btn-outline-secondary" type="button" id="copyLinkBtn">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Share on Social Media</label>
+              <div class="social-share-buttons">
+                <button class="btn btn-outline-primary social-share-btn" data-platform="linkedin">
+                  <i class="fab fa-linkedin"></i> LinkedIn
+                </button>
+                <button class="btn btn-outline-info social-share-btn" data-platform="twitter">
+                  <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button class="btn btn-outline-danger social-share-btn" data-platform="pinterest">
+                  <i class="fab fa-pinterest"></i> Pinterest
+                </button>
+                <button class="btn btn-outline-success social-share-btn" data-platform="whatsapp">
+                  <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Privacy Settings</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="publicPortfolioSwitch" checked>
+                <label class="form-check-label" for="publicPortfolioSwitch">Public Portfolio</label>
+              </div>
+              <small class="form-text text-muted">When enabled, anyone with the link can view your portfolio.</small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Append modal to body
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Add styles for the portfolio viewer
+  const styleElement = document.createElement('style');
+  styleElement.textContent = `
+    /* Portfolio Viewer Styles */
+    .portfolio-viewer-container {
+      position: relative;
+    }
+    
+    .portfolio-viewer-header {
+      padding: 0 0 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .portfolio-view-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: var(--primary);
+      color: white;
+    }
+    
+    .portfolio-viewer-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    
+    .portfolio-viewer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .portfolio-viewer-description {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    #portfolioViewerTabs {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    #portfolioViewerTabs .nav-link {
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      padding: 12px 16px;
+      color: #6c757d;
+      font-weight: 500;
+    }
+    
+    #portfolioViewerTabs .nav-link.active {
+      color: var(--primary);
+      background: none;
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    #portfolioViewerTabContent {
+      padding: 20px 0;
+    }
+    
+    /* Projects Gallery */
+    .projects-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-gap: 20px;
+    }
+    
+    .project-card {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    
+    .project-image {
+      height: 180px;
+      background-color: #f8f9fa;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .project-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .project-card:hover .project-overlay {
+      opacity: 1;
+    }
+    
+    .project-info {
+      padding: 16px;
+    }
+    
+    .project-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .project-description {
+      font-size: 0.95rem;
+      color: #6c757d;
+      margin-bottom: 12px;
+    }
+    
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    
+    /* Skills Categories */
+    .skills-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-gap: 24px;
+    }
+    
+    .skill-category {
+      padding: 20px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .skill-category-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .skill-category-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+    }
+    
+    .skill-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .skill-item {
+      margin-bottom: 8px;
+    }
+    
+    .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    
+    .skill-name {
+      font-weight: 500;
+    }
+    
+    .skill-level {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    
+    .skill-progress {
+      height: 6px;
+      background-color: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .skill-progress-bar {
+      height: 100%;
+      background-color: var(--primary);
+    }
+    
+    /* Experience Timeline */
+    .experience-timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    
+    .experience-timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      background: rgba(0,0,0,0.1);
+    }
+    
+    .experience-item {
+      position: relative;
+      padding-bottom: 32px;
+    }
+    
+    .experience-item:last-child {
+      padding-bottom: 0;
+    }
+    
+    .experience-dot {
+      position: absolute;
+      left: -34px;
+      top: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    
+    .experience-content {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .experience-company {
+      display: flex;
+      align-items: center;
+    }
+    
+    .experience-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: #6c757d;
+      font-size: 1.2rem;
+    }
+    
+    .experience-details h4 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    
+    .experience-company-name {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+    
+    .experience-date {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      color: #6c757d;
+      height: fit-content;
+    }
+    
+    /* Certifications Grid */
+    .certifications-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-gap: 20px;
+    }
+    
+    .certification-card {
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .certification-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .certification-header {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    
+    .certification-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+    
+    .certification-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .certification-issuer {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+    
+    .certification-date {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+    
+    .certification-actions {
+      margin-top: 12px;
+    }
+    
+    /* Contact Info */
+    .contact-info-container {
+      margin-top: 10px;
+    }
+    
+    .contact-info h4,
+    .contact-form h4 {
+      margin-bottom: 20px;
+    }
+    
+    .contact-details {
+      margin-bottom: 24px;
+    }
+    
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .contact-detail i {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--primary);
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    
+    .social-link:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Share Modal */
+    .social-share-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+    }
+    
+    .social-share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  `;
+  
+  document.head.appendChild(styleElement);
+  
+  // Initialize event listeners for the portfolio viewer
+  initPortfolioViewerListeners();
+}
+
+// Function to initialize event listeners for the portfolio viewer
+function initPortfolioViewerListeners() {
+  // Share button functionality
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'portfolioShareBtn' || e.target.closest('#portfolioShareBtn')) {
+      const shareModal = new bootstrap.Modal(document.getElementById('sharePortfolioModal'));
+      shareModal.show();
+    }
+  });
+  
+  // Copy link functionality
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'copyLinkBtn' || e.target.closest('#copyLinkBtn')) {
+      const shareLink = document.getElementById('shareLink');
+      shareLink.select();
+      document.execCommand('copy');
+      
+      // Show tooltip or notification
+      showToast('Link Copied', 'Portfolio link copied to clipboard', 'success');
+    }
+  });
+  
+  // Contact form submission
+  document.addEventListener('submit', function(e) {
+    if (e.target.id === 'portfolioContactForm') {
+      e.preventDefault();
+      showToast('Message Sent', 'Your message has been sent successfully!', 'success');
+      e.target.reset();
+    }
+  });
+  
+  // Social share buttons
+  document.addEventListener('click', function(e) {
+    const shareBtn = e.target.closest('.social-share-btn');
+    if (shareBtn) {
+      e.preventDefault();
+      const platform = shareBtn.dataset.platform;
+      const url = document.getElementById('shareLink').value;
+      const title = document.getElementById('portfolioViewerModalLabel').textContent;
+      
+      let shareUrl = '';
+      switch (platform) {
+        case 'linkedin':
+          shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+          break;
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Check out my portfolio: ${title}`)}`;
+          break;
+        case 'pinterest':
+          shareUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(`Check out my portfolio: ${title}`)}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${encodeURIComponent(`Check out my portfolio: ${title} ${url}`)}`;
+          break;
+      }
+      
+      if (shareUrl) {
+        window.open(shareUrl, '_blank');
+      }
+    }
+  });
+}
+
+// Function to show the portfolio viewer with appropriate content
+function showPortfolioViewer(portfolioCard, title, description, tags, typeClass) {
+  // Get the modal and update its content
+  const modal = document.getElementById('portfolioViewerModal');
+  const modalTitle = modal.querySelector('#portfolioViewerModalLabel');
+  const portfolioTitle = modal.querySelector('.portfolio-viewer-title');
+  const portfolioDesc = modal.querySelector('.portfolio-viewer-description');
+  const portfolioTags = modal.querySelector('.portfolio-viewer-tags');
+  const portfolioIcon = modal.querySelector('.portfolio-view-icon i');
+  
+  // Update header information
+  modalTitle.textContent = title;
+  portfolioTitle.textContent = title;
+  portfolioDesc.textContent = description;
+  
+  // Extract icon class from the class string
+  const iconClass = typeClass.split(' ').find(cls => cls.startsWith('fa-'));
+  portfolioIcon.className = `fas ${iconClass || 'fa-briefcase'}`;
+  
+  // Add tags
+  portfolioTags.innerHTML = '';
+  tags.forEach(tag => {
+    const tagEl = document.createElement('span');
+    tagEl.className = 'badge bg-light text-dark';
+    tagEl.textContent = tag;
+    portfolioTags.appendChild(tagEl);
+  });
+  
+  // Populate projects (demo data)
+  populateProjects(portfolioCard);
+  
+  // Populate skills (demo data)
+  populateSkills();
+  
+  // Populate experience (demo data)
+  populateExperience();
+  
+  // Populate certifications (demo data)
+  populateCertifications();
+  
+  // Show the modal
+  const bsModal = new bootstrap.Modal(modal);
+  bsModal.show();
+}
+
+// Function to populate projects tab with demo or real data
+function populateProjects(portfolioCard) {
+  const projectsGallery = document.getElementById('portfolioProjectsGallery');
+  projectsGallery.innerHTML = '';
+  
+  // If the portfolio card has work samples, use those
+  const workSamples = document.getElementById('workSamplesList')?.querySelectorAll('.work-sample-item');
+  
+  if (workSamples && workSamples.length > 0) {
+    // Use real work samples
+    workSamples.forEach(sample => {
+      const title = sample.querySelector('.card-title').textContent;
+      const client = sample.querySelector('.card-subtitle').textContent;
+      const description = sample.querySelector('.card-text').textContent;
+      
+      addProjectCard(projectsGallery, title, description, client);
+    });
+  } else {
+    // Use demo data
+    const demoProjects = [
+      {
+        title: 'E-commerce Website',
+        client: 'Fashion Retailer',
+        description: 'Built a responsive e-commerce platform with advanced filtering and secure payment processing.',
+        image: 'ecommerce'
+      },
+      {
+        title: 'Financial Dashboard',
+        client: 'Investment Firm',
+        description: 'Developed an interactive financial dashboard with real-time data visualization and reporting.',
+        image: 'dashboard'
+      },
+      {
+        title: 'Mobile App UI Design',
+        client: 'Health & Fitness Startup',
+        description: 'Created a modern, user-friendly interface for a fitness tracking application.',
+        image: 'mobile-app'
+      },
+      {
+        title: 'Brand Identity',
+        client: 'Tech Startup',
+        description: 'Designed a complete brand identity including logo, color palette, and marketing materials.',
+        image: 'branding'
+      },
+      {
+        title: 'Blog Platform',
+        client: 'Media Company',
+        description: 'Built a scalable content management system with custom editor and analytics.',
+        image: 'blog'
+      }
+    ];
+    
+    demoProjects.forEach(project => {
+      addProjectCard(projectsGallery, project.title, project.description, project.client, project.image);
+    });
+  }
+}
+
+// Helper function to add a project card
+function addProjectCard(container, title, description, client, imageType = 'default') {
+  const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  
+  // Generate a gradient background if no specific image
+  const gradientStyle = `background: linear-gradient(135deg, ${randomColor} 0%, ${adjustColor(randomColor, -30)} 100%);`;
+  
+  const cardHTML = `
+    <div class="project-card">
+      <div class="project-image" style="${gradientStyle}">
+        <div class="project-overlay">
+          <button class="btn btn-sm btn-light view-project-btn">View Details</button>
+        </div>
+      </div>
+      <div class="project-info">
+        <h4 class="project-title">${title}</h4>
+        <p class="project-description">${description}</p>
+        <div class="project-meta">
+          <span><i class="fas fa-building me-1"></i> ${client}</span>
+          <span><i class="fas fa-calendar me-1"></i> ${getRandomDate()}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('beforeend', cardHTML);
+}
+
+// Helper function to adjust color brightness
+function adjustColor(hex, percent) {
+  // Convert hex to RGB
+  let r = parseInt(hex.substring(1, 3), 16);
+  let g = parseInt(hex.substring(3, 5), 16);
+  let b = parseInt(hex.substring(5, 7), 16);
+
+  // Adjust brightness
+  r = Math.max(0, Math.min(255, r + percent));
+  g = Math.max(0, Math.min(255, g + percent));
+  b = Math.max(0, Math.min(255, b + percent));
+
+  // Convert back to hex
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+// Function to generate a random date in the past 2 years
+function getRandomDate() {
+  const now = new Date();
+  const pastDate = new Date(now.setMonth(now.getMonth() - Math.floor(Math.random() * 24)));
+  return pastDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+}
+
+// Function to populate skills tab with demo data
+function populateSkills() {
+  const skillsContainer = document.getElementById('portfolioSkillsCategories');
+  skillsContainer.innerHTML = '';
+  
+  const skillCategories = [
+    {
+      title: 'Frontend Development',
+      icon: 'fa-code',
+      skills: [
+        { name: 'HTML & CSS', level: 'Expert', percentage: 95 },
+        { name: 'JavaScript', level: 'Expert', percentage: 90 },
+        { name: 'React.js', level: 'Advanced', percentage: 85 },
+        { name: 'Vue.js', level: 'Intermediate', percentage: 75 },
+        { name: 'Angular', level: 'Intermediate', percentage: 70 }
+      ]
+    },
+    {
+      title: 'Backend Development',
+      icon: 'fa-server',
+      skills: [
+        { name: 'Node.js', level: 'Advanced', percentage: 85 },
+        { name: 'Python', level: 'Advanced', percentage: 80 },
+        { name: 'PHP', level: 'Intermediate', percentage: 70 },
+        { name: 'Java', level: 'Basic', percentage: 50 },
+        { name: 'SQL', level: 'Advanced', percentage: 85 }
+      ]
+    },
+    {
+      title: 'Design',
+      icon: 'fa-palette',
+      skills: [
+        { name: 'Figma', level: 'Expert', percentage: 90 },
+        { name: 'Adobe XD', level: 'Advanced', percentage: 85 },
+        { name: 'Photoshop', level: 'Advanced', percentage: 80 },
+        { name: 'Illustrator', level: 'Intermediate', percentage: 75 },
+        { name: 'UI/UX Principles', level: 'Expert', percentage: 95 }
+      ]
+    },
+    {
+      title: 'Other Skills',
+      icon: 'fa-tools',
+      skills: [
+        { name: 'Git & Version Control', level: 'Advanced', percentage: 85 },
+        { name: 'Project Management', level: 'Advanced', percentage: 80 },
+        { name: 'DevOps', level: 'Intermediate', percentage: 65 },
+        { name: 'SEO', level: 'Intermediate', percentage: 70 },
+        { name: 'Technical Writing', level: 'Advanced', percentage: 80 }
+      ]
+    }
+  ];
+  
+  skillCategories.forEach(category => {
+    const categoryHTML = `
+      <div class="skill-category">
+        <div class="skill-category-title">
+          <div class="skill-category-icon">
+            <i class="fas ${category.icon}"></i>
+          </div>
+          <span>${category.title}</span>
+        </div>
+        <div class="skill-bars">
+          ${category.skills.map(skill => `
+            <div class="skill-item">
+              <div class="skill-info">
+                <span class="skill-name">${skill.name}</span>
+                <span class="skill-level">${skill.level}</span>
+              </div>
+              <div class="skill-progress">
+                <div class="skill-progress-bar" style="width: ${skill.percentage}%"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    skillsContainer.insertAdjacentHTML('beforeend', categoryHTML);
+  });
+}
+
+// Function to populate experience tab with demo data
+function populateExperience() {
+  const experienceContainer = document.getElementById('portfolioExperienceTimeline');
+  experienceContainer.innerHTML = '';
+  
+  const experiences = [
+    {
+      title: 'Senior Developer',
+      company: 'Tech Solutions Inc.',
+      logo: 'fa-building',
+      period: 'Jan 2022 - Present',
+      description: 'Lead the development of enterprise web applications using React and Node.js. Managed a team of 5 developers and collaborated with UX/UI designers to create intuitive user interfaces.'
+    },
+    {
+      title: 'Frontend Developer',
+      company: 'Digital Creations',
+      logo: 'fa-laptop-code',
+      period: 'Mar 2019 - Dec 2021',
+      description: 'Developed responsive websites and web applications for various clients. Implemented modern frontend technologies and best practices, improving load times by 40%.'
+    },
+    {
+      title: 'Junior Web Developer',
+      company: 'WebCraft Studios',
+      logo: 'fa-code',
+      period: 'Jun 2017 - Feb 2019',
+      description: 'Built and maintained websites using HTML, CSS, JavaScript, and PHP. Collaborated with designers to implement pixel-perfect designs and ensure cross-browser compatibility.'
+    },
+    {
+      title: 'Intern',
+      company: 'InnoTech',
+      logo: 'fa-briefcase',
+      period: 'Jan 2017 - May 2017',
+      description: 'Assisted in the development of website components and features. Gained hands-on experience with modern web technologies and development workflows.'
+    }
+  ];
+  
+  experiences.forEach(exp => {
+    const experienceHTML = `
+      <div class="experience-item">
+        <div class="experience-dot"></div>
+        <div class="experience-content">
+          <div class="experience-header">
+            <div class="experience-company">
+              <div class="experience-logo">
+                <i class="fas ${exp.logo}"></i>
+              </div>
+              <div class="experience-details">
+                <h4>${exp.title}</h4>
+                <div class="experience-company-name">${exp.company}</div>
+              </div>
+            </div>
+            <div class="experience-date">
+              ${exp.period}
+            </div>
+          </div>
+          <div class="experience-description">
+            <p>${exp.description}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    experienceContainer.insertAdjacentHTML('beforeend', experienceHTML);
+  });
+}
+
+// Function to populate certifications tab with demo data
+function populateCertifications() {
+  const certificationsContainer = document.getElementById('portfolioCertificationsGrid');
+  certificationsContainer.innerHTML = '';
+  
+  const certifications = [
+    {
+      title: 'Full Stack Web Development',
+      issuer: 'Udacity',
+      icon: 'fa-code',
+      date: 'October 2023',
+      credential: 'FSND12345'
+    },
+    {
+      title: 'UI/UX Design Professional',
+      issuer: 'Google',
+      icon: 'fa-pencil-ruler',
+      date: 'June 2022',
+      credential: 'GGL-UX-2022'
+    },
+    {
+      title: 'AWS Certified Solutions Architect',
+      issuer: 'Amazon Web Services',
+      icon: 'fa-cloud',
+      date: 'March 2021',
+      credential: 'AWS-CSA-21-1234'
+    },
+    {
+      title: 'React.js Certification',
+      issuer: 'Meta',
+      icon: 'fa-react',
+      date: 'November 2020',
+      credential: 'FB-REACT-2020'
+    },
+    {
+      title: 'Professional Scrum Master',
+      issuer: 'Scrum.org',
+      icon: 'fa-tasks',
+      date: 'May 2019',
+      credential: 'PSM-I-12345'
+    },
+    {
+      title: 'Advanced JavaScript',
+      issuer: 'Codecademy',
+      icon: 'fa-js',
+      date: 'January 2019',
+      credential: 'CA-JS-ADV-19'
+    }
+  ];
+  
+  certifications.forEach(cert => {
+    const certHTML = `
+      <div class="certification-card">
+        <div class="certification-header">
+          <div class="certification-icon">
+            <i class="fas ${cert.icon}"></i>
+          </div>
+          <div>
+            <h4 class="certification-title">${cert.title}</h4>
+            <div class="certification-issuer">${cert.issuer}</div>
+          </div>
+        </div>
+        <div class="certification-date">
+          <i class="fas fa-calendar-alt me-1"></i> ${cert.date}
+        </div>
+        <div class="certification-credential">
+          <strong>Credential ID:</strong> ${cert.credential}
+        </div>
+        <div class="certification-actions">
+          <button class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-external-link-alt me-1"></i> Verify
+          </button>
+        </div>
+      </div>
+    `;
+    
+    certificationsContainer.insertAdjacentHTML('beforeend', certHTML);
+  });
+}
+
+// Function to show a toast notification
+function showToast(title, message, type = 'info') {
+  // Check if toast container exists, if not create one
+  let toastContainer = document.querySelector('.toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    document.body.appendChild(toastContainer);
+  }
+  
+  // Create a unique ID for the toast
+  const toastId = 'toast-' + Date.now();
+  
+  // Toast HTML
+  const toastHTML = `
+    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <div class="me-2 toast-icon ${type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : 'text-info'}">
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        </div>
+        <strong class="me-auto">${title}</strong>
+        <small>Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
+  
+  // Append the toast to the container
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  
+  // Initialize and show the toast
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement, {
+    autohide: true,
+    delay: 3000
+  });
+  toast.show();
+  
+  // Remove the toast element after it's hidden
+  toastElement.addEventListener('hidden.bs.toast', function() {
+    toastElement.remove();
+  });
+}
+
+// Enhancement: Add project detail view functionality
+document.addEventListener('click', function(e) {
+  const viewProjectBtn = e.target.closest('.view-project-btn');
+  if (viewProjectBtn) {
+    const projectCard = viewProjectBtn.closest('.project-card');
+    const projectTitle = projectCard.querySelector('.project-title').textContent;
+    const projectDesc = projectCard.querySelector('.project-description').textContent;
+    const projectMeta = projectCard.querySelector('.project-meta').textContent;
+    
+    // Show project detail modal or expand the card
+    showProjectDetailModal(projectTitle, projectDesc, projectMeta);
+  }
+});
+
+// Function to show project detail modal
+function showProjectDetailModal(title, description, meta) {
+  // Check if modal exists, if not create one
+  let projectModal = document.getElementById('projectDetailModal');
+  if (!projectModal) {
+    const modalHTML = `
+      <div class="modal fade" id="projectDetailModal" tabindex="-1" aria-labelledby="projectDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="projectDetailModalLabel">Project Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="project-detail-content">
+                <div class="project-detail-header">
+                  <h3 id="projectDetailTitle"></h3>
+                  <div id="projectDetailMeta" class="text-muted mb-3"></div>
+                </div>
+                <div class="project-detail-gallery mb-4">
+                  <div id="projectDetailCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <div class="project-carousel-placeholder" style="height: 300px; background: linear-gradient(135deg, #3498db 0%, #1a5276 100%);"></div>
+                      </div>
+                      <div class="carousel-item">
+                        <div class="project-carousel-placeholder" style="height: 300px; background: linear-gradient(135deg, #2ecc71 0%, #1b7a43 100%);"></div>
+                      </div>
+                      <div class="carousel-item">
+                        <div class="project-carousel-placeholder" style="height: 300px; background: linear-gradient(135deg, #e74c3c 0%, #922b21 100%);"></div>
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#projectDetailCarousel" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#projectDetailCarousel" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8">
+                    <div class="project-detail-description mb-4">
+                      <h4>Project Overview</h4>
+                      <p id="projectDetailDescription"></p>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non augue vitae nisl auctor faucibus. Aenean tempus mauris quis mauris congue, ac tempor erat aliquet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
+                    </div>
+                    <div class="project-detail-challenges mb-4">
+                      <h4>Challenges & Solutions</h4>
+                      <p>Praesent sit amet consectetur nisl. Nullam vel libero nec nisl suscipit mattis. Fusce dapibus sapien vitae nisi efficitur, id finibus metus facilisis. Phasellus condimentum turpis in odio sagittis facilisis.</p>
+                      <ul>
+                        <li>Optimizing performance across multiple browsers and devices</li>
+                        <li>Implementing complex business logic with clean architecture</li>
+                        <li>Creating an intuitive user interface for diverse user needs</li>
+                        <li>Managing large datasets with efficient data structures</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="project-detail-info card">
+                      <div class="card-body">
+                        <h5 class="card-title">Project Info</h5>
+                        <div class="mb-3">
+                          <strong>Client:</strong>
+                          <span id="projectDetailClient">Example Client</span>
+                        </div>
+                        <div class="mb-3">
+                          <strong>Timeline:</strong>
+                          <span id="projectDetailTimeline">3 months</span>
+                        </div>
+                        <div class="mb-3">
+                          <strong>Category:</strong>
+                          <span id="projectDetailCategory">Web Development</span>
+                        </div>
+                        <div class="mb-3">
+                          <strong>Technologies:</strong>
+                          <div class="mt-2">
+                            <span class="badge bg-primary me-1">HTML5</span>
+                            <span class="badge bg-primary me-1">CSS3</span>
+                            <span class="badge bg-primary me-1">JavaScript</span>
+                            <span class="badge bg-primary me-1">React</span>
+                            <span class="badge bg-primary me-1">Node.js</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Visit Project</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    projectModal = document.getElementById('projectDetailModal');
+  }
+  
+  // Update modal content
+  projectModal.querySelector('#projectDetailTitle').textContent = title;
+  projectModal.querySelector('#projectDetailDescription').textContent = description;
+  projectModal.querySelector('#projectDetailMeta').textContent = meta;
+  
+  // Extract client name from meta info if available
+  const clientMatch = meta.match(/([A-Za-z\s]+)/);
+  if (clientMatch && clientMatch[0]) {
+    projectModal.querySelector('#projectDetailClient').textContent = clientMatch[0].trim();
+  }
+  
+  // Show the modal
+  const bsModal = new bootstrap.Modal(projectModal);
+  bsModal.show();
+}
+
+// Make portfolio filters functional
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if filter buttons exist
+  const filterButtons = document.querySelectorAll('.portfolio-filter-btn');
+  if (filterButtons.length > 0) {
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Get filter value
+        const filter = this.dataset.filter;
+        
+        // Get all portfolio cards
+        const portfolioCards = document.querySelectorAll('.portfolio-card');
+        
+        // Show/hide cards based on filter
+        portfolioCards.forEach(card => {
+          if (filter === 'all') {
+            card.style.display = 'block';
+          } else {
+            const cardTags = Array.from(card.querySelectorAll('.tag-list .tag')).map(tag => tag.textContent.toLowerCase());
+            if (cardTags.includes(filter.toLowerCase())) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  }
+});
+
+// Add search functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.querySelector('#portfolioSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const portfolioCards = document.querySelectorAll('.portfolio-card');
+      
+      portfolioCards.forEach(card => {
+        const title = card.querySelector('.portfolio-title').textContent.toLowerCase();
+        const desc = card.querySelector('.portfolio-desc').textContent.toLowerCase();
+        const tags = Array.from(card.querySelectorAll('.tag-list .tag')).map(tag => tag.textContent.toLowerCase());
+        
+        if (title.includes(searchTerm) || desc.includes(searchTerm) || tags.some(tag => tag.includes(searchTerm))) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
+});
+
+// Add functionality to update portfolio information
+function updatePortfolioInfo(portfolioId, newData) {
+  // Find portfolio card by ID
+  const portfolioCard = document.querySelector(`.portfolio-card[data-id="${portfolioId}"]`);
+  if (portfolioCard) {
+    // Update portfolio information
+    if (newData.title) {
+      portfolioCard.querySelector('.portfolio-title').textContent = newData.title;
+    }
+    if (newData.description) {
+      portfolioCard.querySelector('.portfolio-desc').textContent = newData.description;
+    }
+    if (newData.tags && Array.isArray(newData.tags)) {
+      const tagList = portfolioCard.querySelector('.tag-list');
+      tagList.innerHTML = '';
+      newData.tags.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tag';
+        tagEl.textContent = tag;
+        tagList.appendChild(tagEl);
+      });
+    }
+    
+    // Show success notification
+    showToast('Updated', 'Portfolio information updated successfully', 'success');
+    return true;
+  }
+  
+  // Show error notification if portfolio not found
+  showToast('Error', 'Portfolio not found', 'error');
+  return false;
+}
+
+  </script>
+</body>
+</html>

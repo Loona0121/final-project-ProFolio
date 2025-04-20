@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Projects</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #edf2ff;
+      --primary-dark: #3a56d4;
+      --secondary: #6c757d;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --info: #3498db;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --sidebar-width: 280px;
+      --sidebar-collapsed-width: 0;
+      --header-height: 70px;
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background-color: #f5f7fa;
+      color: #495057;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Layout */
+    .layout-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: #ffffff;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      height: var(--header-height);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--dark);
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      margin-right: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+    }
+
+    .sidebar-close {
+      background: transparent;
+      border: none;
+      color: var(--secondary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    .sidebar-user {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background-color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      margin-right: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .user-info h6 {
+      margin: 0;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 1rem;
+    }
+
+    .user-role {
+      font-size: 0.875rem;
+      color: var(--secondary);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1.5rem 0;
+      overflow-y: auto;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .nav-link i {
+      margin-right: 0.75rem;
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border-left-color: var(--primary);
+    }
+
+    .nav-link .badge {
+      margin-left: auto;
+      border-radius: 50px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background-color: rgba(0, 0, 0, 0.05);
+      margin: 1rem 1.5rem;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      color: var(--secondary);
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .logout-btn i {
+      margin-right: 0.5rem;
+    }
+
+    .logout-btn:hover {
+      color: var(--danger);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .main-content.expanded {
+      margin-left: var(--sidebar-collapsed-width);
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      height: var(--header-height);
+      background-color: #ffffff;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-toggle {
+      background: transparent;
+      border: none;
+      color: var(--secondary);
+      font-size: 1.25rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    .navbar-search {
+      position: relative;
+      width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      padding: 0 1rem 0 2.5rem;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      pointer-events: none;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary);
+      position: relative;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background-color: var(--light);
+      color: var(--primary);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--danger);
+      color: white;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    .profile-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Page Content */
+    .page-content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .page-subtitle {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin-top: 0.25rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stats-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .stats-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-right: 1rem;
+    }
+
+    .stats-info {
+      flex: 1;
+    }
+
+    .stats-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .stats-label {
+      font-size: 0.875rem;
+      color: var(--secondary);
+    }
+
+    /* Project Tabs */
+    .project-tabs {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .nav-tabs {
+      border-bottom: none;
+    }
+
+    .nav-tabs .nav-link {
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--secondary);
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      border-radius: 0;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .nav-tabs .nav-link.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Project List */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .project-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      display: flex;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .project-status-indicator {
+      width: 6px;
+      min-width: 6px;
+    }
+
+    .status-active {
+      background-color: var(--primary);
+    }
+
+    .status-completed {
+      background-color: var(--success);
+    }
+
+    .status-pending {
+      background-color: var(--warning);
+    }
+
+    .project-body {
+      flex: 1;
+      padding: 1.5rem;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .project-info {
+      flex: 1;
+    }
+
+    .project-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      color: var(--secondary);
+      font-size: 0.875rem;
+    }
+
+    .project-deadline {
+      text-align: right;
+      min-width: 140px;
+      flex-shrink: 0;
+    }
+
+    .deadline-label {
+      font-size: 0.75rem;
+      color: var(--secondary);
+    }
+
+    .deadline-date {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .badge-completed {
+      background-color: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+    }
+
+    .badge-pending {
+      background-color: rgba(243, 156, 18, 0.1);
+      color: var(--warning);
+    }
+
+    .project-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .project-progress {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .progress {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #f1f3f5;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      border-radius: 4px;
+    }
+
+    .project-financials {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .financial-item {
+      text-align: center;
+    }
+
+    .financial-label {
+      font-size: 0.75rem;
+      color: var(--secondary);
+    }
+
+    .financial-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .financial-value.positive {
+      color: var(--success);
+    }
+
+    .financial-value.warning {
+      color: var(--warning);
+    }
+
+    .project-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .pagination {
+      gap: 0.25rem;
+    }
+
+    .page-link {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      color: var(--secondary);
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    .page-item.active .page-link {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .page-item:not(.active) .page-link:hover {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      color: #d1d9e6;
+      margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--dark);
+    }
+
+    .empty-description {
+      color: var(--secondary);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 1.5rem 0;
+      border-top: 1px solid #e9ecef;
+      margin-top: 2rem;
+    }
+
+    /* Animation Utilities */
+    .fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .slide-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .project-header {
+        flex-direction: column;
+      }
+
+      .project-deadline {
+        text-align: left;
+        margin-top: 1rem;
+      }
+
+      .project-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .project-actions {
+        width: 100%;
+        margin-top: 1rem;
+        justify-content: flex-start;
+      }
+
+      .navbar-search {
+        width: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-width: 280px;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.expanded {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar-search {
+        display: none;
+      }
+
+      .project-financials {
+        flex-wrap: wrap;
+      }
+
+      .financial-item {
+        width: calc(50% - 0.75rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="logo-text">Pro<span>Folio</span></span>
+        </div>
+        <button class="sidebar-close" id="sidebar-close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <h6 class="user-name">Aran Johnson</h6>
+          <div class="user-role">Senior Web Developer</div>
+        </div>
+      </div>
+      
+      <div class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="freelancerDashboard.html" class="nav-link">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="DFprojects.html" class="nav-link active">
+              <i class="fas fa-folder"></i> Projects
+              <span class="badge bg-primary">5</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freelancerPortfolio.html" class="nav-link">
+              <i class="fas fa-palette"></i> Portfolio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="DFmessages.html" class="nav-link">
+              <i class="fas fa-comment"></i> Messages
+              <span class="badge bg-danger">3</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="DFreviews.html" class="nav-link">
+              <i class="fas fa-star"></i> Reviews
+            </a>
+          </li>
+        </ul>
+        
+        <div class="nav-divider"></div>
+        
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="DFsettings.html" class="nav-link">
+              <i class="fas fa-cog"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-footer">
+        <a href="DFlogout.html" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+      <!-- Top Navigation Bar -->
+      <nav class="top-navbar">
+        <div class="navbar-content">
+          <div class="navbar-left">
+            <button class="menu-toggle" id="menu-toggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-search">
+              <span class="search-icon">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" class="search-input" placeholder="Search projects, clients...">
+            </div>
+          </div>
+          
+          <div class="navbar-actions">
+            <button class="action-btn">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">5</span>
+            </button>
+            <button class="action-btn">
+              <i class="fas fa-envelope"></i>
+              <span class="notification-badge">3</span>
+            </button>
+            <button class="action-btn profile-btn">
+              <i class="fas fa-user"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+      
+      <!-- Page Content -->
+      <div class="page-content">
+        <!-- Page Header -->
+        <div class="page-header slide-up">
+          <div>
+            <h2 class="page-title">Projects</h2>
+            <p class="page-subtitle">Manage and track all your client projects</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i> New Project
+            </button>
+          </div>
+        </div>
+        
+        <!-- Project Stats Summary -->
+        <div class="stats-grid slide-up" style="animation-delay: 0.1s">
+          <div class="stats-card">
+            <div class="stats-icon" style="background-color: var(--primary-light); color: var(--primary);">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="stats-info">
+              <div class="stats-number">5</div>
+              <div class="stats-label">Active Projects</div>
+            </div>
+          </div>
+          
+          <div class="stats-card">
+            <div class="stats-icon" style="background-color: rgba(46, 204, 113, 0.1); color: var(--success);">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stats-info">
+              <div class="stats-number">124</div>
+              <div class="stats-label">Completed</div>
+            </div>
+          </div>
+          
+          <div class="stats-card">
+            <div class="stats-icon" style="background-color: rgba(243, 156, 18, 0.1); color: var(--warning);">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stats-info">
+              <div class="stats-number">3</div>
+              <div class="stats-label">In Progress</div>
+            </div>
+          </div>
+          
+          <div class="stats-card">
+            <div class="stats-icon" style="background-color: rgba(52, 152, 219, 0.1); color: var(--info);">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stats-info">
+              <div class="stats-number">$12,450</div>
+              <div class="stats-label">Active Value</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Projects Tab Navigation -->
+        <div class="project-tabs slide-up" style="animation-delay: 0.2s">
+          <ul class="nav nav-tabs" id="projectTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                All Projects
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab" aria-controls="active" aria-selected="false">
+                Active
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false">
+                Completed
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="archived-tab" data-bs-toggle="tab" data-bs-target="#archived" type="button" role="tab" aria-controls="archived" aria-selected="false">
+                Archived
+              </button>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="tab-content slide-up" style="animation-delay: 0.3s">
+          <!-- All Projects Tab -->
+          <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+            <div class="project-list">
+              <!-- Project 1 -->
+              <div class="project-card">
+                <div class="project-status-indicator status-active"></div>
+                <div class="project-body">
+                  <div class="project-header">
+                    <div class="project-icon">
+                      <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="project-info">
+                      <h4 class="project-title">E-commerce Redesign</h4>
+                      <div class="project-meta">
+                        <span><i class="fas fa-building"></i> Tech Solutions Inc.</span>
+                        <span><i class="fas fa-calendar"></i> Started: Apr 10, 2025</span>
+                        <span><i class="fas fa-tag"></i> Web Design</span>
+                      </div>
+                    </div>
+                    <div class="project-deadline">
+                      <div class="deadline-label">Deadline</div>
+                      <div class="deadline-date">May 15, 2025</div>
+                      <span class="badge badge-status badge-active">In Progress</span>
+                    </div>
+                  </div>
+                  <div class="project-content">
+                    <div class="project-progress">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>65%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="project-financials">
+                      <div class="financial-item">
+                        <div class="financial-label">Budget</div>
+                        <div class="financial-value">$5,000</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Invoiced</div>
+                        <div class="financial-value">$3,250</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Remaining</div>
+                        <div class="financial-value">$1,750</div>
+                      </div>
+                    </div>
+                    <div class="project-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Project 2 -->
+              <div class="project-card">
+                <div class="project-status-indicator status-active"></div>
+                <div class="project-body">
+                  <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                      <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="project-info">
+                      <h4 class="project-title">Mobile App Development</h4>
+                      <div class="project-meta">
+                        <span><i class="fas fa-building"></i> Fitness First</span>
+                        <span><i class="fas fa-calendar"></i> Started: Mar 5, 2025</span>
+                        <span><i class="fas fa-tag"></i> Mobile App</span>
+                      </div>
+                    </div>
+                    <div class="project-deadline">
+                      <div class="deadline-label">Deadline</div>
+                      <div class="deadline-date">Jul 30, 2025</div>
+                      <span class="badge badge-status badge-active">In Progress</span>
+                    </div>
+                  </div>
+                  <div class="project-content">
+                    <div class="project-progress">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>40%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="project-financials">
+                      <div class="financial-item">
+                        <div class="financial-label">Budget</div>
+                        <div class="financial-value">$8,500</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Invoiced</div>
+                        <div class="financial-value">$3,400</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Remaining</div>
+                        <div class="financial-value">$5,100</div>
+                      </div>
+                    </div>
+                    <div class="project-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Project 3 -->
+              <div class="project-card">
+                <div class="project-status-indicator status-completed"></div>
+                <div class="project-body">
+                  <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+                      <i class="fas fa-code"></i>
+                    </div>
+                    <div class="project-info">
+                      <h4 class="project-title">Custom CRM Integration</h4>
+                      <div class="project-meta">
+                        <span><i class="fas fa-building"></i> Global Services Ltd.</span>
+                        <span><i class="fas fa-calendar"></i> Started: Jan 15, 2025</span>
+                        <span><i class="fas fa-tag"></i> Web Development</span>
+                      </div>
+                    </div>
+                    <div class="project-deadline">
+                      <div class="deadline-label">Completed</div>
+                      <div class="deadline-date">Apr 2, 2025</div>
+                      <span class="badge badge-status badge-completed">Completed</span>
+                    </div>
+                  </div>
+                  <div class="project-content">
+                    <div class="project-progress">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>100%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="project-financials">
+                      <div class="financial-item">
+                        <div class="financial-label">Budget</div>
+                        <div class="financial-value">$6,200</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Invoiced</div>
+                        <div class="financial-value">$6,200</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Profit</div>
+                        <div class="financial-value positive">+$650</div>
+                      </div>
+                    </div>
+                    <div class="project-actions">
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-archive"></i> Archive
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Project 4 -->
+              <div class="project-card">
+                <div class="project-status-indicator status-pending"></div>
+                <div class="project-body">
+                  <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+                      <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="project-info">
+                      <h4 class="project-title">Photography Website</h4>
+                      <div class="project-meta">
+                        <span><i class="fas fa-building"></i> Studio Capture</span>
+                        <span><i class="fas fa-calendar"></i> Started: Apr 5, 2025</span>
+                        <span><i class="fas fa-tag"></i> Design, Development</span>
+                      </div>
+                    </div>
+                    <div class="project-deadline">
+                      <div class="deadline-label">Deadline</div>
+                      <div class="deadline-date">Jun 15, 2025</div>
+                      <span class="badge badge-status badge-pending">Paused</span>
+                    </div>
+                  </div>
+                  <div class="project-content">
+                    <div class="project-progress">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>20%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="project-financials">
+                      <div class="financial-item">
+                        <div class="financial-label">Budget</div>
+                        <div class="financial-value">$3,500</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Invoiced</div>
+                        <div class="financial-value">$700</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Remaining</div>
+                        <div class="financial-value">$2,800</div>
+                      </div>
+                    </div>
+                    <div class="project-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Project 5 -->
+              <div class="project-card">
+                <div class="project-status-indicator status-active"></div>
+                <div class="project-body">
+                  <div class="project-header">
+                    <div class="project-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                      <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="project-info">
+                      <h4 class="project-title">Analytics Dashboard</h4>
+                      <div class="project-meta">
+                        <span><i class="fas fa-building"></i> DataMetrics Inc.</span>
+                        <span><i class="fas fa-calendar"></i> Started: Mar 25, 2025</span>
+                        <span><i class="fas fa-tag"></i> Dashboard, Data Viz</span>
+                      </div>
+                    </div>
+                    <div class="project-deadline">
+                      <div class="deadline-label">Deadline</div>
+                      <div class="deadline-date">May 28, 2025</div>
+                      <span class="badge badge-status badge-active">In Progress</span>
+                    </div>
+                  </div>
+                  <div class="project-content">
+                    <div class="project-progress">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>55%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <div class="project-financials">
+                      <div class="financial-item">
+                        <div class="financial-label">Budget</div>
+                        <div class="financial-value">$4,800</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Invoiced</div>
+                        <div class="financial-value">$2,640</div>
+                      </div>
+                      <div class="financial-item">
+                        <div class="financial-label">Remaining</div>
+                        <div class="financial-value">$2,160</div>
+                      </div>
+                    </div>
+                    <div class="project-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination-container">
+              <nav aria-label="Project navigation">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          
+          <!-- Active Projects Tab -->
+          <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+            <!-- This will be populated with active projects -->
+            <div class="project-list">
+              <!-- Only show active projects here -->
+            </div>
+          </div>
+          
+          <!-- Completed Projects Tab -->
+          <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <!-- This will be populated with completed projects -->
+            <div class="project-list">
+              <!-- Only show completed projects here -->
+            </div>
+          </div>
+          
+          <!-- Archived Projects Tab -->
+          <div class="tab-pane fade" id="archived" role="tabpanel" aria-labelledby="archived-tab">
+            <!-- Empty state example -->
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="fas fa-archive"></i>
+              </div>
+              <h4 class="empty-title">No archived projects yet</h4>
+              <p class="empty-description">
+                You haven't archived any projects. Completed projects can be archived to keep your workspace organized.
+              </p>
+              <button class="btn btn-primary mt-3">
+                <i class="fas fa-redo"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <p class="mb-0">&copy; 2025 ProFolio. All rights reserved.</p>
+              </div>
+              <div class="col-md-6 text-md-end">
+                <a href="#" class="text-muted me-3">Privacy Policy</a>
+                <a href="#" class="text-muted">Terms of Service</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
+      const menuToggle = document.getElementById('menu-toggle');
+      const sidebarClose = document.getElementById('sidebar-close');
+      
+      // Toggle sidebar on menu button click
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('expanded');
+        mainContent.classList.toggle('expanded');
+      });
+      
+      // Close sidebar on close button click
+      sidebarClose.addEventListener('click', function() {
+        sidebar.classList.remove('expanded');
+      });
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnMenuToggle = menuToggle.contains(event.target);
+        
+        if (!isClickInsideSidebar && !isClickOnMenuToggle && window.innerWidth < 768 && sidebar.classList.contains('expanded')) {
+          sidebar.classList.remove('expanded');
+        }
+      });
+      
+      // Handle window resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.remove('expanded');
+          mainContent.classList.remove('expanded');
+        }
+      });
+      
+      // Initialize Bootstrap tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>
+</body>
+</html>
