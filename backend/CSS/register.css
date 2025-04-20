@@ -1,0 +1,169 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+}
+.header {
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header-logo {
+     font-size: 1.8rem;
+     font-weight: bold;
+     color: #1a4b84;
+     margin-left: 20px;
+}
+.header-logo span {
+  color: #3aafa9;;
+      }
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+.heading {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #222;
+}
+.role-card {
+    border: 1px solid #e4e5e7;
+    border-radius: 8px;
+    padding: 25px 20px;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.role-card:hover {
+    border-color: #1a4b84;
+}
+.role-icon {
+    font-size: 24px;
+    margin-right: 10px;
+    color: #333;
+}
+.role-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.role-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+}
+.btn-create {
+    background-color: #e4e5e7;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.btn-create:hover {
+    background-color: #d4d5d7;
+}
+.login-text {
+    text-align: center;
+    margin-top: 20px;
+}
+.login-link {
+    color: #1a4b84;
+    text-decoration: none;
+    font-weight: 500;
+}
+.login-link:hover {
+    text-decoration: underline;
+}
+.role-selector {
+    position: relative;
+}
+.radio-custom {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+}
+.role-card.selected .radio-custom {
+    border: 2px solid #1a4b84;
+}
+.role-card.selected .radio-custom:after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1a4b84;
+}
+.card-container {
+    margin-bottom: 30px;
+}
+.subtitle {
+    text-align: center;
+    color: #555;
+    margin-top: 1.5px;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+.footer {
+background-color: #f8f9fa;
+border-top: 1px solid #e7e7e7;
+padding: 20px 0;
+margin-top: auto;
+}
+
+.footer-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.footer-links {
+display: flex;
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.footer-links li {
+margin-right: 20px;
+}
+
+.footer-links a {
+color: #6c757d;
+text-decoration: none;
+font-size: 14px;
+}
+
+.footer-links a:hover {
+color: #1a4b84;
+text-decoration: underline;
+}
+
+.copyright {
+color: #6c757d;
+font-size: 14px;
+}
+
+@media (max-width: 768px) {
+.footer-content {
+flex-direction: column;
+text-align: center;
+}
+
+.footer-links {
+margin-bottom: 15px;
+justify-content: center;
+}
+}
