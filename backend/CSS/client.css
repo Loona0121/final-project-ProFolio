@@ -1,0 +1,200 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+}
+.header {
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.registration-container p {
+font-size: 25px;
+margin-top: -20px;
+text-align: center;
+margin-left: 50px;
+margin-right: 50px;
+}
+.header-logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1a4b84;
+  margin-left: 20px;
+}
+.header-logo span {
+color: #3aafa9;;
+}
+.registration-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: whitesmoke;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    flex: 1;
+}
+.page-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+.btn-social {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.btn-google {
+    background-color: #1a4b84;
+    color: white;
+    border: none;
+}
+.divider {
+    text-align: center;
+    margin: 1.5rem 0;
+    position: relative;
+}
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #ddd;
+    z-index: 0;
+}
+.divider span {
+    background-color: whitesmoke;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 1;
+}
+.form-check {
+    margin-top: 1.5rem;
+}
+.create-btn {
+    background-color: #1a4b84;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 24px;
+    margin-top: 1.5rem;
+    font-weight: 500;
+}
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+.password-toggle {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+.password-field {
+    position: relative;
+}
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e7e7e7;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+.footer-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.footer-links {
+display: flex;
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.footer-links li {
+margin-right: 20px;
+}
+
+.footer-links a {
+color: #6c757d;
+text-decoration: none;
+font-size: 14px;
+}
+
+.footer-links a:hover {
+color: #1a4b84;
+text-decoration: underline;
+}
+
+.copyright {
+color: #6c757d;
+font-size: 14px;
+}
+
+@media (max-width: 768px) {
+.footer-content {
+flex-direction: column;
+text-align: center;
+}
+
+.footer-links {
+margin-bottom: 15px;
+justify-content: center;
+}
+}
+.password-wrapper {
+position: relative;
+}
+
+.password-wrapper input {
+padding-right: 40px; /* Give space for the icon */
+}
+
+.password-toggle {
+position: absolute;
+top: 75%;
+right: 10px;
+transform: translateY(-50%);
+cursor: pointer;
+color: #6c757d;
+font-size: 1.2rem;
+}
+.google-signin-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px; /* space between icon and text */
+font-weight: 500;
+color: #444;
+background-color: #fff;
+border: 1px solid #ddd;
+transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.google-signin-btn:hover {
+box-shadow: 0 2px 6px rgba(141, 170, 241);
+border-color:rgb(141, 170, 241);
+}
+
+.google-signin-btn img {
+width: 20px;
+height: 20px;
+}
+.google-signin-btn img {
+transition: opacity 0.3s ease;
+}
+
+.google-signin-btn:hover img {
+opacity: 50%;
+}
