@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./frontend/admin/images/logo.png" width="400"/>
+  <img src="./frontend/ProFolio/logo.png" width="400"/>
   <h2>FINAL PROJECT</h2>
 </div>
 
