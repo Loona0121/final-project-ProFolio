@@ -26,12 +26,12 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 ## 📌 Features
 - **Portfolio Showcase** - Upload designs, case studies, coding projects, etc.
 - **Skills and Certifications** - Add and verify expertise.
-- **Experience Timeline** - Visual representation of career milestones.
+- **Work Experience** - Display of career milestones.
 - **Hire Me Button** - One-click interest from clients.
-- **Reviews and Ratings** - Feedback system for credibility.
-- **Client Verification Badge** - Identifies verified clients.
 - **Advanced Job Filters** - Filter talents or job listings smartly.
-- **Team and Company Pages** - Profile pages for businesses and teams.
+- **Reviews and Ratings** - Feedback system for credibility. *removed
+- **Client Verification Badge** - Identifies verified clients. *removed
+- **Team and Company Pages** - Profile pages for businesses and teams. *removed
 
 ---
 
