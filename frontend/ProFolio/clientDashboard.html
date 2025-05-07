@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Client Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="freelancer.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Layout Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="logo-text">Pro<span class="accent">Folio</span></span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <a href="clientProfile.html" class="user-name-link">
+            <h6 class="user-name">Aran Joshua</h6>
+            <div class="user-role">Client</div>
+          </a>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="clientDashboard.html" class="nav-link active">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="clientTalents.html" class="nav-link">
+              <i class="fas fa-users"></i> Find Talents
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="clientOffers.html" class="nav-link">
+              <i class="fas fa-paper-plane"></i> Sent Offers
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="clientLogout.html" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+        <!-- Page Header -->
+        <header class="page-header">
+          <div>
+            <h2 class="page-title">Client Dashboard</h2>
+            <p class="page-subtitle">Expertise & work portfolio overview</p>
+          </div>
+          <div class="date-display">
+            <i class="far fa-calendar-alt"></i>
+            <span id="current-date"></span>
+          </div>
+        </header>
+        <!-- Welcome Banner -->
+        <section class="welcome-banner">
+          <h1 class="welcome-title">Welcome back, Aran!</h1>
+          <p class="welcome-message">Check for new updates and review latest deliverables. Take a look at their latest work and see if they're the right fit for your needs.</p>
+          <div class="welcome-actions">
+            <a href="clientTalents.html" class="welcome-btn primary">View Talents</a>
+            <a href="clientOffers.html" class="welcome-btn">Check Sent Offers</a>
+          </div>
+        </section>
+        <!-- Main Dashboard Sections -->
+          <!--Find Talents Preview-->
+          <div class="landscape-container">
+            <div class="section slide-up" >
+              <div class="section-header">
+                <h3 class="section-title">
+                  <i class="fas fa-user-tie"></i> Recommended Talents
+                </h3>
+                <a href="clientTalents.html" class="section-action">View All Talents</a>
+              </div>
+              <div class="section-content">
+                <div class="row">
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="talent-card">
+                      <div class="talent-header">
+                        <div class="talent-avatar">
+                          <img src="/api/placeholder/80/80" alt="Sarah Johnson" class="rounded-circle">
+                        </div>
+                      </div>
+                      <div class="talent-body">
+                        <h5 class="talent-title">Sarah Johnson</h5>
+                        <p class="talent-role">Full Stack Developer</p>
+                        <p class="talent-description">5+ years experience in React, Node.js and modern frontend frameworks</p>
+                      </div>
+                      <div class="talent-footer">
+                        <a href="clientTalents.html" class="btn btn-primary hire-btn mt-3">
+                          <i class="far fa-eye me-1"></i> View Details
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="talent-card">
+                      <div class="talent-header">
+                        <div class="talent-avatar">
+                          <img src="/api/placeholder/80/80" alt="Michael Chen" class="rounded-circle">
+                        </div>
+                      </div>
+                      <div class="talent-body">
+                        <h5 class="talent-title">Michael Chen</h5>
+                        <p class="talent-role">UI/UX Designer</p>
+                        <p class="talent-description">Specialized in creating intuitive interfaces and engaging user experiences</p>
+                      </div>
+                      <div class="talent-footer">
+                        <a href="clientTalents.html" class="btn btn-primary hire-btn mt-3">
+                          <i class="far fa-eye me-1"></i> View Details
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="talent-card">
+                      <div class="talent-header">
+                        <div class="talent-avatar">
+                          <img src="/api/placeholder/80/80" alt="Jessica Patel" class="rounded-circle">
+                        </div>
+                      </div>
+                      <div class="talent-body">
+                        <h5 class="talent-title">Jessica Patel</h5>
+                        <p class="talent-role">Digital Marketing Specialist</p>
+                        <p class="talent-description">Expert in SEO, SEM, and social media marketing campaigns</p>
+                      </div>
+                      <div class="talent-footer">
+                        <a href="clientTalents.html" class="btn btn-primary hire-btn mt-3">
+                          <i class="far fa-eye me-1"></i> View Details
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- Professional Development Tip Section (Simplified) -->
+        <section class="dashboard-section pro-tip-section">
+          <div class="pro-tip-container">
+            <div class="pro-tip-icon">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="pro-tip-content">
+              <span class="pro-tip-label">PRO TIP</span>
+              <p class="pro-tip-text">Clients who leave detailed project descriptions and clear expectations attract 3x more qualified freelancers and complete projects faster.</p>
+            </div>
+          </div>
+        </section>
+        <!-- Dashboard Footer -->
+        <footer class="dashboard-footer">
+          <p>ProFolio helps you showcase your work and connect with clients worldwide. Keep your portfolio updated to maximize opportunities.</p>
+          <div class="footer-links">
+            <a href="#">Terms of Service and Privacy Policy</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </div>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="clientDashboard.js"></script>
+</body>
+</html>

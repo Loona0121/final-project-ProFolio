@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Freelancer Profile</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Dashboard CSS -->
+  <link href="freelancer.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Layout Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="logo-text">Pro<span class="accent">Folio</span></span>
+        </div>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <a href="freelancerProfile.html" class="user-name-link">
+            <h6 class="user-name">Aran Joshua</h6>
+            <div class="user-role">Senior Web Developer</div>
+          </a>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="freelancerDashboard.html" class="nav-link">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freelancerPortfolio.html" class="nav-link">
+              <i class="fas fa-palette"></i> Portfolio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freelancerOffers.html" class="nav-link">
+              <i class="fas fa-briefcase"></i> Job Offers
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="freelancerLogout.html" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+        <!-- Page Header -->
+        <header class="page-header">
+          <div>
+            <h2 class="page-title">Your Profile</h2>
+            <p class="page-subtitle">Manage your professional information</p>
+          </div>
+          <div class="date-display">
+            <i class="far fa-calendar-alt"></i>
+            <span id="current-date"></span>
+          </div>
+        </header>
+        
+        <!-- Profile Information -->
+        <section class="profile-section">
+          <div class="profile-header">
+            <div class="profile-photo-container">
+              <div class="profile-photo">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="profile-photo-upload">
+                <label for="profile-photo-input" class="upload-btn">
+                  <i class="fas fa-camera"></i> Change Photo
+                </label>
+                <input type="file" id="profile-photo-input" accept="image/*" class="hidden-input">
+              </div>
+            </div>
+            
+            <div class="profile-basic-info">
+              <div class="info-group">
+                <label class="info-label">Full Name</label>
+                <div class="info-value non-editable">Aran Joshua</div>
+              </div>
+              <div class="info-group">
+                <label class="info-label">Email Address</label>
+                <div class="info-value non-editable">aranjoshua@email.com</div>
+              </div>
+              <div class="info-group">
+                <label class="info-label">Job Title</label>
+                <input type="text" class="form-control info-input" value="Senior Web Developer">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Professional Summary -->
+          <div class="profile-content-section">
+            <h3 class="section-title">Professional Summary</h3>
+            <div class="profile-summary">
+              <textarea class="form-control" rows="4" placeholder="Write a brief professional summary...">Senior Web Developer with 7+ years of experience building responsive, user-friendly web applications. Specialized in front-end technologies with a strong focus on performance optimization and accessibility. I create clean, maintainable code and intuitive user experiences that help businesses achieve their goals.</textarea>
+            </div>
+          </div>
+
+          <!-- Save Profile Changes -->
+          <div class="profile-actions">
+            <button class="btn btn-primary save-changes-btn">Save Changes</button>
+            <button class="btn btn-outline-secondary cancel-btn">Cancel</button>
+          </div>
+        </section>
+        
+        <!-- Hidden Job Offer Details Modal Structure (HTML Only) -->
+        <div class="offer-details-modal" id="offerDetailsModal" style="display: none;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Job Offer Details</h3>
+              <button class="close-modal-btn">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="offer-company-header">
+                <div class="company-logo">
+                  <i class="fas fa-building"></i>
+                </div>
+                <div class="company-details">
+                  <h4 class="job-title">Senior Front-End Developer</h4>
+                  <p class="company-name">TechSolutions Inc.</p>
+                  <div class="offer-meta-tags">
+                    <span class="meta-tag"><i class="fas fa-map-marker-alt"></i> Remote</span>
+                    <span class="meta-tag"><i class="far fa-clock"></i> Contract</span>
+                    <span class="meta-tag"><i class="fas fa-dollar-sign"></i> $60-80/hr</span>
+                    <span class="meta-tag"><i class="far fa-calendar"></i> Posted 3 days ago</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="offer-section">
+                <h5 class="offer-section-title">Job Description</h5>
+                <div class="offer-description">
+                  <p>We are looking for an experienced developer to lead our front-end team on a new SaaS platform. You will work closely with our design and back-end teams to build robust, responsive, and intuitive user interfaces.</p>
+                  <p>As the lead front-end developer, you will be responsible for architecture decisions, code quality, and mentoring junior developers.</p>
+                </div>
+              </div>
+              
+              <div class="offer-section">
+                <h5 class="offer-section-title">Requirements</h5>
+                <ul class="offer-requirements-list">
+                  <li>5+ years experience with modern JavaScript and front-end frameworks</li>
+                  <li>Expert knowledge of React, TypeScript, and state management</li>
+                  <li>Strong understanding of responsive design principles</li>
+                  <li>Experience with REST APIs and GraphQL</li>
+                  <li>Ability to optimize front-end performance</li>
+                </ul>
+              </div>
+              
+              <div class="offer-section">
+                <h5 class="offer-section-title">Skills</h5>
+                <div class="offer-skills">
+                  <span class="skill-tag">React</span>
+                  <span class="skill-tag">TypeScript</span>
+                  <span class="skill-tag">Redux</span>
+                  <span class="skill-tag">HTML5/CSS3</span>
+                  <span class="skill-tag">GraphQL</span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary apply-btn">Apply for This Position</button>
+              <button class="btn btn-outline-secondary save-btn">Save for Later</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dashboard Footer -->
+        <footer class="dashboard-footer">
+          <p>ProFolio helps you showcase your work and connect with clients worldwide. Keep your portfolio updated to maximize opportunities.</p>
+          <div class="footer-links">
+            <a href="#">Terms of Service and Privacy Policy</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script to display current date -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get current date
+      const now = new Date();
+      
+      // Format options for date display
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      
+      // Format and display the date
+      const formattedDate = now.toLocaleDateString('en-US', options);
+      document.getElementById('current-date').textContent = formattedDate;
+    });
+  </script>
+  <script src="freelancerProfile.js"></script>
+</body>
+</html>
