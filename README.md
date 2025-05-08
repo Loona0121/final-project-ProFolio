@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./frontend/admin/images/logo.png" width="400"/>
+  <img src="./frontend/ProFolio/logo.png" width="400"/>
   <h2>FINAL PROJECT</h2>
 </div>
 
@@ -26,12 +26,12 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 ## 📌 Features
 - **Portfolio Showcase** - Upload designs, case studies, coding projects, etc.
 - **Skills and Certifications** - Add and verify expertise.
-- **Experience Timeline** - Visual representation of career milestones.
+- **Work Experience** - Display of career milestones.
 - **Hire Me Button** - One-click interest from clients.
-- **Reviews and Ratings** - Feedback system for credibility.
-- **Client Verification Badge** - Identifies verified clients.
 - **Advanced Job Filters** - Filter talents or job listings smartly.
-- **Team and Company Pages** - Profile pages for businesses and teams.
+- **Reviews and Ratings** - Feedback system for credibility. *removed
+- **Client Verification Badge** - Identifies verified clients. *removed
+- **Team and Company Pages** - Profile pages for businesses and teams. *removed
 
 ---
 
@@ -54,10 +54,10 @@ BSIT 2A
 | Phase       | Progress      |
 |-------------|--------------|
 | Phase 1 (Week 11) | ✅ 100% |
-| Phase 2 (Week 12) | 🟡 80%  |
+| Phase 2 (Week 12) | ✅ 100%  |
 | Phase 3 (Week 13) | 🟡 40%  |
-| Phase 4 (Week 14) | ⚪ 0%   |
-| Phase 5 (Week 15) | ⚪ 0%   |
-| Phase 6 (Week 16) | ⚪ 0%   |
+| Phase 4 (Week 14) | 🟡 40%   |
+| Phase 5 (Week 15) | 🟡 30%   |
+| Phase 6 (Week 16) | 🟡 20%   |
 
 *This will continue to be updated until everything reaches 100%.*
