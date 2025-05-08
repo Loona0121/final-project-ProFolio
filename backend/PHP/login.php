@@ -19,11 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST['google_signup'])) {
         if (password_verify($password, $user['password'])) {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
+            $_SESSION['id'] = $user['id'];
+
 
             $redirect = match ($user['role']) {
-                'freelancer' => 'freelancer_dashboard.php',
+                'freelancer' => '../FreelancerDashboard/freelancerDashboard.php',
                 'client' => 'client_dashboard.php',
-                'agency' => 'agency_dashboard.php',
                 default => 'login.php'
             };
 
@@ -56,12 +57,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['google_signup'])) {
       $user = $result->fetch_assoc();
       $_SESSION['email'] = $user['email'];
       $_SESSION['role'] = $user['role'];
+      $_SESSION['id'] = $user['id'];
+
 
       // Redirect based on role
       $redirect = match ($user['role']) {
-          'freelancer' => 'freelancer_dashboard.php',
+          'freelancer' => '../FreelancerDashboard/freelancerDashboard.php',
           'client' => 'client_dashboard.php',
-          'agency' => 'agency_dashboard.php',
           default => 'login.php'
       };
 

@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 VALUES ('$firstName', '$lastName', '$email', '$password', '$country', '$role')";
 
         if ($con->query($sql)) {
-            echo "<script>alert('Registration successful!'); window.location.href='login.php';</script>";
+            echo "<script>alert('Registration successful!'); window.location.href='../freelancerDashboard/freelancerDashboard.php';</script>";
         } else {
             echo "Error: " . $con->error;
         }
@@ -290,7 +290,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (xhr.status === 200) {
       if (res.status === "success") {
         alert("Google Sign-Up Successful!");
-        window.location.href = "dashboard.php"; // redirect new user
+        window.location.href = "../freelancerDashboard/freelancerDashboard.php"; // redirect new user
       } else if (res.status === "redirect") {
         alert(res.message);
         window.location.href = res.redirect_url; // redirect existing user to login.php
@@ -342,7 +342,7 @@ function handleGoogleSignIn() {
     if (xhr.status === 200) {
       if (res.status === "success") {
         alert("Google Sign-Up Successful!");
-        window.location.href = "dashboard.php"; // redirect new user
+        window.location.href = "../freelancerDashboard/freelancerDashboard.php"; // redirect new user
       } else if (res.status === "redirect") {
         alert(res.message);
         window.location.href = res.redirect_url; // redirect existing user to login.php
