@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update welcome message
       if (welcomeTitle) {
         const firstName = profileData.fullName ? profileData.fullName.split(' ')[0] : 'Aran';
-        welcomeTitle.textContent = `Welcome back, ${firstName}!`;
+        welcomeTitle.textContent = `Welcome, ${firstName}!`;
       }
     }
     
