@@ -1,0 +1,416 @@
+<?php
+session_start();
+include_once("../connection/connection.php");
+include_once("FUNCTIONS/getUserData.php"); 
+$con = connection();
+
+$userID = $_SESSION['id'];  // Ensure the user is logged in
+$userData = getUserData($userID);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Job Offers</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Dashboard CSS -->
+  <link href="proFolio.css" rel="stylesheet">
+  <style>
+    /* Additional styles for simplified job offers */
+    .job-offer-item {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .job-offer-item:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .job-offer-content {
+      padding: 20px;
+    }
+    
+    .client-avatar {
+      width: 50px;
+      height: 50px;
+      background-color: #f2f5fa;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #4a6cf7;
+    }
+    
+    .client-avatar.large {
+      width: 80px;
+      height: 80px;
+      font-size: 32px;
+    }
+    
+    .client-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .job-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .job-message {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .job-actions {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background-color: #f9fafb;
+      border-top: 1px solid #eee;
+    }
+    
+    .btn-accept, .btn-reject {
+      padding: 8px 20px;
+    }
+    
+    .back-btn {
+      margin-bottom: 20px;
+    }
+    
+    .message-truncate {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .client-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .job-detail-header {
+      margin-bottom: 25px;
+    }
+    
+    .job-detail-title {
+      font-size: 24px;
+      margin: 15px 0;
+      font-weight: 700;
+      color: #333;
+    }
+    
+    /* Improved client message styling */
+    .client-message {
+      background-color: #f9fafb;
+      padding: 25px;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      line-height: 1.6;
+    }
+    
+    .client-message p {
+      margin-bottom: 15px;
+    }
+    
+    .client-message p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .message-signature {
+      margin-top: 20px;
+      font-style: italic;
+      font-weight: 500;
+      color: #555;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    
+    /* Add container padding to job-detail-container */
+.job-detail-container {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 30px;
+  margin-bottom: 30px;
+  margin-top: 15px; /* Add top margin for spacing after back button */
+}
+
+/* Add padding to the container holding the back button */
+#job-offer-details {
+  padding: 15px;
+}
+    
+    /* Action buttons container */  
+    .job-detail-actions {
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    /* Back button styling */
+    .back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
+  margin-left: 15px; /* Add left margin */
+}
+    
+    .back-btn:hover {
+      background-color: #e9ecef;
+    }
+    
+    .back-btn i {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Layout Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="logo-text">Pro<span class="accent">Folio</span></span>
+        </div>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <a href="freelancerProfile.php" class="user-name-link">
+          <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
+          <div class="info-value non-editable"> <?php echo htmlspecialchars($userData['job_title']); ?></div>
+          </a>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="freelancerDashboard.php" class="nav-link">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freelancerPortfolio.php" class="nav-link">
+              <i class="fas fa-palette"></i> Portfolio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="freelancerOffers.php" class="nav-link active">
+              <i class="fas fa-briefcase"></i> Job Offers
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="freelancerLogout.php" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+        <!-- Page Header -->
+        <header class="page-header">
+          <div>
+            <h2 class="page-title">Job Offers</h2>
+            <p class="page-subtitle">Review and respond to your job opportunities</p>
+          </div>
+          <div class="date-display">
+            <i class="far fa-calendar-alt"></i>
+            <span id="current-date"></span>
+          </div>
+        </header>
+        
+        <!-- Job Offers List View -->
+        <section id="job-offers-list" class="dashboard-section" style="display: none;">
+          <div class="section-content">
+            <div class="job-offers-container">
+              <!-- Job Offer Item 1 -->
+              <article class="job-offer-item" data-job-id="job1">
+                <div class="job-offer-content">
+                  <div class="client-info">
+                    <div class="client-avatar">
+                      <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="client-name">Michael Chen</h4>
+                  </div>
+                  <h3 class="job-title">Senior Front-End Developer</h3>
+                  <div class="job-message">
+                    <p class="message-truncate">Hi Aran, I'm impressed with your portfolio and think you'd be a great fit for our project. Your experience with React and TypeScript aligns perfectly with what we're looking for...</p>
+                  </div>
+                </div>
+                <div class="job-actions">
+                  <button class="btn btn-outline-primary view-details-btn" data-job-id="job1">View Details</button>
+                  <div>
+                    <button class="btn btn-success btn-accept" data-job-id="job1" data-job-title="Senior Front-End Developer"><i class="fas fa-check"></i> Accept</button>
+                    <button class="btn btn-danger btn-reject" data-job-id="job1" data-job-title="Senior Front-End Developer"><i class="fas fa-times"></i> Decline</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Job Offer Item 2 -->
+              <article class="job-offer-item" data-job-id="job2">
+                <div class="job-offer-content">
+                  <div class="client-info">
+                    <div class="client-avatar">
+                      <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="client-name">Sarah Patel</h4>
+                  </div>
+                  <h3 class="job-title">UI/UX Designer for Fintech App</h3>
+                  <div class="job-message">
+                    <p class="message-truncate">Hello Aran, I've been following your work for some time and I'm really impressed with your UI/UX portfolio. We're looking for someone with your expertise to help redesign our fintech application...</p>
+                  </div>
+                </div>
+                <div class="job-actions">
+                  <button class="btn btn-outline-primary view-details-btn" data-job-id="job2">View Details</button>
+                  <div>
+                    <button class="btn btn-success btn-accept" data-job-id="job2" data-job-title="UI/UX Designer for Fintech App"><i class="fas fa-check"></i> Accept</button>
+                    <button class="btn btn-danger btn-reject" data-job-id="job2" data-job-title="UI/UX Designer for Fintech App"><i class="fas fa-times"></i> Decline</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Job Offer Item 3 -->
+              <article class="job-offer-item" data-job-id="job3">
+                <div class="job-offer-content">
+                  <div class="client-info">
+                    <div class="client-avatar">
+                      <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="client-name">David Rodriguez</h4>
+                  </div>
+                  <h3 class="job-title">Full-Stack Developer for Learning Platform</h3>
+                  <div class="job-message">
+                    <p class="message-truncate">Hi Aran, We need a skilled full-stack developer like you to help build our online learning platform. Based on your experience with both frontend and backend technologies, I believe you'd be perfect...</p>
+                  </div>
+                </div>
+                <div class="job-actions">
+                  <button class="btn btn-outline-primary view-details-btn" data-job-id="job3">View Details</button>
+                  <div>
+                    <button class="btn btn-success btn-accept" data-job-id="job3" data-job-title="Full-Stack Developer for Learning Platform"><i class="fas fa-check"></i> Accept</button>
+                    <button class="btn btn-danger btn-reject" data-job-id="job3" data-job-title="Full-Stack Developer for Learning Platform"><i class="fas fa-times"></i> Decline</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Job Offer Detailed View (Improved layout) -->
+        <section id="job-offer-details" class="dashboard-section">
+          <button class="btn btn-outline-secondary back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Offers
+          </button>
+          
+          <div class="job-detail-container">
+            <!-- Job Header -->
+            <div class="job-detail-header">
+              <div class="client-info">
+                <div class="client-avatar large">
+                  <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="client-name" id="detail-client-name">David Rodriguez</h3>
+              </div>
+              
+              <h2 class="job-detail-title" id="detail-job-title">Full-Stack Developer for Learning Platform</h2>
+            </div>
+            
+            <!-- Full Client Message -->
+            <div class="client-message" id="detail-message">
+              <p>Hi Aran, We need a skilled full-stack developer like you to help build our online learning platform. Based on your experience with both frontend and backend technologies, I believe you'd be perfect for this role.</p>
+              <p>The project will utilize React for the frontend and Node.js with MongoDB for the backend. We're planning a 3-month engagement with potential for extension.</p>
+              <p>Please let me know if you're interested in discussing further details.</p>
+              <p class="message-signature">- David Rodriguez, Lead Developer at EduLearn</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="job-detail-actions">
+              <button class="btn btn-success btn-accept" data-job-id="current" data-job-title="Full-Stack Developer for Learning Platform">
+                <i class="fas fa-check"></i> Accept Offer
+              </button>
+              <button class="btn btn-danger btn-reject" data-job-id="current" data-job-title="Full-Stack Developer for Learning Platform">
+                <i class="fas fa-times"></i> Decline
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Date Display Script -->
+  <script>
+    // Function to display the current date
+    function displayCurrentDate() {
+      const currentDate = new Date();
+      const options = {year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('current-date').textContent = currentDate.toLocaleDateString('en-US', options);
+    }
+    
+    // Display date when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      displayCurrentDate();
+      
+      // Event listeners for job details panel
+      const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+      const backToListButton = document.querySelector('.back-to-list');
+      
+      viewDetailsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          document.getElementById('job-offers-list').style.display = 'none';
+          document.getElementById('job-offer-details').style.display = 'block';
+        });
+      });
+      
+      if (backToListButton) {
+        backToListButton.addEventListener('click', function() {
+          document.getElementById('job-offers-list').style.display = 'block';
+          document.getElementById('job-offer-details').style.display = 'none';
+        });
+      }
+    });
+    // Show job list by default instead of job details
+    document.getElementById('job-offers-list').style.display = 'block';
+      document.getElementById('job-offer-details').style.display = 'none';
+  </script>
+  <script src="JS/freelancerProfile.js"></script>
+  <script src="JS/freelancerOffers.js"></script>
+</body>
+  </html>
