@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProFolio - Sent Offers</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="ProFolio.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Layout Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="logo-text">Pro<span class="accent">Folio</span></span>
+        </div>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <a href="clientProfile.html" class="user-name-link">
+            <h6 class="user-name" id="sidebar-name">Aran Joshua</h6>
+            <div class="user-role" id="sidebar-role">Client</div>
+          </a>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="clientDashboard.html" class="nav-link">
+              <i class="fas fa-th-large"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="clientTalents.html" class="nav-link">
+              <i class="fas fa-users"></i> Find Talents
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="clientOffers.html" class="nav-link active">
+              <i class="fas fa-paper-plane"></i> Sent Offers
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="clientLogout.html" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </aside>
+    
+    <main class="main-content">
+      <div class="page-content">
+        <!-- Page Header -->
+        <header class="page-header">
+          <div>
+            <h2 class="page-title">Sent Offers</h2>
+            <p class="page-subtitle">View and manage your sent offers to talents</p>
+          </div>
+          <div class="date-display">
+            <i class="far fa-calendar-alt"></i>
+            <span id="current-date"></span>
+          </div>
+        </header>
+       
+        <!-- Offers Filters -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h5 class="mb-3 mb-md-0">Filter Offers</h5>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+                  <button class="btn btn-sm filter-btn active" data-filter="all">All</button>
+                  <button class="btn btn-sm filter-btn" data-filter="pending">Pending</button>
+                  <button class="btn btn-sm filter-btn" data-filter="accepted">Accepted</button>
+                  <button class="btn btn-sm filter-btn" data-filter="declined">Declined</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Offers List -->
+        <section id="offers-list-section" class="dashboard-section">
+          <div class="section-content">
+            <div class="offers-container" id="offers-list">
+              <!-- Offers will be dynamically inserted here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Offer Details View -->
+        <section id="offer-details" class="dashboard-section" style="display: none;">
+          <button class="btn btn-outline-secondary back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Offers
+          </button>
+          
+          <div class="offer-detail-container">
+            <!-- Offer Header -->
+            <div class="offer-detail-header">
+              <div class="freelancer-info">
+                <div class="freelancer-avatar large" id="detail-freelancer-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h3 class="freelancer-name" id="detail-freelancer-name">Sarah Johnson</h3>
+                  <p class="text-muted mb-0" id="detail-freelancer-title">UI/UX Designer</p>
+                </div>
+              </div>
+              
+              <!-- Enhanced status banner -->
+              <div class="status-banner pending" id="detail-status-banner">
+                <i class="fas fa-clock"></i> Offer Status: <span id="detail-status-text">Pending</span>
+              </div>
+              
+              <h2 class="offer-detail-title" id="detail-job-title">E-commerce Website Redesign</h2>
+            </div>
+            
+            <!-- Client Message -->
+            <div class="client-message" id="detail-client-message">
+              <div class="message-header">
+                Client
+              </div>
+              <p>Looking for a talented designer to help modernize our online store.</p>
+            </div>
+            
+            <!-- Freelancer Response (conditionally displayed) -->
+            <div class="freelancer-message" id="detail-freelancer-message" style="display: none;">
+              <div class="message-header">
+                Freelancer
+              </div>
+              <p id="detail-response-text">Thank you for your offer! I'm excited to work on redesigning your e-commerce platform.</p>
+            </div>
+            
+            <!-- Contact Information (conditionally displayed) -->
+            <div class="contact-card" id="detail-contact-info" style="display: none;">
+              <h5 class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i>Contact Information</h5>
+              <p class="mb-1">You can now contact the freelancer directly to discuss project details:</p>
+              <div class="email-display">
+                <i class="fas fa-at me-2"></i><a href="mailto:#" id="detail-email"></a>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Dashboard Footer -->
+        <footer class="dashboard-footer">
+          <p>ProFolio helps you showcase your work and connect with clients worldwide. Keep your portfolio updated to maximize opportunities.</p>
+          <div class="footer-links">
+            <a href="#">Terms of Service and Privacy Policy</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Load Profile Data Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load profile data from local storage if exists
+      const savedProfileData = localStorage.getItem('profileData');
+      if (savedProfileData) {
+        const profileData = JSON.parse(savedProfileData);
+        
+        // Update sidebar name and role
+        const sidebarName = document.getElementById('sidebar-name');
+        const sidebarRole = document.getElementById('sidebar-role');
+        
+        if (sidebarName) {
+          sidebarName.textContent = profileData.fullName || 'Aran Joshua';
+        }
+        
+        if (sidebarRole) {
+          sidebarRole.textContent = profileData.company && profileData.company.trim() !== '' ? 
+            profileData.company : 'Client';
+        }
+      }
+      
+      // Load profile photo from local storage if exists
+      const savedPhoto = localStorage.getItem('profilePhoto');
+      if (savedPhoto) {
+        const sidebarAvatar = document.getElementById('sidebar-avatar');
+        if (sidebarAvatar) {
+          if (sidebarAvatar.querySelector('img')) {
+            sidebarAvatar.querySelector('img').src = savedPhoto;
+          } else {
+            const avatarImg = document.createElement('img');
+            avatarImg.style.width = '100%';
+            avatarImg.style.height = '100%';
+            avatarImg.style.objectFit = 'cover';
+            avatarImg.style.borderRadius = '50%';
+            sidebarAvatar.innerHTML = '';
+            sidebarAvatar.appendChild(avatarImg);
+            avatarImg.src = savedPhoto;
+          }
+        }
+      }
+    });
+  </script>
+  
+  <!-- Script for Offers Management -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Display current date in the header
+      const currentDateElem = document.getElementById('current-date');
+      if (currentDateElem) {
+        const options = {year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        currentDateElem.textContent = today.toLocaleDateString('en-US', options);
+      }
+      
+      // Sample offers data (in real app, this would come from an API)
+      const offersData = [
+        {
+          id: 1,
+          freelancerName: "Sarah Johnson",
+          freelancerTitle: "UI/UX Designer",
+          jobTitle: "E-commerce Website Redesign",
+          message: "Hi Sarah, I was impressed by your portfolio. Would you be interested in helping us redesign our e-commerce website to improve user experience and increase conversions?",
+          status: "accepted",
+          responseMessage: "Thank you for your offer! I'm excited to work on redesigning your e-commerce platform and improving the user experience.",
+          email: "sarah.johnson@example.com"
+        },
+        {
+          id: 2,
+          freelancerName: "Michael Chen",
+          freelancerTitle: "Full Stack Developer",
+          jobTitle: "Mobile App Development",
+          message: "Hello Michael, we need a talented developer to create a mobile app for our business. Your experience with React Native seems perfect for this project.",
+          status: "pending"
+        },
+        {
+          id: 3,
+          freelancerName: "Emma Rodriguez",
+          freelancerTitle: "Graphic Designer",
+          jobTitle: "Brand Identity Design",
+          message: "Emma, I loved your previous work on brand identity projects. We're launching a new product line and need a cohesive brand identity including logo, color palette, and style guide.",
+          status: "declined",
+          responseMessage: "Thank you for considering me for your brand identity project. Unfortunately, I'm fully booked with projects for the next few months and won't be able to take on new work at this time."
+        },
+        {
+          id: 4,
+          freelancerName: "David Kim",
+          freelancerTitle: "Content Writer",
+          jobTitle: "Blog Content Creation",
+          message: "David, we need regular blog content for our company website. Your portfolio shows strong experience in our industry. Would you be available for ongoing content creation?",
+          status: "accepted",
+          responseMessage: "I'd be delighted to create blog content for your website. I appreciate the opportunity and look forward to helping establish your company as a thought leader in the industry.",
+          email: "david.kim@example.com"
+        }
+      ];
+      
+      // Render offers list
+      function renderOffersList(offers = offersData) {
+        const offersContainer = document.getElementById('offers-list');
+        if (!offersContainer) return;
+        
+        offersContainer.innerHTML = '';
+        
+        if (offers.length === 0) {
+          offersContainer.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h4>No offers found</h4>
+              <p class="text-muted">You haven't sent any offers yet or none match your current filter.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        offers.forEach(offer => {
+          // Get status class for badge
+          let statusClass = '';
+          let statusIcon = '';
+          
+          switch(offer.status) {
+            case 'pending':
+              statusClass = 'status-pending';
+              statusIcon = 'clock';
+              break;
+            case 'accepted':
+              statusClass = 'status-accepted';
+              statusIcon = 'check-circle';
+              break;
+            case 'declined':
+              statusClass = 'status-declined';
+              statusIcon = 'times-circle';
+              break;
+          }
+          
+          // Create offer item HTML
+          const offerHTML = `
+            <div class="offer-item" data-id="${offer.id}" data-status="${offer.status}">
+              <div class="offer-content">
+                <div class="freelancer-info">
+                  <div class="freelancer-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div>
+                    <h5 class="freelancer-name">${offer.freelancerName}</h5>
+                    <p class="text-muted mb-0">${offer.freelancerTitle}</p>
+                  </div>
+                  <span class="ms-auto status-badge ${statusClass}">
+                    <i class="fas fa-${statusIcon} me-1"></i>${offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+                  </span>
+                </div>
+                
+                <h4 class="job-title">${offer.jobTitle}</h4>
+                
+                <div class="offer-message">
+                  <p class="message-truncate">${offer.message}</p>
+                </div>
+
+                ${offer.status === 'accepted' ? `
+                <div class="mt-3 d-flex align-items-center">
+                  <i class="fas fa-envelope-open-text text-success me-2"></i>
+                  <small class="text-success">Freelancer's contact: ${offer.email}</small>
+                </div>` : ''}
+              </div>
+              
+              <div class="offer-actions">
+                <button class="btn btn-sm btn-primary view-details-btn" data-id="${offer.id}">
+                  <i class="fas fa-eye me-1"></i> View Details
+                </button>
+              </div>
+            </div>
+          `;
+          
+          offersContainer.innerHTML += offerHTML;
+        });
+        
+        // Add event listeners to view details buttons
+        document.querySelectorAll('.view-details-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const offerId = this.getAttribute('data-id');
+            showOfferDetails(parseInt(offerId));
+          });
+        });
+      }
+      
+      // Show offer details
+      function showOfferDetails(offerId) {
+        const offer = offersData.find(o => o.id === offerId);
+        if (!offer) return;
+        
+        // Hide offers list, show details view
+        document.getElementById('offers-list-section').style.display = 'none';
+        document.getElementById('offer-details').style.display = 'block';
+        
+        // Populate details
+        document.getElementById('detail-freelancer-name').textContent = offer.freelancerName;
+        document.getElementById('detail-freelancer-title').textContent = offer.freelancerTitle;
+        document.getElementById('detail-job-title').textContent = offer.jobTitle;
+        
+        // Set the client message
+        const clientMessageElem = document.getElementById('detail-client-message');
+        clientMessageElem.innerHTML = `
+          <div class="message-header">Client</div>
+          <p>${offer.message}</p>
+        `;
+        
+        // Update status banner class and text
+        const statusBanner = document.getElementById('detail-status-banner');
+        statusBanner.className = `status-banner ${offer.status}`;
+        
+        let statusIcon = '';
+        let statusText = '';
+        
+        switch(offer.status) {
+          case 'pending':
+            statusIcon = 'clock';
+            statusText = 'Pending Response';
+            break;
+          case 'accepted':
+            statusIcon = 'check-circle';
+            statusText = 'Offer Accepted';
+            break;
+          case 'declined':
+            statusIcon = 'times-circle';
+            statusText = 'Offer Declined';
+            break;
+        }
+        
+        statusBanner.innerHTML = `<i class="fas fa-${statusIcon}"></i> Offer Status: <span id="detail-status-text">${statusText}</span>`;
+        
+        // Handle freelancer response if available
+        const freelancerMessageElem = document.getElementById('detail-freelancer-message');
+        if (offer.responseMessage) {
+          document.getElementById('detail-response-text').textContent = offer.responseMessage;
+          freelancerMessageElem.style.display = 'block';
+        } else {
+          freelancerMessageElem.style.display = 'none';
+        }
+        
+        // Handle contact info for accepted offers
+        const contactInfoElem = document.getElementById('detail-contact-info');
+        if (offer.status === 'accepted' && offer.email) {
+          document.getElementById('detail-email').textContent = offer.email;
+          document.getElementById('detail-email').href = `mailto:${offer.email}`;
+          contactInfoElem.style.display = 'block';
+        } else {
+          contactInfoElem.style.display = 'none';
+        }
+      }
+      
+      // Back button event listener
+      document.querySelector('.back-btn').addEventListener('click', function() {
+        document.getElementById('offers-list-section').style.display = 'block';
+        document.getElementById('offer-details').style.display = 'none';
+      });
+      
+      // Filter buttons event listeners
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Update active button state
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.getAttribute('data-filter');
+          
+          // Filter offers
+          let filteredOffers;
+          if (filter === 'all') {
+            filteredOffers = offersData;
+          } else {
+            filteredOffers = offersData.filter(offer => offer.status === filter);
+          }
+          
+          renderOffersList(filteredOffers);
+        });
+      });
+      
+      // Initial render
+      renderOffersList();
+    });
+  </script>
+</body>
+</html>

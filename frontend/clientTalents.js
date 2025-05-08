@@ -128,7 +128,62 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Make sure the global filterTalents function is properly connected
   window.filterTalents = filterAndRenderTalents;
+  
+  // Initialize toast components
+  initializeToasts();
 });
+
+// Initialize toast components
+function initializeToasts() {
+  // Create toast container if it doesn't exist
+  if (!document.getElementById('toast-container')) {
+    const toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    toastContainer.style.zIndex = '5';
+    document.body.appendChild(toastContainer);
+  }
+}
+
+// Show toast notification
+function showToast(title, message, type = 'success') {
+  const toastContainer = document.getElementById('toast-container');
+  
+  const toastId = 'toast-' + Date.now();
+  const toastEl = document.createElement('div');
+  toastEl.id = toastId;
+  toastEl.className = 'toast';
+  toastEl.setAttribute('role', 'alert');
+  toastEl.setAttribute('aria-live', 'assertive');
+  toastEl.setAttribute('aria-atomic', 'true');
+  
+  const iconClass = type === 'success' ? 'check-circle' : 'info-circle';
+  const bgClass = type === 'success' ? 'bg-success' : 'bg-info';
+  
+  toastEl.innerHTML = `
+    <div class="toast-header ${bgClass} text-white">
+      <i class="fas fa-${iconClass} me-2"></i>
+      <strong class="me-auto">${title}</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      ${message}
+    </div>
+  `;
+  
+  toastContainer.appendChild(toastEl);
+  
+  const toast = new bootstrap.Toast(toastEl, {
+    delay: 5000
+  });
+  
+  toast.show();
+  
+  // Remove toast element after it's hidden
+  toastEl.addEventListener('hidden.bs.toast', function() {
+    toastEl.remove();
+  });
+}
 
 // Render talents grid based on filtered data
 function renderTalentsGrid(talents) {
@@ -291,28 +346,17 @@ function setupModals() {
     openSendOfferModal(talentId);
   });
   
-  // Setup skills input in offer form
-  const skillsInput = document.getElementById('skills-input');
-  skillsInput?.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' || event.key === ',') {
-      event.preventDefault();
-      const skill = this.value.trim();
-      if (skill) {
-        addSkillTag(skill);
-        this.value = '';
-      }
+  // Submit offer button
+  document.getElementById('submit-offer-btn').addEventListener('click', function() {
+    submitOfferForm();
+  });
+  
+  // Add keyboard event listener for offer form
+  document.getElementById('offer-form').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      submitOfferForm();
     }
   });
-  
-  // Project type change event
-  const projectTypeSelect = document.getElementById('project-type');
-  projectTypeSelect?.addEventListener('change', function() {
-    updateRateType(this.value);
-  });
-  
-  // Submit offer button
-  const submitOfferBtn = document.getElementById('submit-offer-btn');
-  submitOfferBtn?.addEventListener('click', submitOfferForm);
 }
 
 // Open portfolio modal
@@ -378,107 +422,108 @@ function openSendOfferModal(talentId) {
   // Set talent name
   document.getElementById('offer-talent-name').textContent = talent.name;
   
+  // Add talent name to job title placeholder
+  document.getElementById('job-title').placeholder = `e.g., ${talent.title} Position`;
+  
   // Reset form
   document.getElementById('offer-form').reset();
-  document.getElementById('skills-tags').innerHTML = '';
-  document.getElementById('required-skills').value = '';
-  
-  // Set default date (2 weeks from now)
-  const twoWeeks = new Date();
-  twoWeeks.setDate(twoWeeks.getDate() + 14);
-  document.getElementById('deadline').value = twoWeeks.toISOString().split('T')[0];
-  
-  // Pre-fill top skills
-  talent.skills.slice(0, 3).forEach(skill => addSkillTag(skill));
   
   // Show modal
   const modalInstance = new bootstrap.Modal(sendOfferModal);
   modalInstance.show();
-}
-
-// Add skill tag to offer form
-function addSkillTag(skill) {
-  const skillsTags = document.getElementById('skills-tags');
   
-  // Create tag element
-  const tagElement = document.createElement('div');
-  tagElement.className = 'badge bg-primary d-flex align-items-center me-2 mb-2';
-  tagElement.innerHTML = `
-    ${skill}
-    <button type="button" class="btn-close btn-close-white ms-2" aria-label="Remove"></button>
-  `;
-  
-  // Add remove event
-  const closeBtn = tagElement.querySelector('.btn-close');
-  closeBtn.addEventListener('click', function() {
-    tagElement.remove();
-    updateRequiredSkillsValue();
-  });
-  
-  // Add to container and update hidden input
-  skillsTags.appendChild(tagElement);
-  updateRequiredSkillsValue();
-}
-
-// Update hidden skills input value
-function updateRequiredSkillsValue() {
-  const skillsTags = document.getElementById('skills-tags');
-  const requiredSkillsInput = document.getElementById('required-skills');
-  
-  const skills = Array.from(skillsTags.querySelectorAll('.badge'))
-    .map(tag => tag.textContent.trim());
-  
-  requiredSkillsInput.value = skills.join(',');
-}
-
-// Update rate type based on project type
-function updateRateType(projectType) {
-  const rateTypeSpan = document.getElementById('rate-type');
-  
-  switch(projectType) {
-    case 'hourly': rateTypeSpan.textContent = 'Per Hour'; break;
-    case 'milestone': rateTypeSpan.textContent = 'Per Milestone'; break;
-    case 'retainer': rateTypeSpan.textContent = 'Per Month'; break;
-    default: rateTypeSpan.textContent = 'Total';
-  }
+  // Focus on job title field
+  setTimeout(() => {
+    document.getElementById('job-title').focus();
+  }, 500);
 }
 
 // Submit offer form
 function submitOfferForm() {
-  const form = document.getElementById('offer-form');
+  // Get form values
+  const jobTitle = document.getElementById('job-title').value.trim();
+  const clientMessage = document.getElementById('client-message').value.trim();
+  const talentName = document.getElementById('offer-talent-name').textContent;
   
-  // Validate form
-  if (!form.checkValidity()) {
-    form.reportValidity();
+  // Validate form with visual feedback
+  let isValid = true;
+  
+  // Check job title
+  const jobTitleInput = document.getElementById('job-title');
+  if (!jobTitle) {
+    jobTitleInput.classList.add('is-invalid');
+    isValid = false;
+  } else {
+    jobTitleInput.classList.remove('is-invalid');
+    jobTitleInput.classList.add('is-valid');
+  }
+  
+  // Check client message
+  const clientMessageInput = document.getElementById('client-message');
+  if (!clientMessage) {
+    clientMessageInput.classList.add('is-invalid');
+    isValid = false;
+  } else {
+    clientMessageInput.classList.remove('is-invalid');
+    clientMessageInput.classList.add('is-valid');
+  }
+  
+  if (!isValid) {
     return;
   }
   
-  // Get data
-  const sendOfferModal = document.getElementById('sendOfferModal');
-  const talentId = parseInt(sendOfferModal.dataset.talentId);
-  const talent = talentsData.find(t => t.id === talentId);
+  // Get client info from localStorage
+  const profileData = localStorage.getItem('profileData');
+  let clientName = 'Aran Joshua'; // Default name
+  let clientCompany = 'Client'; // Default role
   
-  // Create a floating notification
-  const notification = document.createElement('div');
-  notification.className = 'position-fixed top-50 start-50 translate-middle alert alert-success text-center p-3';
-  notification.style.zIndex = '9999';
-  notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-  notification.style.maxWidth = '400px';
-  notification.style.width = '90%';
-  notification.innerHTML = `
-    <strong>Success!</strong><br>
-    Your offer for "${document.getElementById('job-title').value}" has been sent to ${talent.name}.
-  `;
+  if (profileData) {
+    const userData = JSON.parse(profileData);
+    if (userData.fullName) {
+      clientName = userData.fullName;
+    }
+    if (userData.company && userData.company.trim() !== '') {
+      clientCompany = userData.company;
+    }
+  }
   
-  // Add notification to body
-  document.body.appendChild(notification);
+  // Create offer object that matches the structure in freelancerOffers.html
+  const offerData = {
+    talentName: talentName,
+    clientName: clientName,
+    clientCompany: clientCompany,
+    jobTitle: jobTitle,
+    message: clientMessage,
+    date: new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})
+  };
   
-  // Auto-remove after 2 seconds
+  // Save the offer to localStorage
+  let sentOffers = JSON.parse(localStorage.getItem('sentOffers') || '[]');
+  sentOffers.push(offerData);
+  localStorage.setItem('sentOffers', JSON.stringify(sentOffers));
+  
+  // Prepare submit button with loading state
+  const submitBtn = document.getElementById('submit-offer-btn');
+  const originalBtnText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Sending...';
+  submitBtn.disabled = true;
+  
+  // Simulate sending delay (remove in production)
   setTimeout(() => {
-    notification.classList.add('fade');
-    setTimeout(() => notification.remove(), 300);
-  }, 2000);
-  
-  // Close modal
-  bootstrap.Modal.getInstance(sendOfferModal).hide();
+    // Reset submit button
+    submitBtn.innerHTML = originalBtnText;
+    submitBtn.disabled = false;
+    
+    // Close modal
+    const sendOfferModal = document.getElementById('sendOfferModal');
+    bootstrap.Modal.getInstance(sendOfferModal).hide();
+    
+    // Reset form and validation classes
+    document.getElementById('offer-form').reset();
+    document.getElementById('job-title').classList.remove('is-valid');
+    document.getElementById('client-message').classList.remove('is-valid');
+    
+    // Show success toast
+    showToast('Offer Sent Successfully', `Your job offer has been sent to ${talentName}.`, 'success');
+  }, 1200);
 }
