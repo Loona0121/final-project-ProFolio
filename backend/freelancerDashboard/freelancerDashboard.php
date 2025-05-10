@@ -11,6 +11,13 @@ if (!isset($_SESSION['id'])) {
 }
 $userID = $_SESSION['id'];  // Ensure the user is logged in
 $userData = getUserData($userID);
+
+
+ // PHP generates the text
+ $text = "Welcome," .htmlspecialchars($userData['first_name']) . " to the domain of the monarch";
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +101,7 @@ $userData = getUserData($userID);
         
         <!-- Welcome Banner -->
         <section class="welcome-banner">
-          <h1 class="welcome-title">Welcome, <?php echo htmlspecialchars($userData['first_name']); ?></h1>
+          <h1 class="welcome-title" id = "welcome">Welcome, <?php echo htmlspecialchars($userData['first_name']); ?></h1>
           <p class="welcome-message">Your professional portfolio is looking great. Keep it updated to attract more clients and showcase your latest work.</p>
           <div class="welcome-actions">
             <a href="freelancerPortfolio.php" class="welcome-btn primary">View Portfolio</a>
@@ -207,5 +214,20 @@ $userData = getUserData($userID);
     });
   </script>
   <script src="JS/freelancerDashboard.js"></script>
+
+  <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+  <script>var app = document.getElementById('welcome');
+
+var typewriter = new Typewriter(app, {
+  loop: true,
+  delay: 75,
+});
+var text = <?php echo json_encode($text); ?>;
+typewriter
+  .pauseFor(1000)
+  .typeString(text)
+  .pauseFor(40000)
+  .deleteChars(10)
+  .start();</script>
 </body>
 </html>

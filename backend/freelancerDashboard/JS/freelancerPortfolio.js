@@ -2,6 +2,8 @@
 // Portfolio Creation JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Form elements
+    const portfolioCard = document.querySelector('.portfolio-card'); // or correct selector
+
     const portfolioForm = document.getElementById('portfolio-form');
     const formContainer = document.getElementById('portfolio-form-container');
     const portfolioView = document.getElementById('portfolio-view');
@@ -730,6 +732,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       // Show work experiences
+      
       const experiencesContainer = document.getElementById('view-portfolio-experiences');
       experiencesContainer.innerHTML = '';
       
@@ -947,3 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
+  function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'short' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}

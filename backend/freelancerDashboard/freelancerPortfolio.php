@@ -5,13 +5,112 @@ include_once("FUNCTIONS/getUserData.php");
 $con = connection();
 
 if (!isset($_SESSION['id'])) {
-  header("Location: ../PHP/login.php");
-  exit();
+  echo json_encode(["status" => "error", "message" => "User not logged in"]);
+  exit;
 }
 
-$userId = $_SESSION['id'];
+// Make sure it's a POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $userID = $_SESSION['id'] ?? null; // safer
+    if (!$userID) {
+        echo json_encode(["status" => "error", "message" => "User not logged in"]);
+        exit;
+    }
+    
+    $userData = getUserData($userID);
+    
+    // REMOVED DEBUG STATEMENT: var_dump($_SESSION['id']); exit;
 
-$userData = getUserData($userId);
+    // Check if userData is null or invalid
+    if ($userData === null) {
+        echo json_encode(["status" => "error", "message" => "User data not found"]);
+        exit;
+    }
+
+    // Safely collect data
+    $portfolioName = mysqli_real_escape_string($con, $_POST['name'] ?? '');
+    $portfolioCategory = mysqli_real_escape_string($con, $_POST['category'] ?? '');
+    $portfolioDescription = mysqli_real_escape_string($con, $_POST['portfolio_description'] ?? '');
+    $skills = $_POST['skills'] ?? [];
+    $workExperiences = $_POST['work_experience'] ?? [];
+    $workSamples = $_POST['work_samples'] ?? [];
+
+    // Fix: Use the correct session variable
+    $userId = $userID; // Use the already validated userID variable
+
+    if (empty($portfolioName) || empty($portfolioCategory)) {
+        echo json_encode(["status" => "error", "message" => "Missing required fields"]);
+        exit;
+    }
+
+    // Insert into 'portfolio' table
+    $insertPortfolio = "INSERT INTO portfolio (user_id, name, category, description, created_at)
+                        VALUES ('$userId', '$portfolioName', '$portfolioCategory', '$portfolioDescription', NOW())";
+                        
+    if (mysqli_query($con, $insertPortfolio)) {
+        $portfolioId = mysqli_insert_id($con); // Get the newly created portfolio ID
+
+        // Insert skills
+        foreach ($skills as $skillName) {
+            $skillName = mysqli_real_escape_string($con, $skillName);
+
+            $skillQuery = "SELECT skill_id FROM skills WHERE skill_name = '$skillName'";
+            $skillResult = mysqli_query($con, $skillQuery);
+
+            if (mysqli_num_rows($skillResult) > 0) {
+                $skillRow = mysqli_fetch_assoc($skillResult);
+                $skillId = $skillRow['skill_id'];
+            } else {
+                $insertSkill = "INSERT INTO skills (skill_name) VALUES ('$skillName')";
+                mysqli_query($con, $insertSkill);
+                $skillId = mysqli_insert_id($con);
+            }
+
+            $linkSkill = "INSERT INTO portfolio_skills (portfolio_id, skill_id) VALUES ('$portfolioId', '$skillId')";
+            mysqli_query($con, $linkSkill);
+        }
+
+        // Insert work experiences
+        foreach ($workExperiences as $experience) {
+            $title = mysqli_real_escape_string($con, $experience['title'] ?? '');
+            $company = mysqli_real_escape_string($con, $experience['company'] ?? '');
+            $startDate = mysqli_real_escape_string($con, $experience['start_date'] ?? '');
+            $endDate = mysqli_real_escape_string($con, $experience['end_date'] ?? '');
+            $description = mysqli_real_escape_string($con, $experience['description'] ?? '');
+
+            if (!empty($title) && !empty($company)) { // Insert only if some basic fields exist
+                $insertExperience = "INSERT INTO work_experience (portfolio_id, title, company, start_date, end_date, description)
+                                     VALUES ('$portfolioId', '$title', '$company', '$startDate', '$endDate', '$description')";
+                mysqli_query($con, $insertExperience);
+            }
+        }
+
+        // Insert work samples
+        foreach ($workSamples as $sample) {
+            $sampleTitle = mysqli_real_escape_string($con, $sample['title'] ?? '');
+            $sampleDescription = mysqli_real_escape_string($con, $sample['description'] ?? '');
+            $sampleUrl = mysqli_real_escape_string($con, $sample['url'] ?? '');
+
+            if (!empty($sampleTitle)) { // Insert only if title is not empty
+                $insertSample = "INSERT INTO work_samples (portfolio_id, title, description, url)
+                                 VALUES ('$portfolioId', '$sampleTitle', '$sampleDescription', '$sampleUrl')";
+                mysqli_query($con, $insertSample);
+            }
+        }
+
+        echo json_encode(["status" => "success", "message" => "Portfolio created successfully"]);
+        exit; // Exit after sending the response
+    } else {
+        echo json_encode(["status" => "error", "message" => "Error creating portfolio"]);
+        exit; // Exit after sending the response
+    }
+} 
+// No else statement here - continue to HTML output for non-POST requests
+
+// Get the user data for display
+$userID = $_SESSION['id'] ?? 0;
+$userData = getUserData($userID);
 
 
 ?>
@@ -125,30 +224,73 @@ $userData = getUserData($userId);
           <!-- Portfolio Items List -->
           <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
-            <div class="portfolio-card" data-portfolio-id="1">
-              <div class="portfolio-card-content">
-                <h3 class="portfolio-card-title">Web Development Projects</h3>
+            <?php
+// Query to get all portfolio data with skills
+$sql = "SELECT A.portfolio_id, A.name, A.description, C.skill_name
+        FROM portfolio A
+        LEFT JOIN portfolio_skills B ON A.portfolio_id = B.portfolio_id
+        LEFT JOIN skills C ON C.skill_id = B.skill_id";
+
+$result = $con->query($sql);
+
+$portfolios = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $id = $row['portfolio_id'];
+
+        // Initialize portfolio entry if not already set
+        if (!isset($portfolios[$id])) {
+            $portfolios[$id] = [
+                'name' => $row['name'],
+                'description' => $row['description'],
+                'skills' => []
+            ];
+        }
+
+        // Add skill if it's not already in the list and not null
+        if ($row['skill_name'] && !in_array($row['skill_name'], $portfolios[$id]['skills'])) {
+            $portfolios[$id]['skills'][] = $row['skill_name'];
+        }
+    }
+
+    // Now render the HTML once per portfolio
+    foreach ($portfolios as $portfolio) {
+        ?>
+        <div class="portfolio-card" data-portfolio-id="<?php echo htmlspecialchars($id); ?>"
+         data-work-experiences='[{"title":"Developer","company":"Tech Co","startDate":"2022-01-01","endDate":"2023-01-01","description":"Built apps","isCurrent":false}]'>
+            <div class="portfolio-card-content">
+                <h3 class="portfolio-card-title"><?php echo htmlspecialchars($portfolio['name']); ?></h3>
                 <div class="portfolio-card-tags">
-                  <span class="tag">React</span>
-                  <span class="tag">JavaScript</span>
-                  <span class="tag">Node.js</span>
+                    <?php foreach ($portfolio['skills'] as $skill): ?>
+                        <span class="tag"><?php echo htmlspecialchars($skill); ?></span>
+                    <?php endforeach; ?>
                 </div>
-                <p class="portfolio-card-desc">A collection of my best web development projects showcasing frontend and backend skills.</p>
+                <p class="portfolio-card-desc"><?php echo htmlspecialchars($portfolio['description']); ?></p>
                 <div class="portfolio-card-footer">
-                  <div class="portfolio-actions mt-3">
-                    <button class="btn btn-primary view-portfolio-btn me-2">
-                      <i class="far fa-eye me-1"></i> View
-                    </button>
-                    <button class="btn btn-secondary edit-portfolio-btn me-2">
-                      <i class="far fa-edit me-1"></i> Edit
-                    </button>
-                    <button class="btn btn-danger delete-portfolio-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                      <i class="far fa-trash-alt me-1"></i> Delete
-                    </button>
-                  </div>
+                    <div class="portfolio-actions mt-3">
+                        <button class="btn btn-primary view-portfolio-btn me-2">
+                            <i class="far fa-eye me-1"></i> View
+                        </button>
+                        <button class="btn btn-secondary edit-portfolio-btn me-2">
+                            <i class="far fa-edit me-1"></i> Edit
+                        </button>
+                        <button class="btn btn-danger delete-portfolio-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                            <i class="far fa-trash-alt me-1"></i> Delete
+                        </button>
+                    </div>
                 </div>
-              </div>
             </div>
+        </div>
+        <?php
+    }
+} else {
+    echo "No records found.";
+}
+
+$con->close();
+?>
+
             
             <!-- Create New Portfolio Card -->
             <div class="portfolio-card" style="border: 2px dashed #dee2e6; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; cursor: pointer;" id="create-portfolio-btn">
@@ -229,7 +371,7 @@ $userData = getUserData($userId);
                 </div>
                 <div class="mb-3">
                   <label for="portfolio-description" class="form-label">Description <span class="text-danger">*</span></label>
-                  <textarea class="form-control required" id="portfolio-description" name="description" rows="3" placeholder="Describe your portfolio and what makes it special..."></textarea>
+                  <textarea class="form-control required" id="portfolio-description" name="portfolio_description" rows="3" placeholder="Describe your portfolio and what makes it special..."></textarea>
                   <div class="invalid-feedback">Portfolio description is required</div>
                 </div>
                 <div class="form-navigation mt-4 d-flex justify-content-between">
@@ -379,7 +521,7 @@ $userData = getUserData($userId);
                 <div class="form-navigation mt-4 d-flex justify-content-between">
                   <button type="button" class="btn btn-outline-secondary prev-section" data-prev="3"><i class="fas fa-arrow-left me-2"></i> Previous</button>
                   <button type="submit" class="btn btn-success" id="create-portfolio-submit">
-                    <i class="fas fa-check me-1"></i> <span id="submit-button-text">Create Portfolio</span>
+                    <i class="fas fa-check me-1"></i> <span id="submit-button-text" name ="create">Create Portfolio</span>
                   </button>
                 </div>
               </div>
@@ -531,51 +673,60 @@ $userData = getUserData($userId);
     });
 
 
-// May 4 connection to the php
-document.getElementById('portfolio-form').addEventListener('submit', function (e) {
+
+    
+
+    ///////////////////////////////////////////////////////////////////////////////
+    document.getElementById('portfolio-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  const skills = Array.from(document.querySelectorAll('#skills-container .badge')).map(b => b.innerText.trim());
-  
-  const workExperiences = Array.from(document.querySelectorAll('#work-experience-container .work-experience-item')).map(item => ({
-    title: item.querySelector('.work-title').value,
-    company: item.querySelector('.work-company').value,
-    start: item.querySelector('.work-start-date').value,
-    end: item.querySelector('.work-current').checked ? null : item.querySelector('.work-end-date').value,
-    description: item.querySelector('.work-description').value
-  }));
+  const formData = new FormData();
 
-  const workSamples = Array.from(document.querySelectorAll('#work-samples-container .work-sample-item')).map(item => ({
-    title: item.querySelector('.sample-title').value,
-    description: item.querySelector('.sample-description').value,
-    url: item.querySelector('.sample-url').value
-  }));
+  // Basic info
+  formData.append('name', document.getElementById('portfolio-name').value);
+  formData.append('category', document.getElementById('portfolio-type').value);
+  formData.append('portfolio_description', document.getElementById('portfolio-description').value);
 
-  const data = {
-    name: document.getElementById('portfolio-name').value,
-    category: document.getElementById('portfolio-type').value,
-    description: document.getElementById('portfolio-description').value,
-    skills,
-    workExperiences,
-    workSamples
-  };
+  // Skills
+  const skills = Array.from(document.querySelectorAll('#skills-container .tag')).map(tag => tag.childNodes[0].nodeValue.trim());
+
+  skills.forEach(skill => formData.append('skills[]', skill));
+
+  // Work Experience
+  const workItems = document.querySelectorAll('#work-experience-container .work-experience-item');
+  workItems.forEach((item, index) => {
+    formData.append(`work_experience[${index}][title]`, item.querySelector('.work-title').value);
+    formData.append(`work_experience[${index}][company]`, item.querySelector('.work-company').value);
+    formData.append(`work_experience[${index}][start_date]`, item.querySelector('.work-start-date').value);
+    
+    const isCurrent = item.querySelector('.work-current').checked;
+    formData.append(`work_experience[${index}][end_date]`, isCurrent ? '' : item.querySelector('.work-end-date').value);
+    formData.append(`work_experience[${index}][description]`, item.querySelector('.work-description').value);
+  });
+
+  // Work Samples
+  const sampleItems = document.querySelectorAll('#work-samples-container .work-sample-item');
+  sampleItems.forEach((item, index) => {
+    formData.append(`work_samples[${index}][title]`, item.querySelector('.sample-title').value);
+    formData.append(`work_samples[${index}][description]`, item.querySelector('.sample-description').value);
+    formData.append(`work_samples[${index}][url]`, item.querySelector('.sample-url').value);
+  });
 
   fetch('freelancerPortfolio.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'same-origin',
-    body: JSON.stringify(data)
+    body: formData
   })
   .then(res => res.json())
   .then(data => {
     if (data.status === 'success') {
+      alert('Portfolio created successfully!');
       window.location.reload();
     } else {
       alert('Error: ' + data.message);
     }
   })
   .catch(err => {
-    console.error('Error:', err);
+    console.error('Submission error:', err);
     alert('Failed to submit form.');
   });
 });
