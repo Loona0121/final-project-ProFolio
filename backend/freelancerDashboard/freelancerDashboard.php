@@ -14,7 +14,7 @@ $userData = getUserData($userID);
 
 
  // PHP generates the text
- $text = "Welcome," .htmlspecialchars($userData['first_name']) . " to the domain of the monarch";
+ $text = "Welcome, " .htmlspecialchars($userData['first_name']) . " to the domain of the monarch";
 
 
 

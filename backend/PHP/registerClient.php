@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_signup'])) {
         $sql = "INSERT INTO _user (first_name, last_name, email, password, country, role)
                 VALUES ('$firstName', '$lastName', '$email', '', '', '$role')";
         $con->query($sql);
-        echo json_encode(['status' => 'success', 'message' => 'Signed in with Google!']);
+        echo json_encode(['status' => 'success', 'message' => 'Signed in with Google!','redirect_url' => 'login.php']);
         exit;
     } else {
         // Email already exists – do NOT allow Google sign-up again
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 VALUES ('$firstName', '$lastName', '$email', '$password', '$country', '$role')";
 
         if ($con->query($sql)) {
-            echo "<script>alert('Registration successful!'); window.location.href='login.php';</script>";
+            echo "<script>alert('Registration successful! Please login using your account.'); window.location.href='login.php';</script>";
         } else {
             echo "Error: " . $con->error;
         }
@@ -271,8 +271,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (xhr.status === 200) {
       if (res.status === "success") {
-        alert("Google Sign-Up Successful!");
-        window.location.href = "dashboard.php"; // redirect new user
+        alert("Google Sign-Up Successful! Please use your account to login.");
+        window.location.href = "login.php"; // redirect new user
       } else if (res.status === "redirect") {
         alert(res.message);
         window.location.href = res.redirect_url; // redirect existing user to login.php
@@ -323,8 +323,8 @@ function handleGoogleSignIn() {
 
     if (xhr.status === 200) {
       if (res.status === "success") {
-        alert("Google Sign-Up Successful!");
-        window.location.href = "dashboard.php"; // redirect new user
+        alert("Google Sign-Up Successful! Please use your account to login. ");
+        window.location.href = "login.php"; // redirect new user
       } else if (res.status === "redirect") {
         alert(res.message);
         window.location.href = res.redirect_url; // redirect existing user to login.php

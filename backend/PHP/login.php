@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST['google_signup'])) {
 
             $redirect = match ($user['role']) {
                 'freelancer' => '../FreelancerDashboard/freelancerDashboard.php',
-                'client' => 'client_dashboard.php',
+                'client' => '../clientDashboard/clientDashboard.php',
                 default => 'login.php'
             };
 
@@ -63,13 +63,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['google_signup'])) {
       // Redirect based on role
       $redirect = match ($user['role']) {
           'freelancer' => '../FreelancerDashboard/freelancerDashboard.php',
-          'client' => 'client_dashboard.php',
+          'client' => '../clientDashboard/clientDashboard.php',
           default => 'login.php'
       };
 
       echo json_encode([
           'status' => 'redirect',
-          'message' => 'Welcome back!',
+          'message' => 'Welcome!!',
           'redirect_url' => $redirect
       ]);
       exit();
