@@ -4,115 +4,230 @@ include_once("../connection/connection.php");
 include_once("FUNCTIONS/getUserData.php"); 
 $con = connection();
 
+// Check if user is logged in
 if (!isset($_SESSION['id'])) {
   echo json_encode(["status" => "error", "message" => "User not logged in"]);
   exit;
 }
 
-// Make sure it's a POST request
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$userId = $_SESSION['id'];
+$userData = getUserData($userId);
+
+// Helper function to safely escape and validate input
+function sanitizeInput($con, $input) {
+    return mysqli_real_escape_string($con, $input ?? '');
+}
+
+// Helper function to handle portfolio skills
+function handlePortfolioSkills($con, $portfolioId, $skills) {
+    // Delete existing skills
+    mysqli_query($con, "DELETE FROM portfolio_skills WHERE portfolio_id=$portfolioId");
     
-    $userID = $_SESSION['id'] ?? null; // safer
-    if (!$userID) {
-        echo json_encode(["status" => "error", "message" => "User not logged in"]);
+    // Insert new skills
+    foreach ($skills as $skillName) {
+        $skillName = sanitizeInput($con, $skillName);
+        
+        $skillQuery = "SELECT skill_id FROM skills WHERE skill_name = '$skillName'";
+        $skillResult = mysqli_query($con, $skillQuery);
+
+        if (mysqli_num_rows($skillResult) > 0) {
+            $skillRow = mysqli_fetch_assoc($skillResult);
+            $skillId = $skillRow['skill_id'];
+        } else {
+            $insertSkill = "INSERT INTO skills (skill_name) VALUES ('$skillName')";
+            mysqli_query($con, $insertSkill);
+            $skillId = mysqli_insert_id($con);
+        }
+
+        $linkSkill = "INSERT INTO portfolio_skills (portfolio_id, skill_id) VALUES ('$portfolioId', '$skillId')";
+        mysqli_query($con, $linkSkill);
+    }
+}
+
+// Helper function to handle work experiences
+function handleWorkExperiences($con, $portfolioId, $workExperiences) {
+    // Delete existing work experience
+    mysqli_query($con, "DELETE FROM work_experience WHERE portfolio_id=$portfolioId");
+    
+    // Insert new work experiences
+    foreach ($workExperiences as $experience) {
+        $title = sanitizeInput($con, $experience['title'] ?? '');
+        $company = sanitizeInput($con, $experience['company'] ?? '');
+        $startDate = sanitizeInput($con, $experience['start_date'] ?? '');
+        $endDate = sanitizeInput($con, $experience['end_date'] ?? '');
+        
+        if (!empty($startDate)) {
+            $startDate .= '-01';  // Append '-01' to make it YYYY-MM-DD
+        }
+        if (!empty($endDate)) {
+            $endDate .= '-01';
+        }
+        $description = sanitizeInput($con, $experience['description'] ?? '');
+
+        if (!empty($title) && !empty($company)) {
+            $insertExperience = "INSERT INTO work_experience (portfolio_id, title, company, start_date, end_date, description)
+                                 VALUES ('$portfolioId', '$title', '$company', '$startDate', '$endDate', '$description')";
+            mysqli_query($con, $insertExperience);
+        }
+    }
+}
+
+// Helper function to handle work samples
+function handleWorkSamples($con, $portfolioId, $workSamples) {
+    // Delete existing work samples
+    mysqli_query($con, "DELETE FROM work_samples WHERE portfolio_id=$portfolioId");
+    
+    // Insert new work samples
+    foreach ($workSamples as $sample) {
+        $sampleTitle = sanitizeInput($con, $sample['title'] ?? '');
+        $sampleDescription = sanitizeInput($con, $sample['description'] ?? '');
+        $sampleUrl = sanitizeInput($con, $sample['url'] ?? '');
+
+        if (!empty($sampleTitle)) {
+            $insertSample = "INSERT INTO work_samples (portfolio_id, title, description, url)
+                             VALUES ('$portfolioId', '$sampleTitle', '$sampleDescription', '$sampleUrl')";
+            mysqli_query($con, $insertSample);
+        }
+    }
+}
+
+// Helper function to verify portfolio ownership
+function verifyPortfolioOwnership($con, $portfolioId, $userId) {
+    $checkOwnership = "SELECT portfolio_id FROM portfolio WHERE portfolio_id = $portfolioId AND user_id = $userId";
+    $result = mysqli_query($con, $checkOwnership);
+    
+    return mysqli_num_rows($result) > 0;
+}
+
+// Helper function to process common form data
+function getPortfolioFormData($con) {
+    return [
+        'name' => sanitizeInput($con, $_POST['name'] ?? ''),
+        'category' => sanitizeInput($con, $_POST['category'] ?? ''),
+        'description' => sanitizeInput($con, $_POST['portfolio_description'] ?? ''),
+        'skills' => $_POST['skills'] ?? [],
+        'workExperiences' => $_POST['work_experience'] ?? [],
+        'workSamples' => $_POST['work_samples'] ?? []
+    ];
+}
+
+// Handle delete request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $portfolioId = isset($_POST['portfolio_id']) ? intval($_POST['portfolio_id']) : 0;
+    
+    if (!verifyPortfolioOwnership($con, $portfolioId, $userId)) {
+        echo json_encode(["status" => "error", "message" => "Portfolio not found or not owned by current user"]);
         exit;
     }
     
-    $userData = getUserData($userID);
+    // Start a transaction to ensure all related data is deleted
+    mysqli_begin_transaction($con);
     
-    // REMOVED DEBUG STATEMENT: var_dump($_SESSION['id']); exit;
+    try {
+        // Delete related data
+        mysqli_query($con, "DELETE FROM work_samples WHERE portfolio_id = $portfolioId");
+        mysqli_query($con, "DELETE FROM work_experience WHERE portfolio_id = $portfolioId");
+        mysqli_query($con, "DELETE FROM portfolio_skills WHERE portfolio_id = $portfolioId");
+        mysqli_query($con, "DELETE FROM portfolio WHERE portfolio_id = $portfolioId");
+        
+        // Commit the transaction
+        mysqli_commit($con);
+        
+        echo json_encode(["status" => "success", "message" => "Portfolio deleted successfully"]);
+        exit;
+    } catch (Exception $e) {
+        // Rollback the transaction if any query fails
+        mysqli_rollback($con);
+        echo json_encode(["status" => "error", "message" => "Failed to delete portfolio: " . $e->getMessage()]);
+        exit;
+    }
+}
 
-    // Check if userData is null or invalid
-    if ($userData === null) {
+// Handle update request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+    $portfolioId = isset($_POST['portfolio_id']) ? intval($_POST['portfolio_id']) : 0;
+    
+    if (!verifyPortfolioOwnership($con, $portfolioId, $userId)) {
+        echo json_encode(["status" => "error", "message" => "Portfolio not found or not owned by current user"]);
+        exit;
+    }
+    
+    $formData = getPortfolioFormData($con);
+    
+    // Start a transaction
+    mysqli_begin_transaction($con);
+    
+    try {
+        // Update portfolio table
+        $updatePortfolio = "UPDATE portfolio 
+                           SET name='{$formData['name']}', category='{$formData['category']}', description='{$formData['description']}' 
+                           WHERE portfolio_id=$portfolioId";
+        mysqli_query($con, $updatePortfolio);
+        
+        // Handle related data
+        handlePortfolioSkills($con, $portfolioId, $formData['skills']);
+        handleWorkExperiences($con, $portfolioId, $formData['workExperiences']);
+        handleWorkSamples($con, $portfolioId, $formData['workSamples']);
+        
+        // Commit the transaction
+        mysqli_commit($con);
+        
+        echo json_encode(["status" => "success", "message" => "Portfolio updated successfully"]);
+        exit;
+    } catch (Exception $e) {
+        // Rollback the transaction if any query fails
+        mysqli_rollback($con);
+        echo json_encode(["status" => "error", "message" => "Failed to update portfolio: " . $e->getMessage()]);
+        exit;
+    }
+}
+
+// Handle create request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
+    if (!$userData) {
         echo json_encode(["status" => "error", "message" => "User data not found"]);
         exit;
     }
 
-    // Safely collect data
-    $portfolioName = mysqli_real_escape_string($con, $_POST['name'] ?? '');
-    $portfolioCategory = mysqli_real_escape_string($con, $_POST['category'] ?? '');
-    $portfolioDescription = mysqli_real_escape_string($con, $_POST['portfolio_description'] ?? '');
-    $skills = $_POST['skills'] ?? [];
-    $workExperiences = $_POST['work_experience'] ?? [];
-    $workSamples = $_POST['work_samples'] ?? [];
-
-    // Fix: Use the correct session variable
-    $userId = $userID; // Use the already validated userID variable
-
-    if (empty($portfolioName) || empty($portfolioCategory)) {
+    $formData = getPortfolioFormData($con);
+    
+    if (empty($formData['name']) || empty($formData['category'])) {
         echo json_encode(["status" => "error", "message" => "Missing required fields"]);
         exit;
     }
 
-    // Insert into 'portfolio' table
-    $insertPortfolio = "INSERT INTO portfolio (user_id, name, category, description, created_at)
-                        VALUES ('$userId', '$portfolioName', '$portfolioCategory', '$portfolioDescription', NOW())";
-                        
-    if (mysqli_query($con, $insertPortfolio)) {
-        $portfolioId = mysqli_insert_id($con); // Get the newly created portfolio ID
+    // Begin transaction for create process
+    mysqli_begin_transaction($con);
+    
+    try {
+        // Insert into 'portfolio' table
+        $insertPortfolio = "INSERT INTO portfolio (user_id, name, category, description, created_at)
+                            VALUES ('$userId', '{$formData['name']}', '{$formData['category']}', '{$formData['description']}', NOW())";
+                            
+        mysqli_query($con, $insertPortfolio);
+        $portfolioId = mysqli_insert_id($con);
 
-        // Insert skills
-        foreach ($skills as $skillName) {
-            $skillName = mysqli_real_escape_string($con, $skillName);
-
-            $skillQuery = "SELECT skill_id FROM skills WHERE skill_name = '$skillName'";
-            $skillResult = mysqli_query($con, $skillQuery);
-
-            if (mysqli_num_rows($skillResult) > 0) {
-                $skillRow = mysqli_fetch_assoc($skillResult);
-                $skillId = $skillRow['skill_id'];
-            } else {
-                $insertSkill = "INSERT INTO skills (skill_name) VALUES ('$skillName')";
-                mysqli_query($con, $insertSkill);
-                $skillId = mysqli_insert_id($con);
-            }
-
-            $linkSkill = "INSERT INTO portfolio_skills (portfolio_id, skill_id) VALUES ('$portfolioId', '$skillId')";
-            mysqli_query($con, $linkSkill);
-        }
-
-        // Insert work experiences
-        foreach ($workExperiences as $experience) {
-            $title = mysqli_real_escape_string($con, $experience['title'] ?? '');
-            $company = mysqli_real_escape_string($con, $experience['company'] ?? '');
-            $startDate = mysqli_real_escape_string($con, $experience['start_date'] ?? '');
-            $endDate = mysqli_real_escape_string($con, $experience['end_date'] ?? '');
-            $description = mysqli_real_escape_string($con, $experience['description'] ?? '');
-
-            if (!empty($title) && !empty($company)) { // Insert only if some basic fields exist
-                $insertExperience = "INSERT INTO work_experience (portfolio_id, title, company, start_date, end_date, description)
-                                     VALUES ('$portfolioId', '$title', '$company', '$startDate', '$endDate', '$description')";
-                mysqli_query($con, $insertExperience);
-            }
-        }
-
-        // Insert work samples
-        foreach ($workSamples as $sample) {
-            $sampleTitle = mysqli_real_escape_string($con, $sample['title'] ?? '');
-            $sampleDescription = mysqli_real_escape_string($con, $sample['description'] ?? '');
-            $sampleUrl = mysqli_real_escape_string($con, $sample['url'] ?? '');
-
-            if (!empty($sampleTitle)) { // Insert only if title is not empty
-                $insertSample = "INSERT INTO work_samples (portfolio_id, title, description, url)
-                                 VALUES ('$portfolioId', '$sampleTitle', '$sampleDescription', '$sampleUrl')";
-                mysqli_query($con, $insertSample);
-            }
-        }
+        // Handle related data
+        handlePortfolioSkills($con, $portfolioId, $formData['skills']);
+        handleWorkExperiences($con, $portfolioId, $formData['workExperiences']);
+        handleWorkSamples($con, $portfolioId, $formData['workSamples']);
+        
+        // Commit the transaction
+        mysqli_commit($con);
 
         echo json_encode(["status" => "success", "message" => "Portfolio created successfully"]);
-        exit; // Exit after sending the response
-    } else {
-        echo json_encode(["status" => "error", "message" => "Error creating portfolio"]);
-        exit; // Exit after sending the response
+        exit;
+    } catch (Exception $e) {
+        // Rollback the transaction if any query fails
+        mysqli_rollback($con);
+        echo json_encode(["status" => "error", "message" => "Error creating portfolio: " . $e->getMessage()]);
+        exit;
     }
-} 
-// No else statement here - continue to HTML output for non-POST requests
+}
 
-// Get the user data for display
-$userID = $_SESSION['id'] ?? 0;
-$userData = getUserData($userID);
-
-
+// Get the user data for display (for non-POST requests)
+// This is reused from the beginning of the script
+// $userId and $userData are already set
 ?>
 
 <!DOCTYPE html>
@@ -225,11 +340,22 @@ $userData = getUserData($userID);
           <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
             <?php
-// Query to get all portfolio data with skills
-$sql = "SELECT A.portfolio_id, A.name, A.description, C.skill_name
-        FROM portfolio A
-        LEFT JOIN portfolio_skills B ON A.portfolio_id = B.portfolio_id
-        LEFT JOIN skills C ON C.skill_id = B.skill_id";
+$sql = "SELECT 
+            p.portfolio_id, 
+            p.name, 
+            p.category,
+            p.description, 
+            GROUP_CONCAT(DISTINCT s.skill_name) as skills
+        FROM 
+            portfolio p
+        LEFT JOIN 
+            portfolio_skills ps ON p.portfolio_id = ps.portfolio_id
+        LEFT JOIN 
+            skills s ON s.skill_id = ps.skill_id
+        WHERE 
+            p.user_id = {$_SESSION['id']}
+        GROUP BY 
+            p.portfolio_id";
 
 $result = $con->query($sql);
 
@@ -238,27 +364,73 @@ $portfolios = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $id = $row['portfolio_id'];
-
-        // Initialize portfolio entry if not already set
-        if (!isset($portfolios[$id])) {
-            $portfolios[$id] = [
-                'name' => $row['name'],
-                'description' => $row['description'],
-                'skills' => []
-            ];
+        
+        // Initialize portfolio entry
+        $portfolios[$id] = [
+            'name' => $row['name'],
+            'category' => $row['category'],
+            'description' => $row['description'],
+            'skills' => $row['skills'] ? explode(',', $row['skills']) : [],
+            'work_experience' => [],
+            'work_samples' => []
+        ];
+    }
+    
+    // Now get work experiences for each portfolio
+    foreach (array_keys($portfolios) as $portfolio_id) {
+        // Query work experiences
+$expSql = "SELECT 
+            title, 
+            company, 
+            DATE_FORMAT(start_date, '%Y-%m') as start_date, 
+            DATE_FORMAT(end_date, '%Y-%m') as end_date, 
+            description 
+        FROM 
+            work_experience 
+        WHERE 
+            portfolio_id = $portfolio_id";
+        
+        $expResult = $con->query($expSql);
+        
+        if ($expResult && $expResult->num_rows > 0) {
+            while ($expRow = $expResult->fetch_assoc()) {
+                $portfolios[$portfolio_id]['work_experience'][] = $expRow;
+            }
         }
-
-        // Add skill if it's not already in the list and not null
-        if ($row['skill_name'] && !in_array($row['skill_name'], $portfolios[$id]['skills'])) {
-            $portfolios[$id]['skills'][] = $row['skill_name'];
+        
+        // Query work samples
+        $sampleSql = "SELECT 
+                        title, 
+                        description, 
+                        url 
+                    FROM 
+                        work_samples 
+                    WHERE 
+                        portfolio_id = $portfolio_id";
+        
+        $sampleResult = $con->query($sampleSql);
+        
+        if ($sampleResult && $sampleResult->num_rows > 0) {
+            while ($sampleRow = $sampleResult->fetch_assoc()) {
+                $portfolios[$portfolio_id]['work_samples'][] = $sampleRow;
+            }
         }
     }
 
     // Now render the HTML once per portfolio
-    foreach ($portfolios as $portfolio) {
+    foreach ($portfolios as $id => $portfolio) {
+        // Convert the work_experience and work_samples arrays to JSON for data attributes
+        $workExperiencesJson = htmlspecialchars(json_encode($portfolio['work_experience']), ENT_QUOTES, 'UTF-8');
+        $workSamplesJson = htmlspecialchars(json_encode($portfolio['work_samples']), ENT_QUOTES, 'UTF-8');
         ?>
-        <div class="portfolio-card" data-portfolio-id="<?php echo htmlspecialchars($id); ?>"
-         data-work-experiences='[{"title":"Developer","company":"Tech Co","startDate":"2022-01-01","endDate":"2023-01-01","description":"Built apps","isCurrent":false}]'>
+        <div class="portfolio-card" 
+             data-portfolio-id="<?php echo htmlspecialchars($id); ?>"
+             data-portfolio-name="<?php echo htmlspecialchars($portfolio['name']); ?>"
+             data-portfolio-category="<?php echo htmlspecialchars($portfolio['category']); ?>"
+             data-portfolio-description="<?php echo htmlspecialchars($portfolio['description']); ?>"
+             data-portfolio-skills="<?php echo htmlspecialchars(json_encode($portfolio['skills'])); ?>"
+             data-work-experiences='<?php echo $workExperiencesJson; ?>'
+             data-work-samples='<?php echo $workSamplesJson; ?>'>
             <div class="portfolio-card-content">
                 <h3 class="portfolio-card-title"><?php echo htmlspecialchars($portfolio['name']); ?></h3>
                 <div class="portfolio-card-tags">
@@ -284,14 +456,9 @@ if ($result->num_rows > 0) {
         </div>
         <?php
     }
-} else {
-    echo "No records found.";
-}
-
-$con->close();
+} 
 ?>
 
-            
             <!-- Create New Portfolio Card -->
             <div class="portfolio-card" style="border: 2px dashed #dee2e6; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; cursor: pointer;" id="create-portfolio-btn">
               <div class="text-center p-5">
@@ -347,28 +514,16 @@ $con->close();
               <div class="form-section" id="section-1">
                 <h4 class="form-section-title">Basic Information</h4>
                 <div class="row">
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="portfolio-name" class="form-label">Portfolio Name <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control required" id="portfolio-name" name="name" placeholder="e.g., Web Development Projects">
-                      <div class="invalid-feedback">Portfolio name is required</div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="portfolio-type" class="form-label">Portfolio Category <span class="text-danger">*</span></label>
-                      <select class="form-select required" id="portfolio-type" name="category">
-                        <option value="">Select category...</option>
-                        <option value="web-development">Web Development</option>
-                        <option value="ui-ux-design">UI/UX Design</option>
-                        <option value="graphic-design">Graphic Design</option>
-                        <option value="content-writing">Content Writing</option>
-                        <option value="other">Other</option>
-                      </select>
-                      <div class="invalid-feedback">Portfolio category is required</div>
-                    </div>
-                  </div>
-                </div>
+  <div class="col-md-12">
+    <div class="mb-3">
+      <label for="portfolio-name" class="form-label">Portfolio Name <span class="text-danger">*</span></label>
+      <input type="text" class="form-control required" id="portfolio-name" name="name" placeholder="e.g., Web Development Projects">
+      <div class="invalid-feedback">Portfolio name is required</div>
+    </div>
+  </div>
+  <!-- Hidden category field with default value -->
+  <input type="hidden" id="portfolio-type" name="category" value="other">
+</div>
                 <div class="mb-3">
                   <label for="portfolio-description" class="form-label">Description <span class="text-danger">*</span></label>
                   <textarea class="form-control required" id="portfolio-description" name="portfolio_description" rows="3" placeholder="Describe your portfolio and what makes it special..."></textarea>
@@ -638,49 +793,83 @@ $con->close();
       });
       
       // Add event listener for confirmation button
-      document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-        const portfolioId = document.getElementById('deleteConfirmModal').dataset.portfolioId;
-        
-        // Implement delete functionality here
-        // For demonstration, just hide the element and show notification
-        const portfolioElement = document.querySelector(`.portfolio-card[data-portfolio-id="${portfolioId}"]`);
-        if (portfolioElement) {
-          portfolioElement.style.display = 'none';
-        }
-        
-        // Hide detail view if open
-        document.getElementById('portfolio-detail-view').style.display = 'none';
-        document.getElementById('portfolio-view').style.display = 'block';
-        
-        // Show success notification
-        const successNotification = document.getElementById('success-notification');
-        successNotification.textContent = 'Portfolio successfully deleted!';
-        successNotification.style.display = 'block';
-        successNotification.classList.add('show');
-        
-        // Hide the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
-        modal.hide();
-        
-        // Auto-hide notification after 2 seconds
+
+
+      
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+  const portfolioId = document.getElementById('deleteConfirmModal').dataset.portfolioId;
+  
+  // Create form data to send
+  const formData = new FormData();
+  formData.append('action', 'delete');  // Add action parameter
+  formData.append('portfolio_id', portfolioId);
+  
+  // Send request to the same file
+  fetch('freelancerPortfolio.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      // Hide the portfolio card if successful
+      const portfolioElement = document.querySelector(`.portfolio-card[data-portfolio-id="${portfolioId}"]`);
+      if (portfolioElement) {
+        portfolioElement.style.display = 'none';
+      }
+      
+      // Hide detail view if open
+      document.getElementById('portfolio-detail-view').style.display = 'none';
+      document.getElementById('portfolio-view').style.display = 'block';
+      
+      // Show success notification
+      const successNotification = document.getElementById('success-notification');
+      successNotification.textContent = 'Portfolio successfully deleted!';
+      successNotification.style.display = 'block';
+      successNotification.classList.add('show');
+      
+      // Auto-hide notification after 2 seconds
+      setTimeout(() => {
+        successNotification.classList.remove('show');
         setTimeout(() => {
-          successNotification.classList.remove('show');
-          setTimeout(() => {
-            successNotification.style.display = 'none';
-          }, 300);
-        }, 2000);
-      });
+          successNotification.style.display = 'none';
+        }, 300);
+      }, 2000);
+    } else {
+      // Show error notification
+      alert('Error: ' + data.message);
+    }
+    
+    // Hide the modal in either case
+    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+    modal.hide();
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while trying to delete the portfolio.');
+    
+    // Hide the modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+    modal.hide();
+  });
+});
     });
 
 
-
-    
-
-    ///////////////////////////////////////////////////////////////////////////////
-    document.getElementById('portfolio-form').addEventListener('submit', function (e) {
+  document.getElementById('portfolio-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
   const formData = new FormData();
+  
+  // Check if we're editing an existing portfolio
+  const isEditing = document.getElementById('portfolio-form').dataset.editing === 'true';
+  const portfolioId = document.getElementById('portfolio-form').dataset.portfolioId;
+  
+  // If editing, add action and portfolio_id
+  if (isEditing && portfolioId) {
+    formData.append('action', 'update');
+    formData.append('portfolio_id', portfolioId);
+  }
 
   // Basic info
   formData.append('name', document.getElementById('portfolio-name').value);
@@ -689,7 +878,6 @@ $con->close();
 
   // Skills
   const skills = Array.from(document.querySelectorAll('#skills-container .tag')).map(tag => tag.childNodes[0].nodeValue.trim());
-
   skills.forEach(skill => formData.append('skills[]', skill));
 
   // Work Experience
@@ -719,8 +907,20 @@ $con->close();
   .then(res => res.json())
   .then(data => {
     if (data.status === 'success') {
-      alert('Portfolio created successfully!');
-      window.location.reload();
+      // Show success notification
+      const successNotification = document.getElementById('success-notification');
+      successNotification.textContent = isEditing ? 'Portfolio updated successfully!' : 'Portfolio created successfully!';
+      successNotification.style.display = 'block';
+      successNotification.classList.add('show');
+      
+      // Auto-hide notification after 2 seconds and then reload
+      setTimeout(() => {
+        successNotification.classList.remove('show');
+        setTimeout(() => {
+          successNotification.style.display = 'none';
+          window.location.reload();
+        }, 300);
+      }, 2000);
     } else {
       alert('Error: ' + data.message);
     }
@@ -731,7 +931,326 @@ $con->close();
   });
 });
 
+// For the edit button in the portfolio card
+document.querySelectorAll('.edit-portfolio-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const portfolioCard = this.closest('.portfolio-card');
+    const portfolioId = portfolioCard.dataset.portfolioId;
+    const portfolioName = portfolioCard.dataset.portfolioName;
+    const portfolioCategory = portfolioCard.dataset.portfolioCategory;
+    const portfolioDescription = portfolioCard.dataset.portfolioDescription;
+    const portfolioSkills = JSON.parse(portfolioCard.dataset.portfolioSkills);
+    const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
+    const workSamples = JSON.parse(portfolioCard.dataset.workSamples);
 
+    // Set form to editing mode
+    const portfolioForm = document.getElementById('portfolio-form');
+    portfolioForm.dataset.editing = 'true';
+    portfolioForm.dataset.portfolioId = portfolioId;
+
+    // Change form header
+    document.getElementById('form-header-text').textContent = 'Edit Portfolio';
+    document.getElementById('form-header-icon').className = 'fas fa-edit';
+    document.getElementById('submit-button-text').textContent = 'Update Portfolio';
+
+    // Fill basic info
+    document.getElementById('portfolio-name').value = portfolioName;
+    document.getElementById('portfolio-type').value = portfolioCategory;
+    document.getElementById('portfolio-description').value = portfolioDescription;
+
+    // Fill skills
+    const skillsContainer = document.getElementById('skills-container');
+    skillsContainer.innerHTML = '';
+    portfolioSkills.forEach(skill => {
+      const skillTag = document.createElement('div');
+      skillTag.className = 'tag';
+      skillTag.innerHTML = skill + '<button type="button" class="remove-tag-btn">×</button>';
+      skillsContainer.appendChild(skillTag);
+      
+      // Add remove event listener
+      skillTag.querySelector('.remove-tag-btn').addEventListener('click', function() {
+        this.parentElement.remove();
+      });
+    });
+
+    // Clear any existing work experiences
+    const workExpContainer = document.getElementById('work-experience-container');
+    workExpContainer.innerHTML = '';
+
+    // Add work experiences
+    if (workExperiences.length > 0) {
+      workExperiences.forEach((experience, index) => {
+        // Create new experience item (you need to implement this function)
+        addWorkExperienceItem(index + 1);
+        
+        // Get the newly added item (the last one)
+        const items = workExpContainer.querySelectorAll('.work-experience-item');
+        const newItem = items[items.length - 1];
+        
+        // Fill in the fields
+        newItem.querySelector('.work-title').value = experience.title;
+        newItem.querySelector('.work-company').value = experience.company;
+        
+        // Format the start date as YYYY-MM for the month input
+        if (experience.start_date) {
+          // Extract YYYY-MM part from the date (assuming it's in YYYY-MM-DD format)
+          const startDate = experience.start_date.substring(0, 7);
+          newItem.querySelector('.work-start-date').value = startDate;
+        }
+        
+        if (!experience.end_date || experience.end_date === '') {
+          newItem.querySelector('.work-current').checked = true;
+          newItem.querySelector('.work-end-date').disabled = true;
+        } else {
+          // Format the end date as YYYY-MM for the month input
+          const endDate = experience.end_date.substring(0, 7);
+          newItem.querySelector('.work-end-date').value = endDate;
+        }
+        
+        newItem.querySelector('.work-description').value = experience.description;
+      });
+    } else {
+      // Add at least one empty experience item
+      addWorkExperienceItem(1);
+    }
+
+    // Clear any existing work samples
+    const samplesContainer = document.getElementById('work-samples-container');
+    samplesContainer.innerHTML = '';
+
+    // Add work samples
+    if (workSamples.length > 0) {
+      workSamples.forEach((sample, index) => {
+        // Create new sample item (you need to implement this function)
+        addWorkSampleItem(index + 1);
+        
+        // Get the newly added item (the last one)
+        const items = samplesContainer.querySelectorAll('.work-sample-item');
+        const newItem = items[items.length - 1];
+        
+        // Fill in the fields
+        newItem.querySelector('.sample-title').value = sample.title;
+        newItem.querySelector('.sample-description').value = sample.description;
+        newItem.querySelector('.sample-url').value = sample.url;
+      });
+    } else {
+      // Add at least one empty sample item
+      addWorkSampleItem(1);
+    }
+
+    // Show the form section, hide others
+    document.getElementById('portfolio-view').style.display = 'none';
+    document.getElementById('portfolio-detail-view').style.display = 'none';
+    document.getElementById('portfolio-form-container').style.display = 'block';
+    
+    // Reset form progress
+    document.querySelectorAll('.form-steps .step').forEach(step => {
+      step.classList.remove('active');
+    });
+    document.querySelector('.form-steps .step[data-step="1"]').classList.add('active');
+    document.getElementById('form-progress-bar').style.width = '25%';
+    
+    // Show first section, hide others
+    document.querySelectorAll('.form-section').forEach(section => {
+      section.style.display = 'none';
+    });
+    document.getElementById('section-1').style.display = 'block';
+  });
+});
+
+// Also update the edit button handler from the view page
+document.getElementById('edit-from-view').addEventListener('click', function() {
+  const portfolioId = document.getElementById('portfolio-detail-view').dataset.portfolioId;
+  // Find the corresponding portfolio card
+  const portfolioCard = document.querySelector(`.portfolio-card[data-portfolio-id="${portfolioId}"]`);
+  
+  if (portfolioCard) {
+    // Trigger the click on the edit button of that card
+    portfolioCard.querySelector('.edit-portfolio-btn').click();
+  }
+});
+
+// Define helper functions for adding work experience and samples
+function addWorkExperienceItem(index) {
+  const container = document.getElementById('work-experience-container');
+  const newItem = document.createElement('div');
+  newItem.className = 'work-experience-item card mb-3 p-3';
+  newItem.innerHTML = `
+    <div class="d-flex justify-content-between mb-2">
+      <h5 class="card-title mb-0">Experience #${index}</h5>
+      <button type="button" class="btn btn-sm btn-outline-danger remove-experience" ${index === 1 && container.children.length === 0 ? 'style="display: none;"' : ''}>
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Work Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control work-title required" name="work_titles[]" placeholder="Position or project title">
+          <div class="invalid-feedback">Work title is required</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Company/Client <span class="text-danger">*</span></label>
+          <input type="text" name="work_companies[]" class="form-control work-company required" placeholder="Company or client name">
+          <div class="invalid-feedback">Company/client is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">Start Date <span class="text-danger">*</span></label>
+          <input type="month" name="work_start_dates[]" class="form-control work-start-date required">
+          <div class="invalid-feedback">Start date is required</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label class="form-label">End Date <span class="text-danger">*</span></label>
+          <input type="month" name="work_end_dates[]" class="form-control work-end-date required">
+          <div class="invalid-feedback">End date is required</div>
+          <div class="form-check mt-2">
+            <input class="form-check-input work-current" name="work_current[]" type="checkbox" id="currentWork${index}">
+            <label class="form-check-label" for="currentWork${index}">
+              I currently work here
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description <span class="text-danger">*</span></label>
+      <textarea name="work_descriptions[]" class="form-control work-description required" rows="2" placeholder="Describe your responsibilities and achievements..."></textarea>
+      <div class="invalid-feedback">Work description is required</div>
+    </div>
+  `;
+  container.appendChild(newItem);
+  
+  // Add event listener for the remove button
+  const removeBtn = newItem.querySelector('.remove-experience');
+  if (removeBtn) {
+    removeBtn.addEventListener('click', function() {
+      newItem.remove();
+      // Update numbering
+      container.querySelectorAll('.work-experience-item').forEach((item, idx) => {
+        item.querySelector('h5').textContent = `Experience #${idx + 1}`;
+      });
+    });
+  }
+  
+  // Add event listener for the "Currently working" checkbox
+  const currentCheckbox = newItem.querySelector('.work-current');
+  currentCheckbox.addEventListener('change', function() {
+    const endDateInput = this.closest('.mb-3').querySelector('.work-end-date');
+    endDateInput.disabled = this.checked;
+    if (this.checked) {
+      endDateInput.value = '';
+    }
+  });
+  
+  // Trigger the event if "currently working" is checked
+  if (currentCheckbox.checked) {
+    const event = new Event('change');
+    currentCheckbox.dispatchEvent(event);
+  }
+}
+
+function addWorkSampleItem(index) {
+  const container = document.getElementById('work-samples-container');
+  const newItem = document.createElement('div');
+  newItem.className = 'work-sample-item card mb-3 p-3';
+  newItem.innerHTML = `
+    <div class="d-flex justify-content-between mb-2">
+      <h5 class="card-title mb-0">Sample #${index}</h5>
+      <button type="button" class="btn btn-sm btn-outline-danger remove-sample" ${index === 1 && container.children.length === 0 ? 'style="display: none;"' : ''}>
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <label class="form-label">Project Title <span class="text-danger">*</span></label>
+          <input type="text" name="sample_titles[]" class="form-control sample-title required" placeholder="Project name">
+          <div class="invalid-feedback">Project title is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Project Description <span class="text-danger">*</span></label>
+      <textarea name="sample_descriptions[]" class="form-control sample-description required" rows="2" placeholder="Describe your project..."></textarea>
+      <div class="invalid-feedback">Project description is required</div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <label class="form-label">Project URL <span class="text-danger">*</span></label>
+          <input type="url" name="sample_urls[]" class="form-control sample-url required" placeholder="https://...">
+          <div class="invalid-feedback">Project URL is required</div>
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(newItem);
+  
+  // Add event listener for the remove button
+  const removeBtn = newItem.querySelector('.remove-sample');
+  if (removeBtn) {
+    removeBtn.addEventListener('click', function() {
+      newItem.remove();
+      // Update numbering
+      container.querySelectorAll('.work-sample-item').forEach((item, idx) => {
+        item.querySelector('h5').textContent = `Sample #${idx + 1}`;
+      });
+    });
+  }
+}
+
+// Reset form when clicking back or creating new portfolio
+function resetPortfolioForm() {
+  // Reset form mode
+  const portfolioForm = document.getElementById('portfolio-form');
+  portfolioForm.dataset.editing = 'false';
+  portfolioForm.dataset.portfolioId = '';
+  
+  // Reset header
+  document.getElementById('form-header-text').textContent = 'Create New Portfolio';
+  document.getElementById('form-header-icon').className = 'fas fa-plus-circle';
+  document.getElementById('submit-button-text').textContent = 'Create Portfolio';
+  
+  // Clear form fields
+  portfolioForm.reset();
+  
+  // Clear skills
+  document.getElementById('skills-container').innerHTML = '';
+  
+  // Reset work experience and samples to have one empty item each
+  document.getElementById('work-experience-container').innerHTML = '';
+  document.getElementById('work-samples-container').innerHTML = '';
+  
+  // Add one empty experience and sample
+  addWorkExperienceItem(1);
+  addWorkSampleItem(1);
+}
+
+// Back to portfolios button
+document.getElementById('back-to-portfolios').addEventListener('click', function() {
+  resetPortfolioForm();
+  
+  // Hide form, show portfolios list
+  document.getElementById('portfolio-form-container').style.display = 'none';
+  document.getElementById('portfolio-view').style.display = 'block';
+});
+
+// Create portfolio button
+document.getElementById('create-portfolio-btn').addEventListener('click', function() {
+  resetPortfolioForm();
+  
+  // Show form, hide portfolios list
+  document.getElementById('portfolio-view').style.display = 'none';
+  document.getElementById('portfolio-form-container').style.display = 'block';
+});
 
   </script>
   <script src="JS/freelancerProfile.js"></script>
