@@ -14,7 +14,7 @@ $userData = getUserData($userID);
 
 
  // PHP generates the text
- $text = "Welcome, " .htmlspecialchars($userData['first_name']) . " to the domain of the monarch";
+ $text = "Welcome, " .htmlspecialchars($userData['first_name']) . "!";
 
 
 
@@ -47,12 +47,16 @@ $userData = getUserData($userID);
       
       <div class="sidebar-user">
         <div class="user-avatar">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo'])): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="freelancerProfile.php" class="user-name-link">
           <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="info-value non-editable"> <?php echo htmlspecialchars($userData['job_title']); ?></div>
+          <div class="info-value non-editable"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?></div>
           </a>
         </div>
       </div>
@@ -67,11 +71,6 @@ $userData = getUserData($userID);
           <li class="nav-item">
             <a href="freelancerPortfolio.php" class="nav-link">
               <i class="fas fa-palette"></i> Portfolio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="freelancerOffers.php" class="nav-link">
-              <i class="fas fa-briefcase"></i> Job Offers
             </a>
           </li>
         </ul>
@@ -105,7 +104,6 @@ $userData = getUserData($userID);
           <p class="welcome-message">Your professional portfolio is looking great. Keep it updated to attract more clients and showcase your latest work.</p>
           <div class="welcome-actions">
             <a href="freelancerPortfolio.php" class="welcome-btn primary">View Portfolio</a>
-            <a href="freelancerOffers.php" class="welcome-btn">Check Job Offers</a>
           </div>
         </section>
         

@@ -1,4 +1,3 @@
-
 // Portfolio Creation JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Form elements
@@ -90,20 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') {
           e.preventDefault();
           addSkill();
-        }
-      });
-      
-      // Handle "I currently work here" checkbox
-      document.addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('work-current')) {
-          const endDateInput = e.target.closest('.col-md-6').querySelector('.work-end-date');
-          endDateInput.disabled = e.target.checked;
-          if (e.target.checked) {
-            endDateInput.value = '';
-            endDateInput.classList.remove('required');
-          } else {
-            endDateInput.classList.add('required');
-          }
         }
       });
     }
@@ -385,12 +370,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label class="form-label">End Date <span class="text-danger">*</span></label>
                 <input type="month" class="form-control work-end-date required">
                 <div class="invalid-feedback">End date is required</div>
-                <div class="form-check mt-2">
-                  <input class="form-check-input work-current" type="checkbox" id="currentWork${expCount}">
-                  <label class="form-check-label" for="currentWork${expCount}">
-                    I currently work here
-                  </label>
-                </div>
               </div>
             </div>
           </div>
@@ -434,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
       firstExp.querySelector('.work-company').value = '';
       firstExp.querySelector('.work-start-date').value = '';
       firstExp.querySelector('.work-end-date').value = '';
-      firstExp.querySelector('.work-current').checked = false;
       firstExp.querySelector('.work-description').value = '';
       
       // Hide remove button
@@ -564,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
           company: item.querySelector('.work-company').value,
           startDate: item.querySelector('.work-start-date').value,
           endDate: item.querySelector('.work-end-date').value,
-          isCurrent: item.querySelector('.work-current').checked,
+          isCurrent: false,
           description: item.querySelector('.work-description').value
         });
       });

@@ -1,8 +1,9 @@
 <?php
-// Prevent caching of the page
+// Prevent caching of the page - Strong browser cache busting
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-header("Expires: 0");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Past date
 
 session_start();
 if (!isset($_SESSION['id'])) {
@@ -16,10 +17,9 @@ $con = connection();
 
 $userID = isset($_GET['user_id']) ? intval($_GET['user_id']) : $_SESSION['id'];
 
-$userData = getUserData($userID);
-
+// Process form submissions first
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $profilePhotoPath = $userData['profile_photo'];  // Default to current photo
+  $profilePhotoPath = isset($_POST['current_photo']) ? $_POST['current_photo'] : 'default-profile-photo.jpg';
 
   // Handle uploaded photo
   if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
@@ -37,20 +37,95 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $jobTitle = $_POST['job_title'];
   $summary = $_POST['summary'];
 
+  // Ensure we have a fresh connection for the update
+  if (isset($con) && $con) {
+    $con->close();
+  }
+  $con = connection();
+
   // Update user data in _user table
   $update = "UPDATE _user SET profile_photo = ?, job_title = ?, summary = ? WHERE id = ?";
   $stmtUpdate = $con->prepare($update);
   $stmtUpdate->bind_param("sssi", $profilePhotoPath, $jobTitle, $summary, $userID);
-  $stmtUpdate->execute();
-
-  // Redirect back to profile page after update
-  header("Location: freelancerProfile.php?profileUpdated=true");  // Add query param to show updated
-  exit();
+  
+  // Execute the update and verify success
+  if ($stmtUpdate->execute()) {
+    // Store updated values directly in session to ensure immediate access
+    $_SESSION['updated_profile_photo'] = $profilePhotoPath;
+    $_SESSION['updated_job_title'] = $jobTitle;
+    $_SESSION['updated_summary'] = $summary;
+    $_SESSION['profile_just_updated'] = true;
+    
+    // Force page reload with timestamp to bypass cache
+    header("Location: freelancerProfile.php?profileUpdated=true&refresh=" . time());
+    exit();
+  } else {
+    // Handle error case
+    echo "Error updating profile: " . $stmtUpdate->error;
+    exit();
+  }
 }
 
+// After processing form or on initial load - Get fresh data
+
+// Force a fresh query and ensure no caching
+if (isset($_GET['refresh'])) {
+  // Clear any potential caching
+  header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+  header("Pragma: no-cache");
+  header("Expires: 0");
+}
+
+// Get updated user data - DIRECT QUERY to bypass any caching issues
+// First close any existing connection
+if (isset($con) && $con) {
+  $con->close();
+}
+$con = connection(); // Get fresh connection
+
+// Direct database query instead of using getUserData function
+$sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, email, profile_photo, job_title, summary, first_name
+        FROM _user 
+        WHERE id = ?";
+
+$userData = false;
+if ($stmt = $con->prepare($sql)) {
+  $stmt->bind_param("i", $userID);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  
+  if ($row = $result->fetch_assoc()) {
+    $userData = [
+      'id' => $row['id'],
+      'full_name' => $row['full_name'],
+      'email' => $row['email'],
+      'first_name' => $row['first_name'],
+      'profile_photo' => !empty($row['profile_photo']) ? $row['profile_photo'] : 'default-profile-photo.jpg',
+      'job_title' => $row['job_title'], // Use actual value even if empty
+      'summary' => $row['summary'], // Use actual value even if empty
+    ];
+    
+    // Debug info
+    error_log("Job Title from DB: " . (isset($row['job_title']) ? $row['job_title'] : 'not set'));
+    error_log("Summary from DB: " . (isset($row['summary']) ? $row['summary'] : 'not set'));
+  }
+  $stmt->close();
+}
+
+// Override with session data if available (for immediate display after update)
+if (isset($_SESSION['updated_job_title'])) {
+  $userData['job_title'] = $_SESSION['updated_job_title'];
+  unset($_SESSION['updated_job_title']);
+}
+if (isset($_SESSION['updated_summary'])) {
+  $userData['summary'] = $_SESSION['updated_summary'];
+  unset($_SESSION['updated_summary']);
+}
+if (isset($_SESSION['updated_profile_photo'])) {
+  $userData['profile_photo'] = $_SESSION['updated_profile_photo'];
+  unset($_SESSION['updated_profile_photo']);
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,12 +133,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProFolio - Freelancer Profile</title>
+  <!-- Force no cache -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom Dashboard CSS -->
-  <link href="freelancer.css" rel="stylesheet">
+  <link href="ProFolio.css" rel="stylesheet">
+  <style>
+    #success-notification {
+      transition: opacity 0.3s ease-out;
+    }
+  </style>
 </head>
 <body>
   <!-- Layout Container -->
@@ -79,12 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       
       <div class="sidebar-user">
         <div class="user-avatar">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo'])): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="freelancerProfile.php" class="user-name-link">
           <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="info-value non-editable"> <?php echo htmlspecialchars($userData['job_title']); ?></div>
+          <div class="info-value non-editable"><?php echo isset($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?></div>
            
           </a>
         </div>
@@ -100,11 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <li class="nav-item">
             <a href="freelancerPortfolio.php" class="nav-link">
               <i class="fas fa-palette"></i> Portfolio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="freelancerOffers.php" class="nav-link">
-              <i class="fas fa-briefcase"></i> Job Offers
             </a>
           </li>
         </ul>
@@ -132,36 +215,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           </div>
         </header>
         
+        <!-- Success notification -->
+        <?php 
+        // Only show notification if both query param AND session flag are set
+        if (isset($_GET['profileUpdated']) && $_GET['profileUpdated'] == 'true' && isset($_SESSION['profile_just_updated']) && $_SESSION['profile_just_updated']): 
+          // Clear the session flag to prevent showing the notification on refresh
+          unset($_SESSION['profile_just_updated']);
+        ?>
+        <div class="alert alert-success fade show" role="alert" id="success-notification">
+          <i class="fas fa-check-circle me-2"></i> Profile updated successfully!
+        </div>
+        <?php endif; ?>
+        
         <!-- Profile Information -->
         <form id="profile-form" action="freelancerProfile.php" method="POST" enctype="multipart/form-data">
   <section class="profile-section">
     <div class="profile-header">
       <div class="profile-photo-container">
         <div class="profile-photo">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo'])): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="profile-photo-upload">
           <label for="profile-photo-input" class="upload-btn">
             <i class="fas fa-camera"></i> Change Photo
           </label>
           <input type="file" name="profile_photo" id="profile-photo-input" accept="image/*" class="hidden-input">
+          <input type="hidden" name="current_photo" value="<?php echo htmlspecialchars($userData['profile_photo']); ?>">
         </div>
       </div>
       
       <div class="profile-basic-info">
         <div class="info-group">
           <label class="info-label">Full Name</label>
-          <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
+          <div class="info-value non-editable" style="color: #555555 !important;"><?php echo htmlspecialchars($userData['full_name']); ?></div>
         </div>
         <div class="info-group">
           <label class="info-label">Email Address</label>
-          <div class="info-value non-editable"><?php echo htmlspecialchars($userData['email']); ?></div>
+          <div class="info-value non-editable" style="color: #555555 !important;"><?php echo htmlspecialchars($userData['email']); ?></div>
         </div>
         <div class="info-group">
           <label class="info-label">Job Title</label>
           <input type="text" name="job_title" class="form-control info-input" 
   value="<?php echo isset($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?>">
-
         </div>
       </div>
     </div>
@@ -171,81 +270,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <h3 class="section-title">Professional Summary</h3>
       <div class="profile-summary">
       <textarea name="summary" class="form-control" rows="4" placeholder="Write a brief professional summary..."><?php echo isset($userData['summary']) ? htmlspecialchars($userData['summary']) : ''; ?></textarea>
-
       </div>
     </div>
 
     <!-- Save Profile Changes -->
     <div class="profile-actions">
-      <button type="submit" class="btn btn-primary save-changes-btn">Save Changes</button>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
       <button type="button" class="btn btn-outline-secondary cancel-btn">Cancel</button>
     </div>
   </section>
 </form>
 
-        
-        <!-- Hidden Job Offer Details Modal Structure (HTML Only) -->
-        <div class="offer-details-modal" id="offerDetailsModal" style="display: none;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3 class="modal-title">Job Offer Details</h3>
-              <button class="close-modal-btn">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="offer-company-header">
-                <div class="company-logo">
-                  <i class="fas fa-building"></i>
-                </div>
-                <div class="company-details">
-                  <h4 class="job-title">Senior Front-End Developer</h4>
-                  <p class="company-name">TechSolutions Inc.</p>
-                  <div class="offer-meta-tags">
-                    <span class="meta-tag"><i class="fas fa-map-marker-alt"></i> Remote</span>
-                    <span class="meta-tag"><i class="far fa-clock"></i> Contract</span>
-                    <span class="meta-tag"><i class="fas fa-dollar-sign"></i> $60-80/hr</span>
-                    <span class="meta-tag"><i class="far fa-calendar"></i> Posted 3 days ago</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="offer-section">
-                <h5 class="offer-section-title">Job Description</h5>
-                <div class="offer-description">
-                  <p>We are looking for an experienced developer to lead our front-end team on a new SaaS platform. You will work closely with our design and back-end teams to build robust, responsive, and intuitive user interfaces.</p>
-                  <p>As the lead front-end developer, you will be responsible for architecture decisions, code quality, and mentoring junior developers.</p>
-                </div>
-              </div>
-              
-              <div class="offer-section">
-                <h5 class="offer-section-title">Requirements</h5>
-                <ul class="offer-requirements-list">
-                  <li>5+ years experience with modern JavaScript and front-end frameworks</li>
-                  <li>Expert knowledge of React, TypeScript, and state management</li>
-                  <li>Strong understanding of responsive design principles</li>
-                  <li>Experience with REST APIs and GraphQL</li>
-                  <li>Ability to optimize front-end performance</li>
-                </ul>
-              </div>
-              
-              <div class="offer-section">
-                <h5 class="offer-section-title">Skills</h5>
-                <div class="offer-skills">
-                  <span class="skill-tag">React</span>
-                  <span class="skill-tag">TypeScript</span>
-                  <span class="skill-tag">Redux</span>
-                  <span class="skill-tag">HTML5/CSS3</span>
-                  <span class="skill-tag">GraphQL</span>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-primary apply-btn">Apply for This Position</button>
-              <button class="btn btn-outline-secondary save-btn">Save for Later</button>
-            </div>
-          </div>
-        </div>
         
         <!-- Dashboard Footer -->
         <footer class="dashboard-footer">
@@ -261,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Script to display current date -->
+  <!-- Script to display current date and handle notifications -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get current date
@@ -277,28 +312,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Format and display the date
       const formattedDate = now.toLocaleDateString('en-US', options);
       document.getElementById('current-date').textContent = formattedDate;
+      
+      // Auto-dismiss notification after 1.5 seconds
+      const successNotification = document.getElementById('success-notification');
+      if (successNotification) {
+        setTimeout(function() {
+          successNotification.style.opacity = '0';
+          setTimeout(function() {
+            successNotification.style.display = 'none';
+          }, 300);
+        }, 1500);
+        
+        // Remove the profileUpdated parameter from URL after showing notification
+        if (window.location.search.indexOf('profileUpdated=true') !== -1) {
+          // Use history.replaceState to remove the query parameter without reloading the page
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({path: newUrl}, '', newUrl);
+        }
+      }
     });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-  // Get the current session user ID from PHP
-  const sessionUserId = "<?php echo $_SESSION['id']; ?>";
-
-  // Get the user ID being loaded from the page URL (you should pass this via PHP)
-  const loadedUserId = "<?php echo isset($_GET['user_id']) ? $_GET['user_id'] : ''; ?>";  // This assumes you're passing user_id in the URL
-
-  
-if (window.location.search.indexOf('profileUpdated=true') !== -1) {
-  document.querySelector('#profile-form').reset(); 
-}
-
-
-  // If the profile is updated, clear the form
-  if (window.location.search.indexOf('profileUpdated=true') !== -1) {
-    document.querySelector('#profile-form').reset(); // Reset all form fields
-  }
-});
-  
   </script>
   <script src="JS/freelancerProfile.js"></script>
 </body>

@@ -5,15 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const sidebarUserAvatar = document.querySelector('.sidebar-user .user-avatar');
   
   // Form elements
-  const saveChangesBtn = document.querySelector('.save-changes-btn');
+  const profileForm = document.getElementById('profile-form');
   const cancelBtn = document.querySelector('.cancel-btn');
-  const jobTitleInput = document.querySelector('.info-input');
-  const professionalSummary = document.querySelector('.profile-summary textarea');
+  const jobTitleInput = document.querySelector('input[name="job_title"]');
+  const professionalSummary = document.querySelector('textarea[name="summary"]');
   
   // Original values for cancel functionality
   let originalData = {
     jobTitle: jobTitleInput ? jobTitleInput.value : '',
     summary: professionalSummary ? professionalSummary.value : '',
+    photoSrc: profilePhotoContainer ? profilePhotoContainer.querySelector('img')?.src : null
   };
 
   // Profile Photo Upload Handler
@@ -43,9 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const sidebarImg = img.cloneNode(true);
             sidebarUserAvatar.appendChild(sidebarImg);
           }
-          
-          // Save to localStorage for persistence
-          localStorage.setItem('profilePhoto', e.target.result);
         }
         
         reader.readAsDataURL(file);
@@ -53,49 +51,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Save Changes functionality
-  if (saveChangesBtn) {
-    saveChangesBtn.addEventListener('click', function() {
-      // Get all form values
-      const newData = {
-        jobTitle: jobTitleInput ? jobTitleInput.value : '',
-        summary: professionalSummary ? professionalSummary.value : '',
-      };
+  // Form submission handler to update user information
+  if (profileForm) {
+    profileForm.addEventListener('submit', function(event) {
+      // Let the form submit normally, but update UI immediately
+      const jobTitle = jobTitleInput ? jobTitleInput.value : '';
       
-      // Update sidebar job title
-      const userRoleElement = document.querySelector('.user-role');
-      if (userRoleElement) {
-        userRoleElement.textContent = newData.jobTitle;
+      // Always update the sidebar job title for immediate feedback, even if empty
+      const sidebarJobTitle = document.querySelector('.sidebar-user .user-info .info-value:nth-child(2)');
+      if (sidebarJobTitle) {
+        sidebarJobTitle.textContent = jobTitle;
       }
       
-      // Save data to localStorage
-      localStorage.setItem('freelancerProfile', JSON.stringify(newData));
-      
-      // Update original data reference
-      originalData = {...newData};
-      
-      // Show success message
-      showNotification('Profile updated successfully!');
+      // Force a reload parameter to bust cache
+      const timestamp = new Date().getTime();
+      const formAction = `${profileForm.action}${profileForm.action.includes('?') ? '&' : '?'}cache_bust=${timestamp}`;
+      profileForm.action = formAction;
     });
   }
 
   // Cancel Changes functionality
   if (cancelBtn) {
-    cancelBtn.addEventListener('click', function() {
+    cancelBtn.addEventListener('click', function(event) {
+      event.preventDefault();
+      
       // Restore job title and summary
       if (jobTitleInput) jobTitleInput.value = originalData.jobTitle;
       if (professionalSummary) professionalSummary.value = originalData.summary;
       
+      // Restore original photo if it was changed
+      if (profilePhotoContainer && originalData.photoSrc) {
+        const currentImg = profilePhotoContainer.querySelector('img');
+        if (currentImg && currentImg.src !== originalData.photoSrc) {
+          currentImg.src = originalData.photoSrc;
+          
+          // Also restore sidebar avatar
+          if (sidebarUserAvatar) {
+            const sidebarImg = sidebarUserAvatar.querySelector('img');
+            if (sidebarImg) {
+              sidebarImg.src = originalData.photoSrc;
+            }
+          }
+        }
+      }
+      
       // Show canceled message
-      showNotification('Changes discarded');
+      showNotification('Changes discarded', 'warning');
     });
   }
 
-  // Show notification message
-  function showNotification(message) {
-    // Create notification element
+  // Helper function to show notifications
+  function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = 'notification';
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     
     // Add to page
@@ -115,53 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000);
   }
 
-  // Load saved data from localStorage on page load
-  function loadSavedData() {
-    // Load profile data
-    const savedProfile = localStorage.getItem('freelancerProfile');
-    if (savedProfile) {
-      const profileData = JSON.parse(savedProfile);
-      
-      // Restore values
-      if (jobTitleInput) jobTitleInput.value = profileData.jobTitle;
-      if (professionalSummary) professionalSummary.value = profileData.summary;
-      
-      const userRoleElement = document.querySelector('.user-role');
-      if (userRoleElement) {
-        userRoleElement.textContent = profileData.jobTitle;
-      }
-      
-      // Set original data reference
-      originalData = {...profileData};
-    }
-    
-    // Load profile photo if exists
-    const savedPhoto = localStorage.getItem('profilePhoto');
-    if (savedPhoto) {
-      // Create image element
-      const img = document.createElement('img');
-      img.src = savedPhoto;
-      img.alt = "Profile Photo";
-      img.className = "profile-img";
-      
-      // Update main profile photo
-      if (profilePhotoContainer) {
-        profilePhotoContainer.innerHTML = '';
-        profilePhotoContainer.appendChild(img);
-      }
-      
-      // Update sidebar avatar
-      if (sidebarUserAvatar) {
-        sidebarUserAvatar.innerHTML = '';
-        const sidebarImg = img.cloneNode(true);
-        sidebarUserAvatar.appendChild(sidebarImg);
-      }
-    }
+  // Force refresh on page load to ensure latest data
+  if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+    // User navigated using back/forward buttons, force a refresh
+    window.location.reload(true);
   }
 
-  // Initialize
-  loadSavedData();
-  
   // Add basic CSS for notifications
   const style = document.createElement('style');
   style.textContent = `
@@ -185,6 +152,14 @@ document.addEventListener('DOMContentLoaded', function() {
       transform: translateY(0);
     }
     
+    .notification.warning {
+      background-color: #ff9800;
+    }
+    
+    .notification.error {
+      background-color: #f44336;
+    }
+    
     .profile-img {
       width: 100%;
       height: 100%;
@@ -193,43 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   `;
   document.head.appendChild(style);
-});
-
-// Function to load profile data on any page
-function loadProfileDataGlobally() {
-  // Get sidebar elements that exist on all pages
-  const sidebarUserAvatar = document.querySelector('.sidebar-user .user-avatar');
-  const userRoleElement = document.querySelector('.user-role');
-
-  // Load profile data
-  const savedProfile = localStorage.getItem('freelancerProfile');
-  if (savedProfile) {
-    const profileData = JSON.parse(savedProfile);
-    
-    // Update job title in sidebar
-    if (profileData.jobTitle && userRoleElement) {
-      userRoleElement.textContent = profileData.jobTitle;
-    }
-  }
-
-  // Load profile photo if exists
-  const savedPhoto = localStorage.getItem('profilePhoto');
-  if (savedPhoto && sidebarUserAvatar) {
-    // Create image element
-    const img = document.createElement('img');
-    img.src = savedPhoto;
-    img.alt = "Profile Photo";
-    img.className = "profile-img";
-    
-    // Update sidebar avatar
-    sidebarUserAvatar.innerHTML = '';
-    sidebarUserAvatar.appendChild(img);
-  }
-}
-
-// Call the function to load profile data on every page load
-document.addEventListener('DOMContentLoaded', function() {
-  loadProfileDataGlobally();
 });
 
 // Function to display current date in the header
@@ -251,3 +189,5 @@ document.addEventListener('DOMContentLoaded', function() {
     currentDateElement.textContent = formattedDate;
   }
 });
+
+// Remove the functions that rely on localStorage

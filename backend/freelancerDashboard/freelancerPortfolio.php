@@ -242,6 +242,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom Dashboard CSS -->
   <link href="proFolio.css" rel="stylesheet">
+  <style>
+    /* Hide the "I currently work here" checkbox and label */
+    .work-current, 
+    .form-check-label[for^="currentWork"] {
+      display: none !important;
+    }
+    
+    /* Apply margin to make up for the hidden elements */
+    .work-end-date {
+      margin-bottom: 10px;
+    }
+    
+    /* Make date inputs more clickable */
+    input[type="month"] {
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <!-- Layout Container -->
@@ -257,12 +274,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
       
       <div class="sidebar-user">
         <div class="user-avatar">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo'])): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="freelancerProfile.php" class="user-name-link">
           <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="info-value non-editable"> <?php echo htmlspecialchars($userData['job_title']); ?></div>
+          <div class="info-value non-editable"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?></div>
           </a>
         </div>
       </div>
@@ -277,11 +298,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
           <li class="nav-item">
             <a href="freelancerPortfolio.php" class="nav-link active">
               <i class="fas fa-palette"></i> Portfolio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="freelancerOffers.php" class="nav-link">
-              <i class="fas fa-briefcase"></i> Job Offers
             </a>
           </li>
         </ul>
@@ -382,8 +398,8 @@ if ($result->num_rows > 0) {
 $expSql = "SELECT 
             title, 
             company, 
-            DATE_FORMAT(start_date, '%Y-%m') as start_date, 
-            DATE_FORMAT(end_date, '%Y-%m') as end_date, 
+            DATE_FORMAT(start_date, '%Y-%m') as startDate, 
+            DATE_FORMAT(end_date, '%Y-%m') as endDate, 
             description 
         FROM 
             work_experience 
@@ -605,9 +621,6 @@ $expSql = "SELECT
                           <div class="invalid-feedback">End date is required</div>
                           <div class="form-check mt-2">
                             <input class="form-check-input work-current" name="work_current[]" type="checkbox" id="currentWork">
-                            <label class="form-check-label" for="currentWork">
-                              I currently work here
-                            </label>
                           </div>
                         </div>
                       </div>
@@ -794,7 +807,6 @@ $expSql = "SELECT
       
       // Add event listener for confirmation button
 
-
       
 document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
   const portfolioId = document.getElementById('deleteConfirmModal').dataset.portfolioId;
@@ -855,7 +867,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
 });
     });
 
-
   document.getElementById('portfolio-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -907,20 +918,26 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
   .then(res => res.json())
   .then(data => {
     if (data.status === 'success') {
+        // Remove the old portfolio element from DOM if editing
+  if (isEditing && portfolioId) {
+    const oldPortfolio = document.querySelector(`[data-portfolio-id="${portfolioId}"]`);
+    if (oldPortfolio) {
+      oldPortfolio.remove();
+    }
+  }
       // Show success notification
       const successNotification = document.getElementById('success-notification');
-      successNotification.textContent = isEditing ? 'Portfolio updated successfully!' : 'Portfolio created successfully!';
+      const message = isEditing ? 'Portfolio updated successfully!' : 'Portfolio created successfully!';
+      successNotification.textContent = message;
       successNotification.style.display = 'block';
       successNotification.classList.add('show');
       
-      // Auto-hide notification after 2 seconds and then reload
-      setTimeout(() => {
-        successNotification.classList.remove('show');
-        setTimeout(() => {
-          successNotification.style.display = 'none';
-          window.location.reload();
-        }, 300);
-      }, 2000);
+      // Store message in localStorage
+      localStorage.setItem('portfolioNotification', message);
+      
+      // Immediately reload the page to prevent old version flicker
+      window.location.reload();
+      
     } else {
       alert('Error: ' + data.message);
     }
@@ -931,47 +948,63 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
   });
 });
 
-// For the edit button in the portfolio card
-document.querySelectorAll('.edit-portfolio-btn').forEach(button => {
-  button.addEventListener('click', function() {
-    const portfolioCard = this.closest('.portfolio-card');
-    const portfolioId = portfolioCard.dataset.portfolioId;
-    const portfolioName = portfolioCard.dataset.portfolioName;
-    const portfolioCategory = portfolioCard.dataset.portfolioCategory;
-    const portfolioDescription = portfolioCard.dataset.portfolioDescription;
-    const portfolioSkills = JSON.parse(portfolioCard.dataset.portfolioSkills);
-    const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
-    const workSamples = JSON.parse(portfolioCard.dataset.workSamples);
+document.addEventListener('DOMContentLoaded', function () {
 
-    // Set form to editing mode
-    const portfolioForm = document.getElementById('portfolio-form');
-    portfolioForm.dataset.editing = 'true';
-    portfolioForm.dataset.portfolioId = portfolioId;
+  function updateSkillStepValidation() {
+    const skills = document.querySelectorAll('#skills-container .tag');
+    const nextBtn = document.querySelector('.next-section[data-next="3"]');
 
-    // Change form header
-    document.getElementById('form-header-text').textContent = 'Edit Portfolio';
-    document.getElementById('form-header-icon').className = 'fas fa-edit';
-    document.getElementById('submit-button-text').textContent = 'Update Portfolio';
+    if (nextBtn) {
+      nextBtn.disabled = skills.length === 0;
+    }
+  }
 
-    // Fill basic info
-    document.getElementById('portfolio-name').value = portfolioName;
-    document.getElementById('portfolio-type').value = portfolioCategory;
-    document.getElementById('portfolio-description').value = portfolioDescription;
+  // For the edit button in the portfolio card
+  document.querySelectorAll('.edit-portfolio-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      const portfolioCard = this.closest('.portfolio-card');
+      const portfolioId = portfolioCard.dataset.portfolioId;
+      const portfolioName = portfolioCard.dataset.portfolioName;
+      const portfolioCategory = portfolioCard.dataset.portfolioCategory;
+      const portfolioDescription = portfolioCard.dataset.portfolioDescription;
+      const portfolioSkills = JSON.parse(portfolioCard.dataset.portfolioSkills);
+      const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
+      const workSamples = JSON.parse(portfolioCard.dataset.workSamples);
 
-    // Fill skills
-    const skillsContainer = document.getElementById('skills-container');
-    skillsContainer.innerHTML = '';
-    portfolioSkills.forEach(skill => {
-      const skillTag = document.createElement('div');
-      skillTag.className = 'tag';
-      skillTag.innerHTML = skill + '<button type="button" class="remove-tag-btn">×</button>';
-      skillsContainer.appendChild(skillTag);
-      
-      // Add remove event listener
-      skillTag.querySelector('.remove-tag-btn').addEventListener('click', function() {
-        this.parentElement.remove();
+      // Set form to editing mode
+      const portfolioForm = document.getElementById('portfolio-form');
+      portfolioForm.dataset.editing = 'true';
+      portfolioForm.dataset.portfolioId = portfolioId;
+
+      // Change form header
+      document.getElementById('form-header-text').textContent = 'Edit Portfolio';
+      document.getElementById('form-header-icon').className = 'fas fa-edit';
+      document.getElementById('submit-button-text').textContent = 'Update Portfolio';
+
+      // Fill basic info
+      document.getElementById('portfolio-name').value = portfolioName;
+      document.getElementById('portfolio-type').value = portfolioCategory;
+      document.getElementById('portfolio-description').value = portfolioDescription;
+
+     
+      // Fill skills
+      const skillsContainer = document.getElementById('skills-container');
+      skillsContainer.innerHTML = '';
+      portfolioSkills.forEach(skill => {
+        const skillTag = document.createElement('div');
+        skillTag.className = 'tag';
+        skillTag.innerHTML = skill + '<button type="button" class="remove-tag-btn">×</button>';
+        skillsContainer.appendChild(skillTag);
+
+        // Add remove event listener
+        skillTag.querySelector('.remove-tag-btn').addEventListener('click', function () {
+          this.parentElement.remove();
+          setTimeout(updateSkillStepValidation, 0);
+       // Revalidate
+        });
       });
-    });
+
+      setTimeout(updateSkillStepValidation, 0);
 
     // Clear any existing work experiences
     const workExpContainer = document.getElementById('work-experience-container');
@@ -1058,6 +1091,8 @@ document.querySelectorAll('.edit-portfolio-btn').forEach(button => {
   });
 });
 
+});
+
 // Also update the edit button handler from the view page
 document.getElementById('edit-from-view').addEventListener('click', function() {
   const portfolioId = document.getElementById('portfolio-detail-view').dataset.portfolioId;
@@ -1113,9 +1148,6 @@ function addWorkExperienceItem(index) {
           <div class="invalid-feedback">End date is required</div>
           <div class="form-check mt-2">
             <input class="form-check-input work-current" name="work_current[]" type="checkbox" id="currentWork${index}">
-            <label class="form-check-label" for="currentWork${index}">
-              I currently work here
-            </label>
           </div>
         </div>
       </div>
@@ -1252,6 +1284,244 @@ document.getElementById('create-portfolio-btn').addEventListener('click', functi
   document.getElementById('portfolio-form-container').style.display = 'block';
 });
 
+// Check for stored notification on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const storedNotification = localStorage.getItem('portfolioNotification');
+  if (storedNotification) {
+    // Display notification
+    const successNotification = document.getElementById('success-notification');
+    successNotification.textContent = storedNotification;
+    successNotification.style.display = 'block';
+    successNotification.classList.add('show');
+    
+    // Auto-hide notification after 2 seconds
+    setTimeout(() => {
+      successNotification.classList.remove('show');
+      setTimeout(() => {
+        successNotification.style.display = 'none';
+      }, 300);
+    }, 2000);
+    
+    // Clear the stored notification
+    localStorage.removeItem('portfolioNotification');
+  }
+});
+
+// For the view portfolio button
+document.querySelectorAll('.view-portfolio-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const portfolioCard = this.closest('.portfolio-card');
+    const portfolioId = portfolioCard.dataset.portfolioId;
+    const portfolioName = portfolioCard.dataset.portfolioName;
+    const portfolioDescription = portfolioCard.dataset.portfolioDescription;
+    const portfolioSkills = JSON.parse(portfolioCard.dataset.portfolioSkills);
+    const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
+    const workSamples = JSON.parse(portfolioCard.dataset.workSamples);
+    
+    // Update title and description
+    document.getElementById('view-portfolio-title').textContent = portfolioName;
+    document.getElementById('view-portfolio-description').textContent = portfolioDescription;
+    
+    // Update skills
+    const skillsContainer = document.getElementById('view-portfolio-skills');
+    skillsContainer.innerHTML = '';
+    portfolioSkills.forEach(skill => {
+      const skillTag = document.createElement('span');
+      skillTag.className = 'tag';
+      skillTag.textContent = skill;
+      skillsContainer.appendChild(skillTag);
+    });
+    
+    // Display work experiences in the view modal
+    const experiencesContainer = document.getElementById('view-portfolio-experiences');
+    experiencesContainer.innerHTML = '';
+    
+    workExperiences.forEach(exp => {
+      // Check the actual structure of your data by logging it
+      console.log("Experience data:", exp);
+      
+      // Try different possible property names for dates
+      let startDate = '';
+      if (exp.startDate) {
+        startDate = formatDate(exp.startDate);
+      } else if (exp.start_date) {
+        startDate = formatDate(exp.start_date);
+      }
+      
+      // Handle end date, showing "Present" if empty
+      let endDate = 'Present';
+      if (exp.endDate && exp.endDate.trim() !== '') {
+        endDate = formatDate(exp.endDate);
+      } else if (exp.end_date && exp.end_date.trim() !== '') {
+        endDate = formatDate(exp.end_date);
+      }
+      
+      const experienceItem = document.createElement('div');
+      experienceItem.className = 'experience-item mb-4';
+      experienceItem.innerHTML = `
+        <h5 class="mb-1">${exp.title}</h5>
+        <div class="company-name text-muted">${exp.company}</div>
+        <div class="date-range text-muted small mb-2">${startDate} - ${endDate}</div>
+        <p class="mb-0">${exp.description}</p>
+      `;
+      experiencesContainer.appendChild(experienceItem);
+    });
+    
+    // Display work samples
+    const samplesContainer = document.getElementById('view-portfolio-samples');
+    samplesContainer.innerHTML = '';
+    
+    workSamples.forEach(sample => {
+      const sampleItem = document.createElement('div');
+      sampleItem.className = 'col-md-6 mb-4';
+      sampleItem.innerHTML = `
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">${sample.title}</h5>
+            <p class="card-text">${sample.description}</p>
+            <a href="${sample.url}" target="_blank" class="btn btn-primary btn-sm">View Project</a>
+          </div>
+        </div>
+      `;
+      samplesContainer.appendChild(sampleItem);
+    });
+    
+    // Show portfolio detail view
+    document.getElementById('portfolio-view').style.display = 'none';
+    document.getElementById('portfolio-detail-view').style.display = 'block';
+    document.getElementById('portfolio-detail-view').dataset.portfolioId = portfolioId;
+  });
+});
+
+// Helper function to format date
+function formatDate(dateStr) {
+  if (!dateStr || dateStr.trim() === '') {
+    return 'Present';
+  }
+  
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      console.log("Invalid date:", dateStr);
+      return 'Invalid Date';
+    }
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  } catch (e) {
+    console.error("Error formatting date:", e);
+    return 'Invalid Date';
+  }
+}
+
+// Add this right after your other scripts
+document.addEventListener('DOMContentLoaded', function() {
+  // Run once on page load
+  enableAllEndDateFields();
+  
+  // Also run periodically to catch new elements
+  setInterval(enableAllEndDateFields, 500);
+  
+  function enableAllEndDateFields() {
+    // Find all end date inputs and enable them
+    document.querySelectorAll('.work-end-date').forEach(field => {
+      field.disabled = false;
+      field.classList.add('required'); // Add required class back if it was removed
+    });
+    
+    // Uncheck all "currently work here" checkboxes
+    document.querySelectorAll('.work-current').forEach(checkbox => {
+      checkbox.checked = false;
+    });
+  }
+});
+
+// Fix dates not being loaded in edit mode
+document.addEventListener('DOMContentLoaded', function() {
+  // Patch the editPortfolio function if it exists
+  const originalEditPortfolio = window.editPortfolio;
+  if (typeof originalEditPortfolio === 'function') {
+    window.editPortfolio = function(portfolioId) {
+      // Call the original function first
+      originalEditPortfolio(portfolioId);
+      
+      // Now fill in the dates that might have been missed
+      setTimeout(function() {
+        const portfolioCard = document.querySelector(`.portfolio-card[data-portfolio-id="${portfolioId}"]`);
+        if (portfolioCard && portfolioCard.dataset.workExperiences) {
+          const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
+          const workItems = document.querySelectorAll('#work-experience-container .work-experience-item');
+          
+          // Fill in dates for each work experience
+          workExperiences.forEach((exp, index) => {
+            if (index < workItems.length) {
+              const item = workItems[index];
+              
+              // Set start date if available
+              if (exp.startDate || exp.start_date) {
+                const startDate = exp.startDate || exp.start_date;
+                if (startDate) {
+                  item.querySelector('.work-start-date').value = startDate.substring(0, 7); // Get YYYY-MM part
+                }
+              }
+              
+              // Set end date if available
+              if (exp.endDate || exp.end_date) {
+                const endDate = exp.endDate || exp.end_date;
+                if (endDate) {
+                  item.querySelector('.work-end-date').value = endDate.substring(0, 7); // Get YYYY-MM part
+                }
+              }
+              
+              // Make sure end date is enabled
+              item.querySelector('.work-end-date').disabled = false;
+            }
+          });
+        }
+      }, 100); // Give a slight delay to ensure the form is ready
+    };
+  }
+  
+  // Alternative approach: patch via event listener for edit buttons
+  document.querySelectorAll('.edit-portfolio-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const portfolioCard = this.closest('.portfolio-card');
+      const portfolioId = portfolioCard.dataset.portfolioId;
+      
+      // Give time for the form to be populated
+      setTimeout(function() {
+        if (portfolioCard && portfolioCard.dataset.workExperiences) {
+          const workExperiences = JSON.parse(portfolioCard.dataset.workExperiences);
+          const workItems = document.querySelectorAll('#work-experience-container .work-experience-item');
+          
+          // Fill in dates for each work experience
+          workExperiences.forEach((exp, index) => {
+            if (index < workItems.length) {
+              const item = workItems[index];
+              
+              // Set start date if available
+              if (exp.startDate || exp.start_date) {
+                const startDate = exp.startDate || exp.start_date;
+                if (startDate) {
+                  item.querySelector('.work-start-date').value = startDate.substring(0, 7); // Get YYYY-MM part
+                }
+              }
+              
+              // Set end date if available
+              if (exp.endDate || exp.end_date) {
+                const endDate = exp.endDate || exp.end_date;
+                if (endDate) {
+                  item.querySelector('.work-end-date').value = endDate.substring(0, 7); // Get YYYY-MM part
+                }
+              }
+              
+              // Make sure end date is enabled
+              item.querySelector('.work-end-date').disabled = false;
+            }
+          });
+        }
+      }, 500);
+    });
+  });
+});
   </script>
   <script src="JS/freelancerProfile.js"></script>
   <script src="JS/freelancerPortfolio.js"></script>
