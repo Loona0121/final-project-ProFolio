@@ -98,7 +98,7 @@
   .sidebar-user {
     padding: 1.5rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -112,30 +112,51 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
+    flex-shrink: 0;
+    overflow: hidden;
   }
   
   .user-info {
-    overflow: hidden;
-  }
-  .info-value.non-editable {
-    color: white;
-    font-weight: bold;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
   
-  .user-name {
-    font-size: 0.95rem;
-    margin: 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  .user-name-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+  }
+  
+  /* High specificity selector to ensure these styles take precedence */
+  .sidebar-user .user-info .info-value,
+  .sidebar-user .user-info .info-value.non-editable {
+    color: white !important;
+    font-weight: bold !important;
+    display: block !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    line-height: 1.2 !important;
+    margin-bottom: 2px !important;
+    word-wrap: break-word !important;
+    max-width: 100% !important;
+    width: 100% !important;
   }
   
   .user-role {
     font-size: 0.8rem;
     color: var(--medium-gray);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: visible;
+    text-overflow: clip;
+    margin: 0;
+    line-height: 1.4;
+    margin-top: 2px;
   }
   
   .sidebar-nav {
@@ -160,6 +181,7 @@
     color: rgba(255, 255, 255, 0.7);
     transition: var(--transition);
     position: relative;
+    font-size: 0.95rem;
   }
   
   .nav-link:hover {
@@ -196,6 +218,7 @@
     color: rgba(255, 255, 255, 0.8);
     font-weight: 500;
     transition: var(--transition);
+    font-size: 0.95rem;
   }
   
   .logout-btn:hover {
@@ -203,13 +226,20 @@
     color: var(--white);
   }
   
-/* Main Content Area - Reduce padding from line 372-376 */
-.main-content {
-  flex: 1;
-  margin-left: 250px;
-  padding: 1rem 2rem; /* Changed from padding: 2rem; to reduce top space */
-  background-color: var(--light-gray);
-}
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  /* Main Content Area - Reduce padding from line 372-376 */
+  .main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 1rem 2rem; /* Changed from padding: 2rem; to reduce top space */
+    background-color: var(--light-gray);
+  }
   
   .page-content {
     max-width: 1200px;
@@ -3989,4 +4019,30 @@
       border-radius: 6px;
       margin-top: 6px;
     }
+    
+.sidebar-user .user-info .info-value,
+.sidebar-user .user-info .info-value.non-editable {
+  color: white !important;
+  font-weight: bold !important;
+  display: block;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Remove any conflicting styles */
+.user-info .info-value.non-editable,
+.user-info .info-value,
+.info-value.non-editable {
+  font-weight: bold !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
     

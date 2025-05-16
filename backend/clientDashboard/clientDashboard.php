@@ -14,13 +14,8 @@ $userData = getUserData($userID);
 
 
  // PHP generates the text
- $text = "Welcome, " .htmlspecialchars($userData['first_name']) . " to the domain of the monarch";
-
-
-
+ $text = "Welcome, " .htmlspecialchars($userData['first_name']) . "!";
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -86,12 +81,16 @@ $userData = getUserData($userID);
       </div>
       <div class="sidebar-user">
         <div class="user-avatar">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo']) && $userData['profile_photo'] != 'default-profile-photo.jpg'): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="clientProfile.php" class="user-name-link">
           <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="user-role" id="sidebar-role">Client</div>
+          <div class="user-role" id="sidebar-role"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : 'Client'; ?></div>
           </a>
         </div>
       </div>
@@ -105,11 +104,6 @@ $userData = getUserData($userID);
           <li class="nav-item">
             <a href="clientTalents.php" class="nav-link">
               <i class="fas fa-users"></i> Find Talents
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="clientOffers.php" class="nav-link">
-              <i class="fas fa-paper-plane"></i> Sent Offers
             </a>
           </li>
         </ul>
@@ -140,7 +134,6 @@ $userData = getUserData($userID);
           <p class="welcome-message">Check for new updates and review latest deliverables. Take a look at their latest work and see if they're the right fit for your needs.</p>
           <div class="welcome-actions">
             <a href="clientTalents.php" class="welcome-btn primary">View Talents</a>
-            <a href="clientOffers.php" class="welcome-btn">Check Sent Offers</a>
           </div>
         </section>
         

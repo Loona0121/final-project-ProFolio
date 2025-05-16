@@ -23,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // Handle uploaded photo
   if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
-      $targetDir = "uploads/";
+      $targetDir = "../uploads/";
       if (!file_exists($targetDir)) {
           mkdir($targetDir, 0777, true);
       }
       $fileName = time() . '_' . basename($_FILES["profile_photo"]["name"]);
       $targetFilePath = $targetDir . $fileName;
       move_uploaded_file($_FILES["profile_photo"]["tmp_name"], $targetFilePath);
-      $profilePhotoPath = $targetFilePath;
+      $profilePhotoPath = "uploads/" . $fileName;
   }
 
   // Get other inputs
@@ -164,16 +164,15 @@ if (isset($_SESSION['updated_profile_photo'])) {
       <div class="sidebar-user">
         <div class="user-avatar">
           <?php if (!empty($userData['profile_photo'])): ?>
-            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+            <img src="<?php echo htmlspecialchars('../' . $userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
           <?php else: ?>
             <i class="fas fa-user"></i>
           <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="freelancerProfile.php" class="user-name-link">
-          <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="info-value non-editable"><?php echo isset($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?></div>
-           
+            <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
+            <div class="user-role"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : 'Freelancer'; ?></div>
           </a>
         </div>
       </div>
@@ -234,7 +233,7 @@ if (isset($_SESSION['updated_profile_photo'])) {
       <div class="profile-photo-container">
         <div class="profile-photo">
           <?php if (!empty($userData['profile_photo'])): ?>
-            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+            <img src="<?php echo htmlspecialchars('../' . $userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
           <?php else: ?>
             <i class="fas fa-user"></i>
           <?php endif; ?>

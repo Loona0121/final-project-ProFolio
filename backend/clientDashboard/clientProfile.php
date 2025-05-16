@@ -12,6 +12,45 @@ if (!isset($_SESSION['id'])) {
 $userID = $_SESSION['id'];  // Ensure the user is logged in
 $userData = getUserData($userID);
 
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  // Get the company name from the form
+  $companyName = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
+  
+  // Process photo upload if provided
+  $profilePhotoPath = isset($userData['profile_photo']) ? $userData['profile_photo'] : 'default-profile-photo.jpg';
+  
+  if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
+    $targetDir = "../uploads/";  
+    if (!file_exists($targetDir)) {
+      mkdir($targetDir, 0777, true);
+    }
+    $fileName = time() . '_' . basename($_FILES["profile_photo"]["name"]);
+    $targetFilePath = $targetDir . $fileName;
+    move_uploaded_file($_FILES["profile_photo"]["tmp_name"], $targetFilePath);
+    $profilePhotoPath = $targetFilePath;
+  }
+  
+  // Update database
+  $updateQuery = "UPDATE _user SET job_title = ?, profile_photo = ? WHERE id = ?";
+  $stmt = $con->prepare($updateQuery);
+  $stmt->bind_param("ssi", $companyName, $profilePhotoPath, $userID);
+  
+  if ($stmt->execute()) {
+    // Success - Set session flag for notification
+    $_SESSION['profile_just_updated'] = true;
+    
+    // Redirect back to the profile page with success parameter
+    header("Location: clientProfile.php?profileUpdated=true&refresh=" . time());
+    exit();
+  } else {
+    // Error - Set error message
+    $errorMessage = "Failed to update profile: " . $stmt->error;
+  }
+}
+
+// Get fresh user data after potential update
+$userData = getUserData($userID);
 ?>
 
 
@@ -30,14 +69,68 @@ $userData = getUserData($userID);
   <link href="ProFolio.css" rel="stylesheet">
   <style>
   .info-value.non-editable {
-  color:rgb(82, 50, 50);         /* Ensures text is visible (black text) */
+    color:rgb(82, 50, 50);         /* Ensures text is visible (black text) */
   }
-.user-info .info-value.non-editable {
-  color: #ffffff; 
-}
-
-</style>
-  </head>
+  .user-info .info-value.non-editable {
+    color: #ffffff; 
+  }
+  #success-notification {
+    transition: opacity 0.3s ease-out;
+  }
+  
+  /* Enhanced styling for Change Photo button */
+  .change-photo-btn {
+    display: inline-block;
+    background-color: #4e73df;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 50px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+    width: auto;
+  }
+  
+  .change-photo-btn:hover {
+    background-color: #375bc8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+  }
+  
+  .change-photo-btn i {
+    margin-right: 5px;
+  }
+  
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 3px solid #e0e0e0;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-photo i {
+    font-size: 50px;
+    color: #adb5bd;
+  }
+  </style>
+</head>
 <body>
   <!-- Layout Container -->
   <div class="dashboard-container">
@@ -52,12 +145,16 @@ $userData = getUserData($userID);
       
       <div class="sidebar-user">
         <div class="user-avatar" id="sidebar-avatar">
-          <i class="fas fa-user"></i>
+          <?php if (!empty($userData['profile_photo']) && $userData['profile_photo'] != 'default-profile-photo.jpg'): ?>
+            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          <?php else: ?>
+            <i class="fas fa-user"></i>
+          <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="clientProfile.php" class="user-name-link">
              <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-            <div class="user-role" id="sidebar-role">Client</div>
+            <div class="user-role" id="sidebar-role"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : 'Client'; ?></div>
           </a>
         </div>
       </div>
@@ -72,11 +169,6 @@ $userData = getUserData($userID);
           <li class="nav-item">
             <a href="clientTalents.php" class="nav-link">
               <i class="fas fa-users"></i> Find Talents
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="clientOffers.php" class="nav-link">
-              <i class="fas fa-paper-plane"></i> Sent Offers
             </a>
           </li>
         </ul>
@@ -104,21 +196,42 @@ $userData = getUserData($userID);
           </div>
         </header>
 
+        <!-- Success notification -->
+        <?php if (isset($_GET['profileUpdated']) && $_GET['profileUpdated'] == 'true' && isset($_SESSION['profile_just_updated'])): 
+          // Clear the session flag to prevent showing on refresh
+          unset($_SESSION['profile_just_updated']);
+        ?>
+        <div class="alert alert-success fade show" role="alert" id="success-notification">
+          <i class="fas fa-check-circle me-2"></i> Profile updated successfully!
+        </div>
+        <?php endif; ?>
+
+        <!-- Error message if there was an issue -->
+        <?php if (isset($errorMessage)): ?>
+        <div class="alert alert-danger fade show" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i> <?php echo $errorMessage; ?>
+        </div>
+        <?php endif; ?>
+
         <!-- Profile Content -->
         <div class="profile-container">
           <div class="card profile-card">
             <div class="card-body">
-              <form id="profile-form">
+              <form id="profile-form" action="clientProfile.php" method="POST" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-md-3 text-center mb-4">
                     <div class="profile-photo-container">
                       <div class="profile-photo" id="profile-photo">
-                        <i class="fas fa-user"></i>
+                        <?php if (!empty($userData['profile_photo']) && $userData['profile_photo'] != 'default-profile-photo.jpg'): ?>
+                          <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        <?php else: ?>
+                          <i class="fas fa-user"></i>
+                        <?php endif; ?>
                       </div>
                       <label for="photo-upload" class="change-photo-btn">
                         <i class="fas fa-camera me-2"></i> Change Photo
                       </label>
-                      <input type="file" id="photo-upload" class="d-none" accept="image/*">
+                      <input type="file" name="profile_photo" id="photo-upload" class="d-none" accept="image/*">
                     </div>
                   </div>
                   
@@ -135,7 +248,7 @@ $userData = getUserData($userID);
                     
                     <div class="mb-3">
                       <label for="companyName" class="form-label">Company (Optional)</label>
-                      <input type="text" class="form-control" id="companyName" placeholder="Enter your company name">
+                      <input type="text" name="company_name" class="form-control" id="companyName" placeholder="Enter your company name" value="<?php echo htmlspecialchars($userData['job_title'] ?? ''); ?>">
                     </div>
                   </div>
                 </div>
@@ -163,6 +276,85 @@ $userData = getUserData($userID);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <!-- Script to display current date -->
-  <script src="JS/clientProfile.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get current date
+      const now = new Date();
+      
+      // Format options for date display
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      
+      // Format and display the date
+      const formattedDate = now.toLocaleDateString('en-US', options);
+      document.getElementById('current-date').textContent = formattedDate;
+      
+      // Auto-dismiss notification after 2 seconds
+      const successNotification = document.getElementById('success-notification');
+      if (successNotification) {
+        setTimeout(function() {
+          successNotification.style.opacity = '0';
+          setTimeout(function() {
+            successNotification.style.display = 'none';
+          }, 300);
+        }, 2000);
+      }
+      
+      // Cancel button handler
+      document.getElementById('cancel-btn').addEventListener('click', function() {
+        window.location.href = 'clientProfile.php';
+      });
+      
+      // Photo upload preview handler
+      const photoUpload = document.getElementById('photo-upload');
+      const profilePhoto = document.getElementById('profile-photo');
+      const sidebarAvatar = document.getElementById('sidebar-avatar');
+      
+      photoUpload.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            const imageUrl = e.target.result;
+            
+            // Update main profile photo
+            if (profilePhoto.querySelector('img')) {
+              profilePhoto.querySelector('img').src = imageUrl;
+            } else {
+              const img = document.createElement('img');
+              img.src = imageUrl;
+              img.style.width = '100%';
+              img.style.height = '100%';
+              img.style.objectFit = 'cover';
+              img.style.borderRadius = '50%';
+              profilePhoto.innerHTML = '';
+              profilePhoto.appendChild(img);
+            }
+            
+            // Update sidebar avatar
+            if (sidebarAvatar.querySelector('img')) {
+              sidebarAvatar.querySelector('img').src = imageUrl;
+            } else {
+              const avatarImg = document.createElement('img');
+              avatarImg.src = imageUrl;
+              avatarImg.style.width = '100%';
+              avatarImg.style.height = '100%';
+              avatarImg.style.objectFit = 'cover';
+              avatarImg.style.borderRadius = '50%';
+              sidebarAvatar.innerHTML = '';
+              sidebarAvatar.appendChild(avatarImg);
+            }
+          };
+          
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+  </script>
 </body>
 </html>

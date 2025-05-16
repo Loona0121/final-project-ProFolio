@@ -4,7 +4,7 @@ function connection(){
 
 $host = "localhost";
 $username = "root";
-$password = "viron";
+$password = "";
 $database = "profolio_system";
 
 $con = new mysqli ($host, $username, $password, $database);

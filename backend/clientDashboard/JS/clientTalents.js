@@ -1,9 +1,14 @@
 // Display current date on page load
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('clientTalents.js loaded');
+  
   // Format and display current date
   const currentDate = new Date();
   const options = {year: 'numeric', month: 'long', day: 'numeric'};
-  document.getElementById('current-date').textContent = currentDate.toLocaleDateString('en-US', options);
+  const currentDateElement = document.getElementById('current-date');
+  if (currentDateElement) {
+    currentDateElement.textContent = currentDate.toLocaleDateString('en-US', options);
+  }
   
   // Load user profile data
   loadUserProfile();
@@ -11,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Setup search and filter functionality
   setupSearchAndFilter();
   
-  // Setup modal events and connections
+  // Setup modal events
   setupModals();
 });
 
@@ -24,32 +29,38 @@ function loadUserProfile() {
     const userData = JSON.parse(profileData);
     
     // Update sidebar name if available
-    if (userData.fullName) {
-      document.getElementById('sidebar-name').textContent = userData.fullName;
+    const sidebarName = document.getElementById('sidebar-name');
+    if (sidebarName && userData.fullName) {
+      sidebarName.textContent = userData.fullName;
     }
     
     // Update sidebar role/company if available
-    if (userData.company && userData.company.trim() !== '') {
-      document.getElementById('sidebar-role').textContent = userData.company;
-    } else {
-      document.getElementById('sidebar-role').textContent = 'Client';
+    const sidebarRole = document.getElementById('sidebar-role');
+    if (sidebarRole) {
+      if (userData.company && userData.company.trim() !== '') {
+        sidebarRole.textContent = userData.company;
+      } else {
+        sidebarRole.textContent = 'Client';
+      }
     }
   }
   
   // Update avatar if a photo URL is stored
   if (storedPhoto) {
     const avatarElement = document.getElementById('sidebar-avatar');
-    avatarElement.innerHTML = ''; // Clear default icon
-    
-    const avatarImg = document.createElement('img');
-    avatarImg.src = storedPhoto;
-    avatarImg.alt = 'User Avatar';
-    avatarImg.style.width = '100%';
-    avatarImg.style.height = '100%';
-    avatarImg.style.objectFit = 'cover';
-    avatarImg.style.borderRadius = '50%';
-    
-    avatarElement.appendChild(avatarImg);
+    if (avatarElement) {
+      avatarElement.innerHTML = ''; // Clear default icon
+      
+      const avatarImg = document.createElement('img');
+      avatarImg.src = storedPhoto;
+      avatarImg.alt = 'User Avatar';
+      avatarImg.style.width = '100%';
+      avatarImg.style.height = '100%';
+      avatarImg.style.objectFit = 'cover';
+      avatarImg.style.borderRadius = '50%';
+      
+      avatarElement.appendChild(avatarImg);
+    }
   }
   
   // Listen for profile updates
@@ -58,26 +69,36 @@ function loadUserProfile() {
       const updatedProfile = JSON.parse(event.newValue);
       
       // Update sidebar information
-      document.getElementById('sidebar-name').textContent = updatedProfile.fullName || 'Aran Joshua';
-      document.getElementById('sidebar-role').textContent = updatedProfile.company && updatedProfile.company.trim() !== '' ? 
-        updatedProfile.company : 'Client';
+      const sidebarName = document.getElementById('sidebar-name');
+      const sidebarRole = document.getElementById('sidebar-role');
+      
+      if (sidebarName) {
+        sidebarName.textContent = updatedProfile.fullName || 'Aran Joshua';
+      }
+      
+      if (sidebarRole) {
+        sidebarRole.textContent = updatedProfile.company && updatedProfile.company.trim() !== '' ? 
+          updatedProfile.company : 'Client';
+      }
     }
     
     if (event.key === 'profilePhoto' && event.newValue) {
       // Update avatar image
       const avatarElement = document.getElementById('sidebar-avatar');
-      if (avatarElement.querySelector('img')) {
-        avatarElement.querySelector('img').src = event.newValue;
-      } else {
-        avatarElement.innerHTML = ''; // Clear default icon
-        const avatarImg = document.createElement('img');
-        avatarImg.src = event.newValue;
-        avatarImg.alt = 'User Avatar';
-        avatarImg.style.width = '100%';
-        avatarImg.style.height = '100%';
-        avatarImg.style.objectFit = 'cover';
-        avatarImg.style.borderRadius = '50%';
-        avatarElement.appendChild(avatarImg);
+      if (avatarElement) {
+        if (avatarElement.querySelector('img')) {
+          avatarElement.querySelector('img').src = event.newValue;
+        } else {
+          avatarElement.innerHTML = ''; // Clear default icon
+          const avatarImg = document.createElement('img');
+          avatarImg.src = event.newValue;
+          avatarImg.alt = 'User Avatar';
+          avatarImg.style.width = '100%';
+          avatarImg.style.height = '100%';
+          avatarImg.style.objectFit = 'cover';
+          avatarImg.style.borderRadius = '50%';
+          avatarElement.appendChild(avatarImg);
+        }
       }
     }
   });
@@ -86,30 +107,29 @@ function loadUserProfile() {
 // Setup search and filter functionality
 function setupSearchAndFilter() {
   const searchInput = document.getElementById('talent-search');
-  const categoryFilter = document.getElementById('category-filter');
   
   // Search input event
-  searchInput.addEventListener('input', debounce(function() {
-    filterTalents();
-  }, 300));
-  
-  // Enter key in search
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce(function() {
       filterTalents();
-    }
-  });
-  
-  // Category filter change
-  categoryFilter.addEventListener('change', function() {
-    filterTalents();
-  });
+    }, 300));
+    
+    // Enter key in search
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        filterTalents();
+      }
+    });
+  }
 }
 
-// Filter talents based on search and category
+// Filter talents based on search
 function filterTalents() {
-  const searchQuery = document.getElementById('talent-search').value.toLowerCase().trim();
-  const categoryFilter = document.getElementById('category-filter').value;
+  const searchInput = document.getElementById('talent-search');
+  
+  if (!searchInput) return;
+  
+  const searchQuery = searchInput.value.toLowerCase().trim();
   
   // Get all talent cards
   const talentCards = document.querySelectorAll('.talent-card-col');
@@ -118,14 +138,10 @@ function filterTalents() {
   // Loop through each card and check if it matches filters
   talentCards.forEach(card => {
     // Get talent data from data attributes
-    const category = card.dataset.category;
     const talentName = card.dataset.talentName.toLowerCase();
     const talentTitle = card.dataset.talentTitle.toLowerCase();
     const talentSummary = card.dataset.talentSummary.toLowerCase();
     const talentSkills = card.dataset.talentSkills.toLowerCase();
-    
-    // Check category match
-    const categoryMatch = !categoryFilter || category === categoryFilter;
     
     // Check search match
     let searchMatch = true;
@@ -138,7 +154,7 @@ function filterTalents() {
     }
     
     // Show or hide based on matches
-    if (categoryMatch && searchMatch) {
+    if (searchMatch) {
       card.style.display = 'block';
       visibleCount++;
     } else {
@@ -148,180 +164,366 @@ function filterTalents() {
   
   // Show "no results" if no cards visible
   const noResultsTemplate = document.getElementById('no-results-template');
-  if (visibleCount === 0) {
-    noResultsTemplate.style.display = 'block';
-  } else {
-    noResultsTemplate.style.display = 'none';
+  if (noResultsTemplate) {
+    if (visibleCount === 0) {
+      noResultsTemplate.style.display = 'block';
+    } else {
+      noResultsTemplate.style.display = 'none';
+    }
   }
 }
 
 // Setup modal events
 function setupModals() {
-  // Modal send offer button from portfolio modal
-  document.getElementById('modal-send-offer-btn').addEventListener('click', function() {
-    const portfolioModal = document.getElementById('portfolioModal');
-    const talentId = portfolioModal.getAttribute('data-talent-id');
-    
-    // Close portfolio modal
-    bootstrap.Modal.getInstance(portfolioModal).hide();
-    
-    // Find selected talent card
-    const talentCard = document.querySelector(`.talent-card-col[data-talent-id="${talentId}"]`);
-    openSendOfferModal(talentCard);
+  console.log('Setting up modal events in the JS file');
+  
+  // Make sure back button works
+  const backBtn = document.getElementById('back-to-selection-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      const selectionView = document.getElementById('portfolio-selection-view');
+      const detailView = document.getElementById('portfolio-detail-view');
+      
+      if (selectionView && detailView) {
+        selectionView.style.display = 'block';
+        detailView.style.display = 'none';
+        
+        // Update modal title
+        const modalLabel = document.getElementById('portfolioModalLabel');
+        if (modalLabel) {
+          modalLabel.textContent = 'Portfolio Selection';
+        }
+      }
+    });
+  }
+  
+  // Add listeners to portfolio buttons (for safety - redundant with inline script)
+  const viewButtons = document.querySelectorAll('.view-portfolio-btn');
+  console.log('In JS file: Found ' + viewButtons.length + ' portfolio buttons');
+  
+  viewButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      console.log('Button clicked in JS file handler');
+      const talentCard = button.closest('.talent-card-col');
+      if (talentCard) {
+        window.openPortfolioModal(talentCard);
+      }
+    });
   });
 }
 
-// Open portfolio modal from a card button click
-function openPortfolioModalFromCard(button) {
+// Open portfolio modal from a card button click - Make global
+window.openPortfolioModalFromCard = function(button) {
+  console.log('openPortfolioModalFromCard called');
   const talentCard = button.closest('.talent-card-col');
-  openPortfolioModal(talentCard);
-}
+  if (talentCard) {
+    window.openPortfolioModal(talentCard);
+  } else {
+    console.error('Could not find parent talent card');
+  }
+};
 
-// Open send offer modal from a card button click
-function openSendOfferModalFromCard(button) {
-  const talentCard = button.closest('.talent-card-col');
-  openSendOfferModal(talentCard);
-}
-
-// Open portfolio modal with talent data
-function openPortfolioModal(talentCard) {
+// Open portfolio modal with talent data - Make global
+window.openPortfolioModal = function(talentCard) {
+  console.log('openPortfolioModal called with talentCard:', talentCard);
+  
+  if (!talentCard) {
+    console.error('No talent card provided');
+    return;
+  }
+  
   // Get data from the talent card's data attributes
   const talentId = talentCard.dataset.talentId;
   const talentName = talentCard.dataset.talentName;
   const talentTitle = talentCard.dataset.talentTitle;
   const talentBio = talentCard.dataset.talentBio;
   const talentAvatar = talentCard.dataset.talentAvatar;
-  const talentSkills = talentCard.dataset.talentSkills.split(',');
-  const talentExperience = JSON.parse(talentCard.dataset.talentExperience);
-  const talentSamples = JSON.parse(talentCard.dataset.talentSamples);
+  
+  console.log('Talent data:', { talentId, talentName, talentTitle });
   
   // Set modal data attributes
   const portfolioModal = document.getElementById('portfolioModal');
-  portfolioModal.setAttribute('data-talent-id', talentId);
-  
-  // Update modal content
-  document.getElementById('modal-talent-name').textContent = talentName;
-  document.getElementById('modal-talent-title').textContent = talentTitle;
-  document.getElementById('modal-talent-bio').textContent = talentBio;
-  document.getElementById('modal-talent-avatar').src = talentAvatar;
-  
-  // Update skills
-  const skillsContainer = document.getElementById('view-portfolio-skills');
-  skillsContainer.innerHTML = talentSkills.map(skill => 
-    `<span class="tag">${skill}</span>`
-  ).join('');
-  
-  // Update experience
-  const experiencesContainer = document.getElementById('view-portfolio-experiences');
-  experiencesContainer.innerHTML = talentExperience.map(exp => `
-    <div class="experience-item mb-4">
-      <div class="d-flex justify-content-between">
-        <h6 class="experience-title">${exp.title}</h6>
-        <span class="experience-date">${exp.date}</span>
-      </div>
-      <div class="experience-company mb-2">${exp.company}</div>
-      <p class="experience-description">${exp.description}</p>
-    </div>
-  `).join('');
-  
-  // Update work samples
-  const samplesContainer = document.getElementById('view-portfolio-samples');
-  samplesContainer.innerHTML = talentSamples.map(sample => `
-    <div class="col-md-6 mb-4">
-      <div class="portfolio-project">
-        <div class="project-info mb-3">
-          <h6 class="project-title">${sample.title}</h6>
-          <p class="project-description">${sample.description}</p>
-          <a href="${sample.link}" class="btn btn-sm btn-outline-primary mt-2" target="_blank">View Project</a>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  
-  // Show modal
-  const modalInstance = new bootstrap.Modal(portfolioModal);
-  modalInstance.show();
-}
-
-// Open send offer modal
-function openSendOfferModal(talentCard) {
-  // Get data from the talent card
-  const talentId = talentCard.dataset.talentId;
-  const talentName = talentCard.dataset.talentName;
-  const talentTitle = talentCard.dataset.talentTitle;
-  
-  // Set modal data
-  const sendOfferModal = document.getElementById('sendOfferModal');
-  sendOfferModal.setAttribute('data-talent-id', talentId);
-  
-  // Set talent name
-  document.getElementById('offer-talent-name').textContent = talentName;
-  
-  // Add talent title to job title placeholder
-  document.getElementById('job-title').placeholder = `e.g., ${talentTitle} Position`;
-  
-  // Reset form
-  // Continue the openSendOfferModal function
-  document.getElementById('offer-form').reset();
-  
-  // Show modal
-  const modalInstance = new bootstrap.Modal(sendOfferModal);
-  modalInstance.show();
-}
-
-// Submit offer form
-function submitOfferForm() {
-  // Get form values
-  const talentId = document.getElementById('sendOfferModal').getAttribute('data-talent-id');
-  const jobTitle = document.getElementById('job-title').value;
-  const clientMessage = document.getElementById('client-message').value;
-  
-  // Simple validation
-  if (!jobTitle.trim() || !clientMessage.trim()) {
-    showToast('Please fill in all required fields', 'error');
+  if (!portfolioModal) {
+    console.error('Portfolio modal not found');
     return;
   }
   
-  // Find talent data
-  const talentCard = document.querySelector(`.talent-card-col[data-talent-id="${talentId}"]`);
-  const talentName = talentCard.dataset.talentName;
+  portfolioModal.setAttribute('data-talent-id', talentId);
   
-  // Create offer object
-  const offerData = {
-    talentId,
-    talentName,
-    jobTitle,
-    clientMessage,
-    sentDate: new Date().toISOString(),
-    status: 'pending'
+  // Update talent information in the selection view
+  const talentNameElement = document.getElementById('select-talent-name');
+  const talentTitleElement = document.getElementById('select-talent-title');
+  const talentBioElement = document.getElementById('select-talent-bio');
+  const talentAvatarElement = document.getElementById('select-talent-avatar');
+  
+  if (talentNameElement) talentNameElement.textContent = talentName;
+  if (talentTitleElement) talentTitleElement.textContent = talentTitle;
+  if (talentBioElement) talentBioElement.textContent = talentBio;
+  if (talentAvatarElement) talentAvatarElement.src = talentAvatar;
+  
+  // Show selection view, hide detail view
+  const selectionView = document.getElementById('portfolio-selection-view');
+  const detailView = document.getElementById('portfolio-detail-view');
+  
+  if (selectionView) selectionView.style.display = 'block';
+  if (detailView) detailView.style.display = 'none';
+  
+  // Load portfolio list for this talent
+  console.log('About to call loadTalentPortfolios with talentId:', talentId);
+  try {
+    window.loadTalentPortfolios(talentId);
+  } catch (error) {
+    console.error('Error calling loadTalentPortfolios:', error);
+  }
+  
+  // Show modal
+  try {
+    const bsModal = new bootstrap.Modal(portfolioModal);
+    bsModal.show();
+    console.log('Modal should be showing now');
+  } catch (error) {
+    console.error('Error showing modal:', error);
+    alert('There was a problem displaying the portfolio modal. Please try again.');
+  }
+};
+
+// Load portfolio list for a talent - Make global
+window.loadTalentPortfolios = function(talentId) {
+  console.log('Loading portfolios for talent ID:', talentId);
+  
+  // Get the portfolio container
+  const portfolioContainer = document.getElementById('portfolio-selection-container');
+  if (!portfolioContainer) {
+    console.error('Portfolio container not found');
+    return;
+  }
+  
+  // Show loading indicator
+  portfolioContainer.innerHTML = `
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading portfolios...</p>
+    </div>
+  `;
+  
+  // Create the URL for the AJAX request
+  const ajaxUrl = `clientTalents.php?action=get_portfolios&user_id=${talentId}`;
+  console.log('AJAX URL:', ajaxUrl);
+  
+  // Fetch portfolios via AJAX from the server
+  fetch(ajaxUrl)
+    .then(response => {
+      console.log('AJAX response received:', response);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Portfolio data received:', data);
+      portfolioContainer.innerHTML = '';
+      
+      // Check if response has expected structure
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response format received from server');
+      }
+      
+      const portfolios = data.portfolios || [];
+      console.log('Found', portfolios.length, 'portfolios');
+      
+      if (portfolios.length === 0) {
+        portfolioContainer.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No portfolios available</h5>
+            <p>This freelancer hasn't created any portfolios yet.</p>
+            ${data.debug ? `
+            <div class="mt-4 text-start bg-light p-3 rounded" style="max-width: 600px; margin: 0 auto; font-size: 0.8rem;">
+              <p class="mb-1"><strong>Debug information:</strong></p>
+              <pre>${JSON.stringify(data.debug, null, 2)}</pre>
+            </div>` : ''}
+          </div>
+        `;
+        return;
+      }
+      
+      // Create a card for each portfolio
+      portfolios.forEach(portfolio => {
+        console.log('Processing portfolio:', portfolio.id, portfolio.title);
+        
+        // Make sure skills_array exists
+        if (!portfolio.skills_array && portfolio.skills) {
+          portfolio.skills_array = portfolio.skills.split(',').map(skill => skill.trim()).filter(Boolean);
+        }
+        
+        if (!Array.isArray(portfolio.skills_array)) {
+          portfolio.skills_array = [];
+        }
+        
+        const portfolioCard = document.createElement('div');
+        portfolioCard.className = 'col-md-6 col-lg-4 mb-4';
+        portfolioCard.innerHTML = `
+          <div class="card h-100 portfolio-card">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-3">${portfolio.title || 'Untitled Portfolio'}</h5>
+              <p class="card-text text-muted mb-4">${portfolio.description || 'No description available.'}</p>
+              <div class="portfolio-skills mb-4">
+                ${portfolio.skills_array.slice(0, 3).map(skill => `<span class="tag">${skill}</span>`).join('')}
+                ${portfolio.skills_array.length > 3 ? `<span class="tag">+${portfolio.skills_array.length - 3} more</span>` : ''}
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-4 px-4">
+              <button class="btn btn-primary w-100 view-detail-btn" data-portfolio-id="${portfolio.id}">
+                <i class="fas fa-eye me-2"></i>View Details
+              </button>
+            </div>
+          </div>
+        `;
+        portfolioContainer.appendChild(portfolioCard);
+        
+        // Add click event for the view details button
+        const viewDetailsBtn = portfolioCard.querySelector('.view-detail-btn');
+        viewDetailsBtn.addEventListener('click', function() {
+          console.log('View details clicked for portfolio:', portfolio.id);
+          window.viewPortfolioDetail(talentId, portfolio);
+        });
+      });
+      
+      console.log('Added', portfolios.length, 'portfolio cards');
+    })
+    .catch(error => {
+      console.error('Error fetching portfolios:', error);
+      portfolioContainer.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+          <h5 class="text-muted">Error Loading Portfolios</h5>
+          <p>There was a problem loading the portfolios.</p>
+          <div class="mt-3 text-start bg-light p-3 rounded" style="max-width: 700px; margin: 0 auto; font-size: 0.8rem;">
+            <p class="mb-1"><strong>Error details:</strong></p>
+            <pre>${error.message || 'Unknown error'}</pre>
+            <p class="mt-3 mb-1"><strong>Request URL:</strong></p>
+            <pre>${ajaxUrl}</pre>
+            <p class="mt-3 mb-0">Please check your browser console for more details.</p>
+          </div>
+        </div>
+      `;
+    });
+};
+
+// View a specific portfolio detail - Make global
+window.viewPortfolioDetail = function(talentId, portfolio) {
+  console.log('Viewing portfolio detail:', talentId, portfolio);
+  
+  // Update modal title
+  const modalTitle = document.getElementById('portfolioModalLabel');
+  if (modalTitle) modalTitle.textContent = 'Portfolio Details';
+  
+  // Hide selection view, show detail view
+  const selectionView = document.getElementById('portfolio-selection-view');
+  const detailView = document.getElementById('portfolio-detail-view');
+  
+  if (selectionView) selectionView.style.display = 'none';
+  if (detailView) detailView.style.display = 'block';
+  
+  // Update portfolio details
+  const portfolioTitle = document.getElementById('portfolio-title');
+  const portfolioDescription = document.getElementById('portfolio-description');
+  
+  if (portfolioTitle) portfolioTitle.textContent = portfolio.title || 'Untitled Portfolio';
+  if (portfolioDescription) portfolioDescription.textContent = portfolio.description || 'No description available.';
+  
+  // Ensure skills_array exists
+  if (!portfolio.skills_array && portfolio.skills) {
+    portfolio.skills_array = portfolio.skills.split(',').map(skill => skill.trim());
+  }
+  
+  if (!Array.isArray(portfolio.skills_array)) {
+    portfolio.skills_array = [];
+  }
+  
+  // Update skills
+  const skillsContainer = document.getElementById('view-portfolio-skills');
+  if (skillsContainer) {
+    if (portfolio.skills_array.length > 0) {
+      skillsContainer.innerHTML = portfolio.skills_array.map(skill => 
+        `<span class="tag">${skill}</span>`
+      ).join('');
+    } else {
+      skillsContainer.innerHTML = '<p class="text-muted">No skills listed</p>';
+    }
+  }
+  
+  // Ensure experience array exists
+  if (!Array.isArray(portfolio.experience)) {
+    portfolio.experience = [];
+  }
+  
+  // Update experience
+  const experiencesContainer = document.getElementById('view-portfolio-experiences');
+  if (experiencesContainer) {
+    if (portfolio.experience.length > 0) {
+      experiencesContainer.innerHTML = portfolio.experience.map(exp => `
+        <div class="experience-item mb-4">
+          <div class="d-flex justify-content-between">
+            <h6 class="experience-title">${exp.title || 'Position'}</h6>
+            <span class="experience-date">${exp.date || 'No date provided'}</span>
+          </div>
+          <div class="experience-company mb-2">${exp.company || 'Company'}</div>
+          <p class="experience-description">${exp.description || 'No description provided.'}</p>
+        </div>
+      `).join('');
+    } else {
+      experiencesContainer.innerHTML = '<div class="text-center py-4"><p class="text-muted">No work experience listed</p></div>';
+    }
+  }
+  
+  // Ensure samples array exists
+  if (!Array.isArray(portfolio.samples)) {
+    portfolio.samples = [];
+  }
+  
+  // Update work samples
+  const samplesContainer = document.getElementById('view-portfolio-samples');
+  if (samplesContainer) {
+    if (portfolio.samples.length > 0) {
+      samplesContainer.innerHTML = portfolio.samples.map(sample => `
+        <div class="col-md-6 mb-4">
+          <div class="portfolio-project">
+            <div class="project-info mb-3">
+              <h6 class="project-title">${sample.title || 'Project'}</h6>
+              <p class="project-description">${sample.description || 'No description provided.'}</p>
+              <a href="${sample.link || '#'}" class="btn btn-sm btn-outline-primary mt-2" target="_blank">View Project</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      samplesContainer.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">No work samples listed</p></div>';
+    }
+  }
+  
+  console.log('Portfolio detail view updated');
+};
+
+// Debounce function for search input - Make global
+window.debounce = function(func, wait) {
+  let timeout;
+  return function(...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
   };
-  
-  // Store offer in localStorage
-  saveOffer(offerData);
-  
-  // Close modal
-  bootstrap.Modal.getInstance(document.getElementById('sendOfferModal')).hide();
-  
-  // Show success toast
-  showToast(`Offer sent to ${talentName}!`, 'success');
-}
+};
 
-// Save offer to localStorage
-function saveOffer(offerData) {
-  // Get existing offers or initialize empty array
-  let sentOffers = JSON.parse(localStorage.getItem('sentOffers')) || [];
-  
-  // Add new offer with unique ID
-  offerData.id = Date.now().toString();
-  sentOffers.push(offerData);
-  
-  // Save back to localStorage
-  localStorage.setItem('sentOffers', JSON.stringify(sentOffers));
-}
-
-// Show a toast notification
-function showToast(message, type = 'info') {
+// Show a toast notification - Make global
+window.showToast = function(message, type = 'info') {
   const toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    console.error('Toast container not found');
+    return;
+  }
   
   // Create toast element
   const toast = document.createElement('div');
@@ -355,199 +557,4 @@ function showToast(message, type = 'info') {
   toast.addEventListener('hidden.bs.toast', function() {
     toast.remove();
   });
-}
-
-// Debounce function for search input
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    const context = this;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
-}
-
-// Add more talent cards dynamically (example for future implementation)
-function addMoreTalents(talentsData) {
-  const talentsGrid = document.getElementById('talents-grid');
-  
-  talentsData.forEach(talent => {
-    // Create card element
-    const cardCol = document.createElement('div');
-    cardCol.className = 'col-md-6 col-lg-4 talent-card-col';
-    cardCol.dataset.category = talent.category;
-    cardCol.dataset.talentId = talent.id;
-    cardCol.dataset.talentName = talent.name;
-    cardCol.dataset.talentTitle = talent.title;
-    cardCol.dataset.talentAvatar = talent.avatar;
-    cardCol.dataset.talentBio = talent.bio;
-    cardCol.dataset.talentSkills = talent.skills.join(',');
-    cardCol.dataset.talentSummary = talent.summary;
-    cardCol.dataset.talentExperience = JSON.stringify(talent.experience);
-    cardCol.dataset.talentSamples = JSON.stringify(talent.samples);
-    
-    // Create card inner HTML
-    cardCol.innerHTML = `
-      <div class="talent-card">
-        <div class="talent-header">
-          <div class="talent-avatar">
-            <img src="${talent.avatar}" alt="${talent.name}">
-          </div>
-          <div class="talent-info">
-            <h5 class="talent-name">${talent.name}</h5>
-            <p class="talent-title">${talent.title}</p>
-          </div>
-        </div>
-        <div class="talent-portfolio">
-          <h6 class="portfolio-heading">Portfolio Summary</h6>
-          <p class="portfolio-summary">${talent.summary}</p>
-          <div class="portfolio-skills">
-            ${talent.skills.slice(0, 3).map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-          </div>
-        </div>
-        <div class="talent-actions">
-          <button class="btn btn-outline-primary view-portfolio-btn" onclick="openPortfolioModalFromCard(this)">
-            <i class="fas fa-eye me-2"></i>View Portfolio
-          </button>
-          <button class="btn btn-primary send-offer-btn" onclick="openSendOfferModalFromCard(this)">
-            <i class="fas fa-paper-plane me-2"></i>Hire Me
-          </button>
-        </div>
-      </div>
-    `;
-    
-    // Add to grid
-    talentsGrid.appendChild(cardCol);
-  });
-  
-  // Update search and filter after adding new talents
-  filterTalents();
-}
-
-// Mock example for loading more talents
-function loadMoreTalents() {
-  const lastTalentId = document.querySelectorAll('.talent-card-col').length;
-  
-  // Simulating API call with setTimeout
-  setTimeout(() => {
-    // New talents data could come from server
-    const newTalents = [
-      {
-        id: lastTalentId + 1,
-        name: "David Wilson",
-        title: "Video Editor",
-        category: "video",
-        avatar: "/api/placeholder/100/100",
-        bio: "Professional video editor with expertise in storytelling and creating engaging visual content.",
-        skills: ["Video Editing", "Adobe Premiere Pro", "After Effects", "Motion Graphics", "Color Grading"],
-        summary: "Skilled video editor with 7+ years of experience creating compelling visual stories for brands and agencies.",
-        experience: [
-          {
-            title: "Senior Video Editor",
-            company: "Visual Studios",
-            date: "Apr 2020 - Present",
-            description: "Lead video editor for high-profile client projects, specializing in commercials and branded content."
-          },
-          {
-            title: "Video Editor",
-            company: "Creative Productions",
-            date: "Feb 2017 - Mar 2020",
-            description: "Edited promotional videos, social media content, and event highlight reels."
-          }
-        ],
-        samples: [
-          {
-            title: "Brand Commercial",
-            description: "30-second commercial for a major sports brand that aired nationally.",
-            link: "https://example.com/project1"
-          },
-          {
-            title: "Corporate Documentary",
-            description: "15-minute documentary highlighting a company's sustainability initiatives.",
-            link: "https://example.com/project2"
-          }
-        ]
-      },
-      {
-        id: lastTalentId + 2,
-        name: "Emma Rodriguez",
-        title: "Content Writer",
-        category: "writing",
-        avatar: "/api/placeholder/100/100",
-        bio: "Versatile content writer with a strong background in SEO and digital marketing.",
-        skills: ["Blog Writing", "SEO", "Technical Writing", "Copywriting", "Content Strategy"],
-        summary: "Experienced writer delivering engaging, SEO-optimized content that drives traffic and conversions.",
-        experience: [
-          {
-            title: "Senior Content Writer",
-            company: "Digital Words Agency",
-            date: "Jan 2021 - Present",
-            description: "Produce high-quality blog posts, website copy, and marketing materials for diverse clients."
-          },
-          {
-            title: "Content Specialist",
-            company: "SEO Solutions",
-            date: "Mar 2018 - Dec 2020",
-            description: "Created SEO-optimized content strategies and managed content calendars for multiple clients."
-          }
-        ],
-        samples: [
-          {
-            title: "Tech Blog Series",
-            description: "10-part blog series on emerging technologies that increased client traffic by 45%.",
-            link: "https://example.com/project1"
-          },
-          {
-            title: "Website Copy Revamp",
-            description: "Complete website copywriting project that improved conversion rates by 30%.",
-            link: "https://example.com/project2"
-          }
-        ]
-      }
-    ];
-    
-    // Add new talents to the grid
-    addMoreTalents(newTalents);
-  }, 1000);
-}
-
-// Initialize infinite scroll for future implementation
-function initInfiniteScroll() {
-  // Add scroll event listener for when user reaches bottom of page
-  window.addEventListener('scroll', debounce(function() {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-      // Load more talents when user is near bottom of page
-      loadMoreTalents();
-    }
-  }, 300));
-}
-
-// Function to export talent contact information
-function exportTalentContact(talentId) {
-  // Find talent data
-  const talentCard = document.querySelector(`.talent-card-col[data-talent-id="${talentId}"]`);
-  const talentName = talentCard.dataset.talentName;
-  const talentTitle = talentCard.dataset.talentTitle;
-  
-  // Create vCard format
-  const vCardData = `BEGIN:VCARD
-VERSION:3.0
-FN:${talentName}
-TITLE:${talentTitle}
-NOTE:Contacted via ProFolio
-END:VCARD`;
-  
-  // Create blob and download link
-  const blob = new Blob([vCardData], { type: 'text/vcard' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${talentName.replace(/\s+/g, '_')}_contact.vcf`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-  
-  // Show toast notification
-  showToast(`Contact information for ${talentName} downloaded`, 'success');
-}
+};

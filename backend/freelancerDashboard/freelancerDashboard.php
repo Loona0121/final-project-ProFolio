@@ -15,9 +15,6 @@ $userData = getUserData($userID);
 
  // PHP generates the text
  $text = "Welcome, " .htmlspecialchars($userData['first_name']) . "!";
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -48,15 +45,15 @@ $userData = getUserData($userID);
       <div class="sidebar-user">
         <div class="user-avatar">
           <?php if (!empty($userData['profile_photo'])): ?>
-            <img src="<?php echo htmlspecialchars($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
+            <img src="../uploads/<?php echo basename($userData['profile_photo']); ?>" alt="Profile Photo" class="profile-img">
           <?php else: ?>
             <i class="fas fa-user"></i>
           <?php endif; ?>
         </div>
         <div class="user-info">
           <a href="freelancerProfile.php" class="user-name-link">
-          <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
-          <div class="info-value non-editable"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : ''; ?></div>
+            <div class="info-value non-editable"><?php echo htmlspecialchars($userData['full_name']); ?></div>
+            <div class="user-role"><?php echo !empty($userData['job_title']) ? htmlspecialchars($userData['job_title']) : 'Freelancer'; ?></div>
           </a>
         </div>
       </div>
