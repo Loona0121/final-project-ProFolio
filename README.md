@@ -28,8 +28,8 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 - **Skills and Certifications** – Add and verify areas of expertise to build trust.
 - **Work Experience** – Showcase key career milestones and past projects.
 - **Talent Search** – Clients can browse and explore freelancer portfolios to find the right match.
-- **Client Verification Badge** - Identifies verified clients. *removed
-- **Team and Company Pages** - Profile pages for businesses and teams. *removed
+- **Client Verification Badge** – Identifies verified clients. *_removed_
+- **Team and Company Pages** – Profile pages for businesses and teams. *_removed_
 
 ---
 
