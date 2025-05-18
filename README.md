@@ -24,14 +24,12 @@ ProFolio is a portfolio platform that allows users to showcase their skills, wor
 ---
 
 ## 📌 Features
-- **Portfolio Showcase** - Upload designs, case studies, coding projects, etc.
-- **Skills and Certifications** - Add and verify expertise.
-- **Work Experience** - Display of career milestones.
-- **Hire Me Button** - One-click interest from clients.
-- **Advanced Job Filters** - Filter talents or job listings smartly.
-- **Reviews and Ratings** - Feedback system for credibility. *removed
-- **Client Verification Badge** - Identifies verified clients. *removed
-- **Team and Company Pages** - Profile pages for businesses and teams. *removed
+- **Portfolio Builder** – Create and edit a personalized portfolio with work samples, skills, and experience.
+- **Skills and Certifications** – Add and verify areas of expertise to build trust.
+- **Work Experience** – Showcase key career milestones and past projects.
+- **Talent Search** – Clients can browse and explore freelancer portfolios to find the right match.
+- **Client Verification Badge** – Identifies verified clients. *_removed_
+- **Team and Company Pages** – Profile pages for businesses and teams. *_removed_
 
 ---
 
@@ -55,9 +53,9 @@ BSIT 2A
 |-------------|--------------|
 | Phase 1 (Week 11) | ✅ 100% |
 | Phase 2 (Week 12) | ✅ 100%  |
-| Phase 3 (Week 13) | 🟡 40%  |
-| Phase 4 (Week 14) | 🟡 40%   |
-| Phase 5 (Week 15) | 🟡 30%   |
-| Phase 6 (Week 16) | 🟡 20%   |
+| Phase 3 (Week 13) | ✅ 100%  |
+| Phase 4 (Week 14) | ✅ 100%   |
+| Phase 5 (Week 15) | ✅ 100%   |
+| Phase 6 (Week 16) | 🟡 80%   |
 
 *This will continue to be updated until everything reaches 100%.*
