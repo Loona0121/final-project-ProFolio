@@ -58,4 +58,3 @@ BSIT 2A
 | Phase 5 (Week 15) | ✅ 100%   |
 | Phase 6 (Week 16) | ✅ 100%   |
 
-*This will continue to be updated until everything reaches 100%.*
