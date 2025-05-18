@@ -56,6 +56,6 @@ BSIT 2A
 | Phase 3 (Week 13) | ✅ 100%  |
 | Phase 4 (Week 14) | ✅ 100%   |
 | Phase 5 (Week 15) | ✅ 100%   |
-| Phase 6 (Week 16) | 🟡 80%   |
+| Phase 6 (Week 16) | ✅ 100%   |
 
 *This will continue to be updated until everything reaches 100%.*
