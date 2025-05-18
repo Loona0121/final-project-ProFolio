@@ -80,6 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -277,7 +279,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>Sign up as a Client</h1>
         <p>Find the perfect freelancer for your projects</p>
         
-        <!-- Google Sign-In Button -->
+         <!-- Google Sign-In Button -->
         <button type="button" class="btn google-signin-btn w-100 rounded" onclick="handleGoogleSignIn()">
             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
             Sign in with Google
@@ -371,71 +373,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </footer>
 
     <!-- Google Sign-In API -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const icon = document.querySelector('.password-toggle i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const icon = document.querySelector('.password-toggle i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         }
+    }
 
-        function handleGoogleSignIn() {
-            const client = google.accounts.oauth2.initTokenClient({
-                client_id: '524108211758-ji1nlvkhu866ub9m7024aecundfrbu51.apps.googleusercontent.com',
-                scope: 'profile email',
-                callback: (response) => {
-                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                        headers: {
-                            'Authorization': `Bearer ${response.access_token}`
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(profile => {
-                        const params = new URLSearchParams();
-                        params.append("google_signup", "1");
-                        params.append("first_name", profile.given_name || '');
-                        params.append("last_name", profile.family_name || '');
-                        params.append("email", profile.email);
+    function handleGoogleSignIn() {
+        const client = google.accounts.oauth2.initTokenClient({
+            client_id: '372847968979-0dgcp25f92k1hv95o4takpp3o6igj512.apps.googleusercontent.com',
+            scope: 'profile email',
+            callback: (response) => {
+                fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: {
+                        'Authorization': `Bearer ${response.access_token}`
+                    }
+                })
+                .then(res => res.json())
+                .then(profile => {
+                    const params = new URLSearchParams();
+                    params.append("google_signup", "1");
+                    params.append("first_name", profile.given_name || '');
+                    params.append("last_name", profile.family_name || '');
+                    params.append("email", profile.email);
 
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState === XMLHttpRequest.DONE) {
-                                const res = JSON.parse(xhr.responseText);
-                                if (xhr.status === 200) {
-                                    if (res.status === "success") {
-                                        alert("Google Sign-Up Successful!");
-                                        window.location.href = "../clientDashboard/clientDashboard.php";
-                                    } else if (res.status === "redirect") {
-                                        alert(res.message);
-                                        window.location.href = res.redirect_url;
-                                    } else {
-                                        alert("Google Sign-Up Failed: " + res.message);
-                                    }
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            const res = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200) {
+                                if (res.status === "success") {
+                                    alert("Google Sign-Up Successful!");
+                                    window.location.href = "../clientDashboard/clientDashboard.php";
+                                } else if (res.status === "redirect") {
+                                    alert(res.message);
+                                    window.location.href = res.redirect_url;
                                 } else {
-                                    alert("Something went wrong.");
+                                    alert("Google Sign-Up Failed: " + res.message);
                                 }
+                            } else {
+                                alert("Something went wrong.");
                             }
-                        };
+                        }
+                    };
 
-                        xhr.send(params.toString());
-                    });
-                }
-            });
+                    xhr.send(params.toString());
+                });
+            }
+        });
 
-            client.requestAccessToken();
-        }
-    </script>
+        client.requestAccessToken();
+    }
+</script>
 </body>
 </html>

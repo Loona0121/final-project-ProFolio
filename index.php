@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&family=Poppins:wght@400;500&display=swap">
-    <link rel="stylesheet" href="../CSS/index.css">
+    <link rel="stylesheet" href="backend/CSS/index.css">
     <style>
         body {
             font-family: 'Poppins', 'Montserrat', 'Open Sans', Arial, sans-serif;
@@ -72,9 +72,11 @@
             transition: background 0.2s, transform 0.2s;
         }
         .hero-buttons .btn-primary:hover {
-            background: #1a4b84;
-            transform: translateY(-2px) scale(1.03);
-        }
+        background: #3aafa9;
+        color: #fff; /* add this */
+        transform: translateY(-2px) scale(1.03);
+}
+
         .hero-buttons .btn-secondary {
             background: rgba(255,255,255,0.15);
             color: #fff;
@@ -284,8 +286,8 @@
                 Pro<span>Folio</span>
             </div>
             <div class="auth-buttons">
-                <a href="login.php" class="btn btn-secondary">Log In</a>
-                <a href="register.php" class="btn btn-primary">Register</a>
+                <a href="backend/PHP/login.php" class="btn btn-secondary">Log In</a>
+                <a href="backend/PHP/register.php" class="btn btn-primary">Register</a>
             </div>
             <div class="mobile-menu">
                 <i class="fas fa-bars"></i>
@@ -300,8 +302,8 @@
             <h1>Showcase Your Talent. Connect. Grow.</h1>
             <p>Build a stunning portfolio, connect with clients, and take your freelance career to the next level—all in one place.</p>
             <div class="hero-buttons">
-                <a href="register.php" class="btn btn-primary">Get Started</a>
-                <a href="login.php" class="btn btn-secondary">Learn More</a>
+                <a href="backend/PHP/register.php" class="btn btn-primary btn-lg px-5">Get Started</a>
+                <a href="backend/PHP/login.php" class="btn btn-secondary">Learn More</a>
             </div>
         </div>
     </div>
@@ -380,7 +382,7 @@
     <div class="container">
         <h2 class="fw-bold mb-4">Ready to Start Your Journey?</h2>
         <p class="lead mb-4">Join our community of talented freelancers and clients</p>
-        <a href="register.php" class="btn btn-primary btn-lg px-5">Get Started</a>
+        <a href="backend/PHP/register.php" class="btn btn-primary btn-lg px-5">Get Started</a>
     </div>
 </section>
 
